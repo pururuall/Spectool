@@ -1,0 +1,492 @@
+import { ModuleModel, BOMRow } from '../types';
+import ExcelJS from 'exceljs';
+
+export function calculateFormula(
+  formula: string,
+  params: { L: number; W: number; H: number; Area: number }
+): number {
+  try {
+    let expr = formula;
+    expr = expr.replace(/\bL\b/gi, params.L.toString());
+    expr = expr.replace(/\bW\b/gi, params.W.toString());
+    expr = expr.replace(/\bH\b/gi, params.H.toString());
+    expr = expr.replace(/\bArea\b/gi, params.Area.toString());
+
+    const fn = new Function(
+      'ROUNDUP',
+      'ROUND',
+      'CEIL',
+      'FLOOR',
+      'MAX',
+      'MIN',
+      `return (${expr});`
+    );
+
+    const roundup = (val: number, d = 0) => {
+      const factor = Math.pow(10, d);
+      return Math.ceil(val * factor) / factor;
+    };
+    const round = (val: number, d = 0) => {
+      const factor = Math.pow(10, d);
+      return Math.round(val * factor) / factor;
+    };
+
+    const result = fn(roundup, round, Math.ceil, Math.floor, Math.max, Math.min);
+    return typeof result === 'number' && !isNaN(result) ? Math.round(result * 100) / 100 : 0;
+  } catch (err) {
+    console.warn('Error evaluating formula:', formula, err);
+    return 0;
+  }
+}
+
+export function generateBOM(module: ModuleModel): BOMRow[] {
+  const rows: BOMRow[] = [];
+
+  // 1. Process all Drawn Lines and their Profile Bindings
+  for (const line of module.lines) {
+    for (const prof of line.profileBindings) {
+      const isVertical = Math.abs(line.x1 - line.x2) <= 5;
+      const totalOffset = prof.startOffset + prof.endOffset;
+      const calcLength = Math.max(0, line.length - totalOffset);
+      prof.calculatedLength = calcLength;
+
+      // Columns 16-19: Cut Angles (VGP_left, VGP_Right, VGP_Left_2, VGP_Right_2)
+      // ONLY numeric miter angles in degrees (e.g. 45, 90) or empty string! NEVER 'n L', 'Up', 'Down', etc.!
+      const vgpLeft = prof.miterLeft !== undefined && prof.miterLeft !== null ? prof.miterLeft : '';
+      const vgpRight = prof.miterRight !== undefined && prof.miterRight !== null ? prof.miterRight : '';
+      const vgpLeft2 = prof.miterLeft2 !== undefined && prof.miterLeft2 !== null ? prof.miterLeft2 : '';
+      const vgpRight2 = prof.miterRight2 !== undefined && prof.miterRight2 !== null ? prof.miterRight2 : '';
+
+      const currentExcelRow = rows.length + 2; // Row 1 is header in Excel, data starts at Row 2
+      const profRowId = `bom-${prof.id}`;
+
+      // Dynamic Excel formulas for length:
+      // Vertical profiles link to Height (Y1), Horizontal link to Width (Z1)
+      let formulaE = '';
+      if (isVertical) {
+        formulaE = totalOffset > 0 ? `Y1-${totalOffset}` : 'Y1';
+      } else {
+        formulaE = totalOffset > 0 ? `Z1-${totalOffset}` : 'Z1';
+      }
+      const formulaL = `E${currentExcelRow}`;
+
+      // Add profile row (Деталь)
+      rows.push({
+        id: profRowId,
+        sourceType: 'profile',
+        sourceId: prof.id,
+        mark: prof.customMark || `${module.project || 'А1187'} ${prof.article.slice(-4)}-${calcLength}`,
+        name: prof.name,
+        materialMark: prof.material || prof.article,
+        materialName: prof.materialName || 'Профиль алюминиевый',
+        materialQty: calcLength,
+        materialUnit: 'мм',
+        processTemplate: 'Профиль алюминиевый',
+        linkType: 'деталь',
+        specQty: 1,
+        specUnit: prof.unit || 'шт',
+        vgbPlanGroup: prof.planGroup || 'Профиль Алюминиевый',
+        vgbL: calcLength,
+        vgbB: '',
+        vgbLB: '',
+        vgbColor: prof.color || module.color || 'RAL 7012',
+        vgpLeft,
+        vgpRight,
+        vgpLeft2,
+        vgpRight2,
+        lengthMm: calcLength,
+        color: prof.color || module.color,
+        miterLeft: prof.miterLeft,
+        miterRight: prof.miterRight,
+        planGroup: prof.planGroup || 'Профиль Алюминиевый',
+        excelFormulaE: formulaE,
+        excelFormulaL: formulaL
+      });
+
+      // Add dependencies of this profile (screws, gaskets, etc.)
+      for (const dep of prof.dependencies) {
+        let qty = 0;
+        let formulaI: string | undefined;
+
+        if (dep.calcType === 'fixed') {
+          qty = dep.quantity || 1;
+        } else if (dep.calcType === 'step' && dep.stepMm) {
+          qty = Math.ceil(calcLength / dep.stepMm) + 1;
+          formulaI = `ROUNDUP(E${currentExcelRow}/${dep.stepMm},0)+1`;
+        } else if (dep.calcType === 'formula' && dep.formula) {
+          qty = calculateFormula(dep.formula, {
+            L: calcLength,
+            W: module.width,
+            H: module.height,
+            Area: (calcLength * 100) / 1_000_000
+          });
+
+          if (dep.formula.includes('2.05') || dep.name.includes('цех')) {
+            formulaI = `ROUNDUP(E${currentExcelRow}*1.05*2/1000,1)`;
+          } else if (dep.formula.includes('1.05')) {
+            formulaI = `ROUNDUP(E${currentExcelRow}*1.05/1000,1)`;
+          } else if (dep.stepMm) {
+            formulaI = `ROUNDUP(E${currentExcelRow}/${dep.stepMm},0)+1`;
+          } else {
+            // General translation of L -> E${currentExcelRow}
+            formulaI = dep.formula
+              .replace(/\bL\b/gi, `E${currentExcelRow}`)
+              .replace(/\s+/g, '');
+          }
+        }
+        dep.evaluatedQty = qty;
+
+        rows.push({
+          id: `bom-${dep.id}`,
+          sourceType: 'accessory',
+          sourceId: dep.id,
+          parentName: prof.name,
+          mark: dep.article,
+          name: dep.name,
+          materialMark: '',
+          materialName: '',
+          materialQty: '',
+          materialUnit: '',
+          processTemplate: '',
+          linkType: 'комплектующие',
+          specQty: qty,
+          specUnit: dep.unit,
+          vgbPlanGroup: '',
+          vgbL: '',
+          vgbB: '',
+          vgbLB: '',
+          vgbColor: '',
+          vgpLeft: '',
+          vgpRight: '',
+          vgpLeft2: '',
+          vgpRight2: '',
+          planGroup: 'Комплектующие',
+          excelFormulaI: formulaI
+        });
+      }
+    }
+  }
+
+  // 2. Process all Cells (Spandrels, Panels, Glass)
+  for (const cell of module.cells) {
+    const isGlass = cell.fillType === 'glass';
+    const cellL = cell.glassHeight || cell.height;
+    const cellB = cell.glassWidth || cell.width;
+    const area = (cellL * cellB) / 1_000_000;
+    const currentCellExcelRow = rows.length + 2;
+
+    // Has material: true only if explicitly enabled or if spandrel/sheet metal with material
+    const hasMat = cell.hasMaterial !== undefined ? cell.hasMaterial : (!isGlass && !!cell.material);
+    const matMark = hasMat ? (cell.material || 'Оц 0,9мм') : '';
+    const matName = hasMat ? (cell.materialName || 'Лист 0,9 Оц сталь ГОСТ 14918-80') : '';
+    const tmpl = cell.processTemplate !== undefined ? cell.processTemplate : (hasMat ? 'Короб' : '');
+    const lkType = cell.linkType || (hasMat ? 'деталь' : 'комплектующие');
+    const planGrp = cell.planGroup || (hasMat ? 'Детали ЦМК' : 'Комплектующие');
+
+    rows.push({
+      id: `bom-${cell.id}`,
+      sourceType: 'cell',
+      sourceId: cell.id,
+      mark: cell.mark || (isGlass ? 'СП-1' : 'А1187 К1080-1000'),
+      name: isGlass ? `${cell.name}${cell.formula ? ' ' + cell.formula : ''}` : cell.name,
+      materialMark: matMark,
+      materialName: matName,
+      materialQty: hasMat ? Math.round(area * 100) / 100 : undefined,
+      materialUnit: hasMat ? 'м2' : '',
+      processTemplate: tmpl,
+      linkType: lkType,
+      specQty: 1,
+      specUnit: 'шт',
+      vgbPlanGroup: planGrp,
+      vgbL: cellL,
+      vgbB: cellB,
+      vgbLB: Math.round(cellL * cellB),
+      vgbColor: isGlass ? '' : (cell.color || ''),
+      vgpLeft: '',
+      vgpRight: '',
+      vgpLeft2: '',
+      vgpRight2: '',
+      lengthMm: cellL,
+      widthMm: cellB,
+      areaM2: Math.round(area * 100) / 100,
+      color: cell.color,
+      planGroup: planGrp,
+      excelFormulaE: hasMat ? `ROUNDUP(N${currentCellExcelRow}/1000000, 2)` : undefined,
+      excelFormulaN: `ROUNDUP(L${currentCellExcelRow}*M${currentCellExcelRow}, 0)`
+    });
+
+    // Add dependencies of this cell (screws, insulation, pins, isolon)
+    for (const dep of cell.dependencies) {
+      let qty = 0;
+      let formulaI: string | undefined;
+
+      if (dep.calcType === 'fixed') {
+        qty = dep.quantity || 1;
+      } else if (dep.formula) {
+        qty = calculateFormula(dep.formula, {
+          L: cellL,
+          W: cellB,
+          H: cellL,
+          Area: area
+        });
+
+        if (dep.formula.includes('/ 90') || dep.name.includes('Винт') || dep.name.includes('3,9х16')) {
+          formulaI = `(ROUNDUP((L${currentCellExcelRow}/90+M${currentCellExcelRow}/90),0)+2)*3`;
+        } else if (dep.formula.includes('2.05') || dep.name.includes('Изолон')) {
+          formulaI = `ROUNDUP((L${currentCellExcelRow}+M${currentCellExcelRow})*2.05/1000,1)`;
+        } else if (dep.formula.includes('0.15') || dep.name.includes('Утеплитель') || dep.name.includes('RookWool')) {
+          formulaI = `ROUNDUP(E${currentCellExcelRow}*0.15,2)`;
+        } else if (dep.formula.includes('* 6') || dep.name.includes('Гвоздь')) {
+          formulaI = `ROUNDUP(E${currentCellExcelRow}*6,0)`;
+        }
+      }
+      dep.evaluatedQty = qty;
+
+      rows.push({
+        id: `bom-${dep.id}`,
+        sourceType: 'accessory',
+        sourceId: dep.id,
+        parentName: cell.name,
+        mark: dep.article,
+        name: dep.name,
+        materialMark: '',
+        materialName: '',
+        materialQty: '',
+        materialUnit: '',
+        processTemplate: '',
+        linkType: 'комплектующие',
+        specQty: qty,
+        specUnit: dep.unit,
+        vgbPlanGroup: '',
+        vgbL: '',
+        vgbB: '',
+        vgbLB: '',
+        vgbColor: '',
+        vgpLeft: '',
+        vgpRight: '',
+        vgpLeft2: '',
+        vgpRight2: '',
+        planGroup: 'Комплектующие',
+        excelFormulaI: formulaI
+      });
+    }
+  }
+
+  return rows;
+}
+
+// 19 exact columns from А1187 М507_Модуль Жукова.xlsx
+export const EXACT_EXCEL_HEADERS = [
+  'Обозначение',
+  'Наименование',
+  'Материал обозначение',
+  'Материал наименование',
+  'Материал кол-во',
+  'Материал ЕИ',
+  'Шаблон техпроцесса',
+  'Тип связи',
+  'Кол-во в спецификации',
+  'ЕИ',
+  'VGB_Plan_Group',
+  'VGB_L_MM',
+  'VGB_B_MM',
+  'VGB_LB_MM',
+  'VGB_Color',
+  'VGP_left',
+  'VGP_Right',
+  'VGP_Left_2',
+  'VGP_Right_2'
+];
+
+/**
+ * Export specification to Excel (.xlsx) with:
+ * 1. Exact 19 columns
+ * 2. Real Excel formulas for cutting lengths and accessory calculations
+ * 3. Soft green styling for parts (Columns A to S)
+ * 4. Soft blue styling for accessories (Columns A to K)
+ */
+export async function exportToExcel(module: ModuleModel, bomRows: BOMRow[]) {
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = 'Spectool Facade Builder';
+  workbook.created = new Date();
+
+  const worksheet = workbook.addWorksheet('Спецификация', {
+    views: [{ state: 'frozen', ySplit: 1 }]
+  });
+
+  // 1. ROW 1 IS THE HEADER ROW (Columns A1 to S1), plus module dimensions in Y1 and Z1!
+  const row1 = worksheet.getRow(1);
+  row1.values = EXACT_EXCEL_HEADERS;
+  row1.height = 24;
+
+  // Store module dimensions in Y1 (Height) and Z1 (Width) on Row 1
+  row1.getCell(25).value = module.height; // Y1
+  row1.getCell(26).value = module.width;  // Z1
+
+  // Header Row styling
+  for (let c = 1; c <= 19; c++) {
+    const cell = row1.getCell(c);
+    cell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FF1F2937' } };
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFF2F4F7' }
+    };
+    cell.alignment = {
+      vertical: 'middle',
+      horizontal: c === 5 || c === 9 || c === 12 || c === 13 || c === 14 ? 'right' : c === 6 || c === 10 || c >= 16 ? 'center' : 'left'
+    };
+    cell.border = {
+      top: { style: 'thin', color: { argb: 'FFD1D5DB' } },
+      bottom: { style: 'medium', color: { argb: 'FF9CA3AF' } },
+      left: { style: 'thin', color: { argb: 'FFD1D5DB' } },
+      right: { style: 'thin', color: { argb: 'FFD1D5DB' } }
+    };
+  }
+
+  const thinBorder: Partial<ExcelJS.Borders> = {
+    top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+    bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+    left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+    right: { style: 'thin', color: { argb: 'FFE5E7EB' } }
+  };
+
+  // Add data rows starting at Row 2!
+  bomRows.forEach((row, idx) => {
+    const rowNumber = idx + 2; // 1-based, Row 1 is header, data starts at Row 2
+    const isPart = row.linkType === 'деталь' || row.linkType === 'Сборочная единица';
+
+    // Build cell values (using formulas where applicable!)
+    const valE = row.excelFormulaE
+      ? { formula: row.excelFormulaE, result: Number(row.materialQty) || row.materialQty }
+      : row.materialQty;
+
+    const valL = row.excelFormulaL
+      ? { formula: row.excelFormulaL, result: Number(row.vgbL) || row.vgbL }
+      : row.vgbL;
+
+    const valN = (row as any).excelFormulaN
+      ? { formula: (row as any).excelFormulaN, result: Number(row.vgbLB) || row.vgbLB }
+      : row.vgbLB;
+
+    const valI = row.excelFormulaI
+      ? { formula: row.excelFormulaI, result: Number(row.specQty) || row.specQty }
+      : row.specQty;
+
+    const rowData = [
+      row.mark,
+      row.name,
+      row.materialMark,
+      row.materialName,
+      valE,
+      row.materialUnit,
+      row.processTemplate,
+      row.linkType,
+      valI,
+      row.specUnit,
+      row.vgbPlanGroup,
+      valL,
+      row.vgbB,
+      valN,
+      row.vgbColor,
+      row.vgpLeft,
+      row.vgpRight,
+      row.vgpLeft2,
+      row.vgpRight2
+    ];
+
+    const excelRow = worksheet.addRow(rowData);
+    excelRow.height = 20;
+
+    if (isPart) {
+      // 1. Детали: Светло-зеленый цвет (A до S - все 19 колонок!)
+      for (let c = 1; c <= 19; c++) {
+        const cell = excelRow.getCell(c);
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE2EFDA' } // Pastel Light Green
+        };
+        cell.font = {
+          name: 'Calibri',
+          size: 10,
+          bold: c <= 2,
+          color: { argb: c <= 2 ? 'FF1E3A8A' : 'FF1F2937' }
+        };
+        cell.border = thinBorder;
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: c === 5 || c === 9 || c === 12 || c === 13 || c === 14 ? 'right' : c === 6 || c === 10 || c >= 16 ? 'center' : 'left'
+        };
+      }
+    } else {
+      // 2. Комплектующие: Светло-синий цвет (A до K - первые 11 колонок!)
+      for (let c = 1; c <= 11; c++) {
+        const cell = excelRow.getCell(c);
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFDDEBF7' } // Pastel Light Blue
+        };
+        cell.font = {
+          name: 'Calibri',
+          size: 10,
+          color: { argb: 'FF334155' }
+        };
+        cell.border = thinBorder;
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: c === 5 || c === 9 ? 'right' : c === 6 || c === 10 ? 'center' : 'left'
+        };
+      }
+
+      // Columns L to S for accessories: clean white/neutral border
+      for (let c = 12; c <= 19; c++) {
+        const cell = excelRow.getCell(c);
+        cell.border = thinBorder;
+      }
+    }
+  });
+
+  // Set column widths matching original specification
+  worksheet.columns = [
+    { width: 28 }, // A: Обозначение
+    { width: 34 }, // B: Наименование
+    { width: 25 }, // C: Материал обозначение
+    { width: 28 }, // D: Материал наименование
+    { width: 16 }, // E: Материал кол-во
+    { width: 13 }, // F: Материал ЕИ
+    { width: 24 }, // G: Шаблон техпроцесса
+    { width: 16 }, // H: Тип связи
+    { width: 20 }, // I: Кол-во в спецификации
+    { width: 8 },  // J: ЕИ
+    { width: 24 }, // K: VGB_Plan_Group
+    { width: 13 }, // L: VGB_L_MM
+    { width: 13 }, // M: VGB_B_MM
+    { width: 13 }, // N: VGB_LB_MM
+    { width: 14 }, // O: VGB_Color
+    { width: 10 }, // P: VGP_left
+    { width: 10 }, // Q: VGP_Right
+    { width: 10 }, // R: VGP_Left_2
+    { width: 10 }, // S: VGP_Right_2
+    { width: 5 },  // T
+    { width: 5 },  // U
+    { width: 5 },  // V
+    { width: 5 },  // W
+    { width: 5 },  // X
+    { width: 10 }, // Y: Height H
+    { width: 10 }  // Z: Width W
+  ];
+
+  // Generate buffer and trigger browser download
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${module.project || 'А1187'}_${module.name || 'Спецификация'}.xlsx`;
+  a.click();
+  URL.revokeObjectURL(url);
+}

@@ -1,0 +1,12 @@
+find‑skills https://github.com/vercel-labs/skills
+grill‑me https://github.com/mattpocock/skills
+improve‑codebase‑architecture https://github.com/mattpocock/skills
+frontend‑design https://github.com/anthropics/skills
+handoff https://github.com/mattpocock/skills
+prototype https://github.com/mattpocock/skills
+to‑spec https://github.com/mattpocock/skills
+brainstorming https://github.com/obra/superpowers
+ui‑ux‑pro‑max https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+impeccable https://github.com/pbakaus/impeccable
+xlsx https://github.com/anthropics/skills
+ponytail https://github.com/dietrichgebert/ponytail

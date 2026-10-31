@@ -1,0 +1,3779 @@
+{
+  "hardware": [
+    {
+      "id": "hw_2",
+      "article": "Alu Спецвинт 3,9х10, ТХ, А2",
+      "name": "Спецвинт",
+      "type": "Винт Самонарезной Alutech",
+      "standard": "Спецвинт",
+      "diameter": "3,9",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_3",
+      "article": "Hardwex HWX7-GD-P8 5,5х45",
+      "name": "Спецвинт для ЛСТК",
+      "type": "Винт Самонарезной",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "45",
+      "material": "Delta"
+    },
+    {
+      "id": "hw_4",
+      "article": "Sc 205077 ВС 4,2х25, DIN7981, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "25",
+      "material": "А4"
+    },
+    {
+      "id": "hw_5",
+      "article": "Sc 205080 ВС 3,9х13, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "13",
+      "material": "А4"
+    },
+    {
+      "id": "hw_6",
+      "article": "Sc 205081 ВС 3,9х16, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "16",
+      "material": "А4"
+    },
+    {
+      "id": "hw_7",
+      "article": "Sc 205082 ВС 4,8х30, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "30",
+      "material": "А4"
+    },
+    {
+      "id": "hw_8",
+      "article": "Sc 205083 ВС 4,8х45, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "45",
+      "material": "А4"
+    },
+    {
+      "id": "hw_9",
+      "article": "Sc 205172 ВС 3,9х19, ISO14585, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "19",
+      "material": "А4"
+    },
+    {
+      "id": "hw_10",
+      "article": "Sc 205174 ВС 3,9х22, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "22",
+      "material": "А4"
+    },
+    {
+      "id": "hw_11",
+      "article": "Sc 205175 ВС 3,9х38, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "38",
+      "material": "А4"
+    },
+    {
+      "id": "hw_12",
+      "article": "Sc 205241 ВС 5,5х19, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "19",
+      "material": "А2"
+    },
+    {
+      "id": "hw_13",
+      "article": "Sc 205292 ВС 3,9х45, ISO14585, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "45",
+      "material": "А4"
+    },
+    {
+      "id": "hw_14",
+      "article": "Sc 205379 Винт М5х12, DIN965, А4",
+      "name": "Винт с потайной головкой с шлицем TX25",
+      "type": "Винт Shueco",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "12",
+      "material": "А4"
+    },
+    {
+      "id": "hw_15",
+      "article": "Sc 205431 ВС 3,9х25, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "25",
+      "material": "А4"
+    },
+    {
+      "id": "hw_16",
+      "article": "Sc 205436 ВС 3,9х9,5, ISO14585, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "10",
+      "material": "А4"
+    },
+    {
+      "id": "hw_17",
+      "article": "Sc 205437 ВС 3,9х13, ISO14585, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "13",
+      "material": "А4"
+    },
+    {
+      "id": "hw_18",
+      "article": "Sc 205438 ВС 3,9х22, ISO14585, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "22",
+      "material": "А4"
+    },
+    {
+      "id": "hw_19",
+      "article": "Sc 205439 ВС 4,8х13, DIN7981, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "13",
+      "material": "А4"
+    },
+    {
+      "id": "hw_20",
+      "article": "Sc 205440 ВС 4,8х28, DIN7981, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "28",
+      "material": "А4"
+    },
+    {
+      "id": "hw_21",
+      "article": "Sc 205462 ВС 3,9х16, ISO14585, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "16",
+      "material": "А4"
+    },
+    {
+      "id": "hw_22",
+      "article": "Sc 205482 Винт М6х20, DIN965, А4",
+      "name": "Винт с потайной головкой с шлицем TX25",
+      "type": "Винт Shueco",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "20",
+      "material": "А4"
+    },
+    {
+      "id": "hw_23",
+      "article": "Sc 205491 ВС 3,9х28, ISO14585, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "28",
+      "material": "А4"
+    },
+    {
+      "id": "hw_24",
+      "article": "Sc 205492 ВС 4,8х19, DIN7981, А4",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "19",
+      "material": "А4"
+    },
+    {
+      "id": "hw_25",
+      "article": "Sc 205496 ВС 3,9х19, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "19",
+      "material": "А4"
+    },
+    {
+      "id": "hw_26",
+      "article": "Sc 205583 Винт М8х25, DIN7991, А4",
+      "name": "Винт с потайной головкой с шлицем TX40",
+      "type": "Винт Shueco",
+      "standard": "DIN7991",
+      "diameter": "8",
+      "length": "25",
+      "material": "А4"
+    },
+    {
+      "id": "hw_27",
+      "article": "Sc 205632 Винт М5х12, DIN914, А4",
+      "name": "Винт установочный с острым концом",
+      "type": "Винт Shueco",
+      "standard": "DIN914",
+      "diameter": "5",
+      "length": "12",
+      "material": "А4"
+    },
+    {
+      "id": "hw_28",
+      "article": "Sc 205666 ВС 3,9х45, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "45",
+      "material": "А4"
+    },
+    {
+      "id": "hw_29",
+      "article": "Sc 205827 ВС 3,9х15, Спецвинт, А2",
+      "name": "Спецвинт",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "3,9",
+      "length": "15",
+      "material": "А2"
+    },
+    {
+      "id": "hw_30",
+      "article": "Sc 205843 ВС 5,5х37, Спецвинт, А4",
+      "name": "Спецвинт ТХ25 головка по DIN912",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "37",
+      "material": "А4"
+    },
+    {
+      "id": "hw_31",
+      "article": "Sc 205845 ВС 5,5х45, Спецвинт, А4",
+      "name": "Спецвинт ТХ25 головка по DIN912",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "45",
+      "material": "А4"
+    },
+    {
+      "id": "hw_32",
+      "article": "Sc 205875 ВС 4,8х16, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "16",
+      "material": "А4"
+    },
+    {
+      "id": "hw_33",
+      "article": "Sc 205898 ВС 5,5х29, Спецвинт, А4",
+      "name": "Спецвинт ТХ25 головка по DIN912",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "29",
+      "material": "А4"
+    },
+    {
+      "id": "hw_34",
+      "article": "Sc 205900 ВС 5,5х33, Спецвинт, А4",
+      "name": "Спецвинт ТХ25 головка по DIN912",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "33",
+      "material": "А4"
+    },
+    {
+      "id": "hw_35",
+      "article": "Sc 205901 ВС 5,5х35, Спецвинт, А4",
+      "name": "Спецвинт ТХ25 головка по DIN912",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "35",
+      "material": "А4"
+    },
+    {
+      "id": "hw_36",
+      "article": "Sc 205937 ВС 3,9х32, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_37",
+      "article": "Sc 205981 ВС 5,5х16, Спецвинт, А2",
+      "name": "Спецвинт",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_38",
+      "article": "Sc 205982 ВС 5,5х68, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "68",
+      "material": "А2"
+    },
+    {
+      "id": "hw_39",
+      "article": "Sc 225019 ВС 5,5х32, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "5,5",
+      "length": "32",
+      "material": "А4"
+    },
+    {
+      "id": "hw_40",
+      "article": "Sc 225028 ВС 5,5х36, Спецвинт, А2",
+      "name": "Спецвинт",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "Спецвинт",
+      "diameter": "5,5",
+      "length": "36",
+      "material": "А2"
+    },
+    {
+      "id": "hw_41",
+      "article": "Sc 225135 ВС 5,5х74, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "74",
+      "material": "А2"
+    },
+    {
+      "id": "hw_42",
+      "article": "Sc 225136 ВС 5,5х80, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "80",
+      "material": "А2"
+    },
+    {
+      "id": "hw_43",
+      "article": "Sc 225173 ВС 5,5х66, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "66",
+      "material": "А2"
+    },
+    {
+      "id": "hw_44",
+      "article": "Sc 225206 ВС 5,5х92, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "92",
+      "material": "А2"
+    },
+    {
+      "id": "hw_45",
+      "article": "Sc 225268 ВС 3,9х30, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "30",
+      "material": "А4"
+    },
+    {
+      "id": "hw_46",
+      "article": "Sc 225269 ВС 3,9х36, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "36",
+      "material": "А4"
+    },
+    {
+      "id": "hw_47",
+      "article": "Sc 225270 ВС 3,9х40, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "40",
+      "material": "А4"
+    },
+    {
+      "id": "hw_48",
+      "article": "Sc 225271 ВС 3,9х46, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "46",
+      "material": "А4"
+    },
+    {
+      "id": "hw_49",
+      "article": "Sc 225272 ВС 3,9х68, DIN7982, А4",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "68",
+      "material": "А4"
+    },
+    {
+      "id": "hw_50",
+      "article": "Sc 225882 ВС 5,5х26, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "26",
+      "material": "А2"
+    },
+    {
+      "id": "hw_51",
+      "article": "Sc 225889 ВС 5,5х46, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной Shueco",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "46",
+      "material": "А2"
+    },
+    {
+      "id": "hw_52",
+      "article": "Болт М10х100, DIN931, оц., 5.8",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "10",
+      "length": "100",
+      "material": "оц."
+    },
+    {
+      "id": "hw_53",
+      "article": "Болт М10х100, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "100",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_54",
+      "article": "Болт М10х100, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "100",
+      "material": "А2"
+    },
+    {
+      "id": "hw_55",
+      "article": "Болт М10х100, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "100",
+      "material": "оц."
+    },
+    {
+      "id": "hw_56",
+      "article": "Болт М10х110, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "110",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_57",
+      "article": "Болт М10х130, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "130",
+      "material": "А2"
+    },
+    {
+      "id": "hw_58",
+      "article": "Болт М10х20, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "20",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_59",
+      "article": "Болт М10х22, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "22",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_60",
+      "article": "Болт М10х25, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "25",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_61",
+      "article": "Болт М10х25, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_62",
+      "article": "Болт М10х25, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "25",
+      "material": "оц."
+    },
+    {
+      "id": "hw_63",
+      "article": "Болт М10х30, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "30",
+      "material": "А2"
+    },
+    {
+      "id": "hw_64",
+      "article": "Болт М10х30, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "30",
+      "material": "оц."
+    },
+    {
+      "id": "hw_65",
+      "article": "Болт М10х30, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "30",
+      "material": "оц."
+    },
+    {
+      "id": "hw_66",
+      "article": "Болт М10х35, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "35",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_67",
+      "article": "Болт М10х35, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "35",
+      "material": "А2"
+    },
+    {
+      "id": "hw_68",
+      "article": "Болт М10х35, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "35",
+      "material": "оц."
+    },
+    {
+      "id": "hw_69",
+      "article": "Болт М10х40, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "40",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_70",
+      "article": "Болт М10х40, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "40",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_71",
+      "article": "Болт М10х40, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "40",
+      "material": "оц."
+    },
+    {
+      "id": "hw_72",
+      "article": "Болт М10х40, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "40",
+      "material": "оц."
+    },
+    {
+      "id": "hw_73",
+      "article": "Болт М10х45, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "45",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_74",
+      "article": "Болт М10х45, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "45",
+      "material": "оц."
+    },
+    {
+      "id": "hw_75",
+      "article": "Болт М10х45, DIN933, ТДЦ, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "45",
+      "material": "ТДЦ"
+    },
+    {
+      "id": "hw_76",
+      "article": "Болт М10х50, DIN933, flZn/720, 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "50",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_77",
+      "article": "Болт М10х50, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_78",
+      "article": "Болт М10х50, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "50",
+      "material": "оц."
+    },
+    {
+      "id": "hw_79",
+      "article": "Болт М10х55, DIN931, оц., 8.8",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "10",
+      "length": "55",
+      "material": "оц."
+    },
+    {
+      "id": "hw_80",
+      "article": "Болт М10х55, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "55",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_81",
+      "article": "Болт М10х55, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "55",
+      "material": "оц."
+    },
+    {
+      "id": "hw_82",
+      "article": "Болт М10х60, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "60",
+      "material": "А2"
+    },
+    {
+      "id": "hw_83",
+      "article": "Болт М10х65, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "65",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_84",
+      "article": "Болт М10х65, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "65",
+      "material": "А2"
+    },
+    {
+      "id": "hw_85",
+      "article": "Болт М10х70, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "70",
+      "material": "А2"
+    },
+    {
+      "id": "hw_86",
+      "article": "Болт М10х70, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "70",
+      "material": "оц."
+    },
+    {
+      "id": "hw_87",
+      "article": "Болт М10х75, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "75",
+      "material": "А2"
+    },
+    {
+      "id": "hw_88",
+      "article": "Болт М10х75, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "75",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_89",
+      "article": "Болт М10х80, DIN931, оц., 5.8",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "10",
+      "length": "80",
+      "material": "оц."
+    },
+    {
+      "id": "hw_90",
+      "article": "Болт М10х80, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "80",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_91",
+      "article": "Болт М10х80, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "80",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_92",
+      "article": "Болт М10х80, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "80",
+      "material": "оц."
+    },
+    {
+      "id": "hw_93",
+      "article": "Болт М10х90, DIN931, А2",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "10",
+      "length": "90",
+      "material": "А2"
+    },
+    {
+      "id": "hw_94",
+      "article": "Болт М10х90, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "90",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_95",
+      "article": "Болт М10х90, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "90",
+      "material": "А2"
+    },
+    {
+      "id": "hw_96",
+      "article": "Болт М10х90, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "90",
+      "material": "оц."
+    },
+    {
+      "id": "hw_97",
+      "article": "Болт М10х95, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "95",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_98",
+      "article": "Болт М10х95, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "10",
+      "length": "95",
+      "material": "А2"
+    },
+    {
+      "id": "hw_99",
+      "article": "Болт М12х100, DIN931, оц., 8.8",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "12",
+      "length": "100",
+      "material": "оц."
+    },
+    {
+      "id": "hw_100",
+      "article": "Болт М12х100, DIN933, flZn/720, 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "100",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_101",
+      "article": "Болт М12х100, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "100",
+      "material": "оц."
+    },
+    {
+      "id": "hw_102",
+      "article": "Болт М12х110, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "110",
+      "material": "оц."
+    },
+    {
+      "id": "hw_103",
+      "article": "Болт М12х120, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "120",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_104",
+      "article": "Болт М12х120, DIN933, Гор.Цинк, 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "120",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_105",
+      "article": "Болт М12х120, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "120",
+      "material": "оц."
+    },
+    {
+      "id": "hw_106",
+      "article": "Болт М12х140, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "140",
+      "material": "оц."
+    },
+    {
+      "id": "hw_107",
+      "article": "Болт М12х150, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "150",
+      "material": "оц."
+    },
+    {
+      "id": "hw_108",
+      "article": "Болт М12х25, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "25",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_109",
+      "article": "Болт М12х30, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "30",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_110",
+      "article": "Болт М12х30, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "30",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_111",
+      "article": "Болт М12х30, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "30",
+      "material": "оц."
+    },
+    {
+      "id": "hw_112",
+      "article": "Болт М12х30, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "30",
+      "material": "оц."
+    },
+    {
+      "id": "hw_113",
+      "article": "Болт М12х35, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "35",
+      "material": "оц."
+    },
+    {
+      "id": "hw_114",
+      "article": "Болт М12х45, DIN933, flZn/720, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "45",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_115",
+      "article": "Болт М12х45, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "45",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_116",
+      "article": "Болт М12х45, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "45",
+      "material": "оц."
+    },
+    {
+      "id": "hw_117",
+      "article": "Болт М12х50, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "50",
+      "material": "оц."
+    },
+    {
+      "id": "hw_118",
+      "article": "Болт М12х80, DIN933, Гор.Цинк, 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "80",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_119",
+      "article": "Болт М12х80, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "12",
+      "length": "80",
+      "material": "оц."
+    },
+    {
+      "id": "hw_120",
+      "article": "Болт М12х90, DIN931, оц., 12.9",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "12",
+      "length": "90",
+      "material": "оц."
+    },
+    {
+      "id": "hw_121",
+      "article": "Болт М16х100, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "16",
+      "length": "100",
+      "material": "оц."
+    },
+    {
+      "id": "hw_122",
+      "article": "Болт М16х40, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "16",
+      "length": "40",
+      "material": "оц."
+    },
+    {
+      "id": "hw_123",
+      "article": "Болт М16х60, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "16",
+      "length": "60",
+      "material": "оц."
+    },
+    {
+      "id": "hw_124",
+      "article": "Болт М5х16, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "5",
+      "length": "16",
+      "material": "оц."
+    },
+    {
+      "id": "hw_125",
+      "article": "Болт М6х10, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "6",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_126",
+      "article": "Болт М6х16, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "6",
+      "length": "16",
+      "material": "оц."
+    },
+    {
+      "id": "hw_127",
+      "article": "Болт М6х30, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "6",
+      "length": "30",
+      "material": "А2"
+    },
+    {
+      "id": "hw_128",
+      "article": "Болт М8х100, DIN931, оц., 12.9",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "8",
+      "length": "100",
+      "material": "оц."
+    },
+    {
+      "id": "hw_129",
+      "article": "Болт М8х16, DIN931, оц., 5.8",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "8",
+      "length": "16",
+      "material": "оц."
+    },
+    {
+      "id": "hw_130",
+      "article": "Болт М8х20, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "20",
+      "material": "А2"
+    },
+    {
+      "id": "hw_131",
+      "article": "Болт М8х20, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "20",
+      "material": "оц."
+    },
+    {
+      "id": "hw_132",
+      "article": "Болт М8х25, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_133",
+      "article": "Болт М8х25, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "25",
+      "material": "оц."
+    },
+    {
+      "id": "hw_134",
+      "article": "Болт М8х30, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "30",
+      "material": "А2"
+    },
+    {
+      "id": "hw_135",
+      "article": "Болт М8х30, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "30",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_136",
+      "article": "Болт М8х35, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "35",
+      "material": "А2"
+    },
+    {
+      "id": "hw_137",
+      "article": "Болт М8х35, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "35",
+      "material": "оц."
+    },
+    {
+      "id": "hw_138",
+      "article": "Болт М8х40, DIN931, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с неполной резьбой",
+      "type": "Болт",
+      "standard": "DIN931",
+      "diameter": "8",
+      "length": "40",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_139",
+      "article": "Болт М8х40, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "40",
+      "material": "оц."
+    },
+    {
+      "id": "hw_140",
+      "article": "Болт М8х45, DIN933, Гор.Цинк, 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "45",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_141",
+      "article": "Болт М8х60, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "60",
+      "material": "А2"
+    },
+    {
+      "id": "hw_142",
+      "article": "Болт М8х60, DIN933, оц., 5.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "60",
+      "material": "оц."
+    },
+    {
+      "id": "hw_143",
+      "article": "Болт М8х90, DIN933, А2",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "90",
+      "material": "А2"
+    },
+    {
+      "id": "hw_144",
+      "article": "Болт М8х90, DIN933, оц., 8.8",
+      "name": "Болт шестигранный с полной резьбой",
+      "type": "Болт",
+      "standard": "DIN933",
+      "diameter": "8",
+      "length": "90",
+      "material": "оц."
+    },
+    {
+      "id": "hw_145",
+      "article": "Винт М10х22, DIN912, Delta, 5.8",
+      "name": "Винт цилиндрический с внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN912",
+      "diameter": "10",
+      "length": "22",
+      "material": "Delta"
+    },
+    {
+      "id": "hw_146",
+      "article": "Винт М10х80, DIN7991, оц., 5.8",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "10",
+      "length": "80",
+      "material": "оц."
+    },
+    {
+      "id": "hw_147",
+      "article": "Винт М12х55, DIN965, оц., 5.8",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "12",
+      "length": "55",
+      "material": "оц."
+    },
+    {
+      "id": "hw_148",
+      "article": "Винт М4х16, ISO4027, А2",
+      "name": "Винт установочный с острым концом",
+      "type": "Винт",
+      "standard": "ISO4027",
+      "diameter": "4",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_149",
+      "article": "Винт М4х35, DIN912, А2",
+      "name": "Винт цилиндрический с внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN912",
+      "diameter": "4",
+      "length": "35",
+      "material": "А2"
+    },
+    {
+      "id": "hw_150",
+      "article": "Винт М4х40, DIN912, оц., 5.8",
+      "name": "Винт цилиндрический с внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN912",
+      "diameter": "4",
+      "length": "40",
+      "material": "оц."
+    },
+    {
+      "id": "hw_151",
+      "article": "Винт М4х6, ISO7380, А2",
+      "name": "винт с полукруглой головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "ISO7380",
+      "diameter": "4",
+      "length": "6",
+      "material": "А2"
+    },
+    {
+      "id": "hw_152",
+      "article": "Винт М5х10, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "5",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_153",
+      "article": "Винт М5х10, DIN7991, flZn/720, 5.8",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "5",
+      "length": "10",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_154",
+      "article": "Винт М5х10, DIN7991, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "5",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_155",
+      "article": "Винт М5х10, DIN913, А2",
+      "name": "Винт установочный с тупым концом",
+      "type": "Винт",
+      "standard": "DIN913",
+      "diameter": "5",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_156",
+      "article": "Винт М5х10, DIN914, А2",
+      "name": "Винт установочный с острым концом",
+      "type": "Винт",
+      "standard": "DIN914",
+      "diameter": "5",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_157",
+      "article": "Винт М5х10, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_158",
+      "article": "Винт М5х100, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "100",
+      "material": "А2"
+    },
+    {
+      "id": "hw_159",
+      "article": "Винт М5х12, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "5",
+      "length": "12",
+      "material": "А2"
+    },
+    {
+      "id": "hw_160",
+      "article": "Винт М5х12, DIN7991, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "5",
+      "length": "12",
+      "material": "А2"
+    },
+    {
+      "id": "hw_161",
+      "article": "Винт М5х12, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "12",
+      "material": "А2"
+    },
+    {
+      "id": "hw_162",
+      "article": "Винт М5х14, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "5",
+      "length": "14",
+      "material": "А2"
+    },
+    {
+      "id": "hw_163",
+      "article": "Винт М5х14, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "14",
+      "material": "А2"
+    },
+    {
+      "id": "hw_164",
+      "article": "Винт М5х16, DIN7991, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "5",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_165",
+      "article": "Винт М5х16, DIN912, А2",
+      "name": "Винт цилиндрический с внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN912",
+      "diameter": "5",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_166",
+      "article": "Винт М5х16, DIN912, оц., 5.8",
+      "name": "Винт цилиндрический с внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN912",
+      "diameter": "5",
+      "length": "16",
+      "material": "оц."
+    },
+    {
+      "id": "hw_167",
+      "article": "Винт М5х16, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_168",
+      "article": "Винт М5х18, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "18",
+      "material": "А2"
+    },
+    {
+      "id": "hw_169",
+      "article": "Винт М5х20, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "5",
+      "length": "20",
+      "material": "А2"
+    },
+    {
+      "id": "hw_170",
+      "article": "Винт М5х20, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "20",
+      "material": "А2"
+    },
+    {
+      "id": "hw_171",
+      "article": "Винт М5х25, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_172",
+      "article": "Винт М5х25, DIN965, А4",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "25",
+      "material": "А4"
+    },
+    {
+      "id": "hw_173",
+      "article": "Винт М5х28, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "28",
+      "material": "А2"
+    },
+    {
+      "id": "hw_174",
+      "article": "Винт М5х35, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "35",
+      "material": "А2"
+    },
+    {
+      "id": "hw_175",
+      "article": "Винт М5х45, DIN912, А2",
+      "name": "Винт цилиндрический с внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN912",
+      "diameter": "5",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_176",
+      "article": "Винт М5х50, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "5",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_177",
+      "article": "Винт М5х8, DIN913, А2",
+      "name": "Винт установочный с тупым концом",
+      "type": "Винт",
+      "standard": "DIN913",
+      "diameter": "5",
+      "length": "8",
+      "material": "А2"
+    },
+    {
+      "id": "hw_178",
+      "article": "Винт М6х10, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "6",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_179",
+      "article": "Винт М6х10, DIN7991, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "6",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_180",
+      "article": "Винт М6х10, DIN7991, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "6",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_181",
+      "article": "Винт М6х12, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "12",
+      "material": "А2"
+    },
+    {
+      "id": "hw_182",
+      "article": "Винт М6х16, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "6",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_183",
+      "article": "Винт М6х16, DIN965, Delta, 5.8",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "16",
+      "material": "Delta"
+    },
+    {
+      "id": "hw_184",
+      "article": "Винт М6х16, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_185",
+      "article": "Винт М6х20, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "20",
+      "material": "А2"
+    },
+    {
+      "id": "hw_186",
+      "article": "Винт М6х200, DIN7991, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "6",
+      "length": "200",
+      "material": "А2"
+    },
+    {
+      "id": "hw_187",
+      "article": "Винт М6х200, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "200",
+      "material": "А2"
+    },
+    {
+      "id": "hw_188",
+      "article": "Винт М6х25, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "6",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_189",
+      "article": "Винт М6х35, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "35",
+      "material": "А2"
+    },
+    {
+      "id": "hw_190",
+      "article": "Винт М6х45, DIN965, А2",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "6",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_191",
+      "article": "Винт М8х16, DIN7991, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "8",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_192",
+      "article": "Винт М8х22, DIN965, Delta, 5.8",
+      "name": "Винт с потайной головкой с крестообразным шлицем",
+      "type": "Винт",
+      "standard": "DIN965",
+      "diameter": "8",
+      "length": "22",
+      "material": "Delta"
+    },
+    {
+      "id": "hw_193",
+      "article": "Винт М8х40, DIN7984, А2",
+      "name": "Винт высокопрочный с низкой цилиндрической головкой",
+      "type": "Винт",
+      "standard": "DIN7984",
+      "diameter": "8",
+      "length": "40",
+      "material": "А2"
+    },
+    {
+      "id": "hw_194",
+      "article": "Винт М8х40, DIN7991, оц., 8.8",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "8",
+      "length": "40",
+      "material": "оц."
+    },
+    {
+      "id": "hw_195",
+      "article": "Винт М8х50, ISO14581, А2",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "ISO14581",
+      "diameter": "8",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_196",
+      "article": "Винт М8х70, DIN7991, оц., 8.8",
+      "name": "Винт с потайной головкой и внутренним шестигранником",
+      "type": "Винт",
+      "standard": "DIN7991",
+      "diameter": "8",
+      "length": "70",
+      "material": "оц."
+    },
+    {
+      "id": "hw_197",
+      "article": "ВС 2,9х9,5, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "2,9",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_198",
+      "article": "ВС 3,5х13, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,5",
+      "length": "13",
+      "material": "А2"
+    },
+    {
+      "id": "hw_199",
+      "article": "ВС 3,9х10, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_200",
+      "article": "ВС 3,9х10, ISO14586, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14586",
+      "diameter": "3,9",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_201",
+      "article": "ВС 3,9х13, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "13",
+      "material": "А2"
+    },
+    {
+      "id": "hw_202",
+      "article": "ВС 3,9х13, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "13",
+      "material": "А2"
+    },
+    {
+      "id": "hw_203",
+      "article": "ВС 3,9х13, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "13",
+      "material": "А2"
+    },
+    {
+      "id": "hw_204",
+      "article": "ВС 3,9х13, ISO14586, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14586",
+      "diameter": "3,9",
+      "length": "13",
+      "material": "А2"
+    },
+    {
+      "id": "hw_205",
+      "article": "ВС 3,9х16, DIN7504N, А2",
+      "name": "Винт самонарезающий со сверлом и полукруглой головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7504N",
+      "diameter": "3,9",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_206",
+      "article": "ВС 3,9х16, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_207",
+      "article": "ВС 3,9х16, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_208",
+      "article": "ВС 3,9х16, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_209",
+      "article": "ВС 3,9х16, ISO14586, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14586",
+      "diameter": "3,9",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_210",
+      "article": "ВС 3,9х19, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "19",
+      "material": "А2"
+    },
+    {
+      "id": "hw_211",
+      "article": "ВС 3,9х19, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "19",
+      "material": "А2"
+    },
+    {
+      "id": "hw_212",
+      "article": "ВС 3,9х22, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "22",
+      "material": "А2"
+    },
+    {
+      "id": "hw_213",
+      "article": "ВС 3,9х22, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "22",
+      "material": "А2"
+    },
+    {
+      "id": "hw_214",
+      "article": "ВС 3,9х25, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_215",
+      "article": "ВС 3,9х25, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_216",
+      "article": "ВС 3,9х28, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "28",
+      "material": "А2"
+    },
+    {
+      "id": "hw_217",
+      "article": "ВС 3,9х32, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_218",
+      "article": "ВС 3,9х32, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_219",
+      "article": "ВС 3,9х32, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "3,9",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_220",
+      "article": "ВС 3,9х38, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "38",
+      "material": "А2"
+    },
+    {
+      "id": "hw_221",
+      "article": "ВС 3,9х38, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "38",
+      "material": "А2"
+    },
+    {
+      "id": "hw_222",
+      "article": "ВС 3,9х45, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_223",
+      "article": "ВС 3,9х50, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_224",
+      "article": "ВС 3,9х70, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "70",
+      "material": "А2"
+    },
+    {
+      "id": "hw_225",
+      "article": "ВС 3,9х9,5, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "3,9",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_226",
+      "article": "ВС 3,9х9,5, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "3,9",
+      "length": "10",
+      "material": "А2"
+    },
+    {
+      "id": "hw_227",
+      "article": "ВС 4,2х13, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "13",
+      "material": "А2"
+    },
+    {
+      "id": "hw_228",
+      "article": "ВС 4,2х19, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "19",
+      "material": "А2"
+    },
+    {
+      "id": "hw_229",
+      "article": "ВС 4,2х25, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_230",
+      "article": "ВС 4,2х25, ISO14586, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14586",
+      "diameter": "4,2",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_231",
+      "article": "ВС 4,2х32, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_232",
+      "article": "ВС 4,2х32, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "4,2",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_233",
+      "article": "ВС 4,2х32, ISO14586, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14586",
+      "diameter": "4,2",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_234",
+      "article": "ВС 4,2х38, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "38",
+      "material": "А2"
+    },
+    {
+      "id": "hw_235",
+      "article": "ВС 4,2х38, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,2",
+      "length": "38",
+      "material": "А2"
+    },
+    {
+      "id": "hw_236",
+      "article": "ВС 4,2х38, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "4,2",
+      "length": "38",
+      "material": "А2"
+    },
+    {
+      "id": "hw_237",
+      "article": "ВС 4,2х40, СДГ, Фосф.",
+      "name": "Саморез Дерево-гипсокартон",
+      "type": "Винт Самонарезной",
+      "standard": "СДГ",
+      "diameter": "4,2",
+      "length": "40",
+      "material": "Фосф."
+    },
+    {
+      "id": "hw_238",
+      "article": "ВС 4,2х45, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,2",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_239",
+      "article": "ВС 4,2х45, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "4,2",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_240",
+      "article": "ВС 4,2х45, ISO14586, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14586",
+      "diameter": "4,2",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_241",
+      "article": "ВС 4,2х50, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_242",
+      "article": "ВС 4,2х50, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "4,2",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_243",
+      "article": "ВС 4,2х60, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,2",
+      "length": "60",
+      "material": "А2"
+    },
+    {
+      "id": "hw_244",
+      "article": "ВС 4,2х70, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,2",
+      "length": "70",
+      "material": "А2"
+    },
+    {
+      "id": "hw_245",
+      "article": "ВС 4,2х70, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,2",
+      "length": "70",
+      "material": "А2"
+    },
+    {
+      "id": "hw_246",
+      "article": "ВС 4,2х75, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,2",
+      "length": "75",
+      "material": "А2"
+    },
+    {
+      "id": "hw_247",
+      "article": "ВС 4,2х80, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,2",
+      "length": "80",
+      "material": "А2"
+    },
+    {
+      "id": "hw_248",
+      "article": "ВС 4,2х90, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,2",
+      "length": "90",
+      "material": "А2"
+    },
+    {
+      "id": "hw_249",
+      "article": "ВС 4,8х13, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "13",
+      "material": "А2"
+    },
+    {
+      "id": "hw_250",
+      "article": "ВС 4,8х16, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_251",
+      "article": "ВС 4,8х16, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "4,8",
+      "length": "16",
+      "material": "А2"
+    },
+    {
+      "id": "hw_252",
+      "article": "ВС 4,8х19, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "19",
+      "material": "А2"
+    },
+    {
+      "id": "hw_253",
+      "article": "ВС 4,8х19, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "19",
+      "material": "А2"
+    },
+    {
+      "id": "hw_254",
+      "article": "ВС 4,8х22, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "22",
+      "material": "А2"
+    },
+    {
+      "id": "hw_255",
+      "article": "ВС 4,8х22, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "22",
+      "material": "А2"
+    },
+    {
+      "id": "hw_256",
+      "article": "ВС 4,8х25, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "25",
+      "material": "А2"
+    },
+    {
+      "id": "hw_257",
+      "article": "ВС 4,8х45, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_258",
+      "article": "ВС 4,8х45, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_259",
+      "article": "ВС 4,8х50, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_260",
+      "article": "ВС 4,8х50, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_261",
+      "article": "ВС 4,8х70, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "4,8",
+      "length": "70",
+      "material": "А2"
+    },
+    {
+      "id": "hw_262",
+      "article": "ВС 4,8х80, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "80",
+      "material": "А2"
+    },
+    {
+      "id": "hw_263",
+      "article": "ВС 4,8х90, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "4,8",
+      "length": "90",
+      "material": "А2"
+    },
+    {
+      "id": "hw_264",
+      "article": "ВС 5,5х22, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "5,5",
+      "length": "22",
+      "material": "А2"
+    },
+    {
+      "id": "hw_265",
+      "article": "ВС 5,5х32, DIN7981, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7981",
+      "diameter": "5,5",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_266",
+      "article": "ВС 5,5х32, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "5,5",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_267",
+      "article": "ВС 5,5х32, ISO14586, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14586",
+      "diameter": "5,5",
+      "length": "32",
+      "material": "А2"
+    },
+    {
+      "id": "hw_268",
+      "article": "ВС 5,5х38, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "5,5",
+      "length": "38",
+      "material": "А2"
+    },
+    {
+      "id": "hw_269",
+      "article": "ВС 5,5х38, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "5,5",
+      "length": "38",
+      "material": "А2"
+    },
+    {
+      "id": "hw_270",
+      "article": "ВС 5,5х45, DIN7982, А2",
+      "name": "Винт самонарезающий с потайной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7982",
+      "diameter": "5,5",
+      "length": "45",
+      "material": "А2"
+    },
+    {
+      "id": "hw_271",
+      "article": "ВС 5,5х50, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "5,5",
+      "length": "50",
+      "material": "А2"
+    },
+    {
+      "id": "hw_272",
+      "article": "ВС 5,5х80, ISO14585, А2",
+      "name": "Винт самонарезающий с полуцилиндрической головкой",
+      "type": "Винт Самонарезной",
+      "standard": "ISO14585",
+      "diameter": "5,5",
+      "length": "80",
+      "material": "А2"
+    },
+    {
+      "id": "hw_273",
+      "article": "ВС 6,3х25, DIN7504K, flZn/720",
+      "name": "Винт самонарезающий со сверлом и шестигранной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7504K",
+      "diameter": "6,3",
+      "length": "25",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_274",
+      "article": "ВС 6,3х38, DIN7504K, flZn/720",
+      "name": "Винт самонарезающий со сверлом и шестигранной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7504K",
+      "diameter": "6,3",
+      "length": "38",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_275",
+      "article": "ВС 6,3х38, DIN7504K, оц.",
+      "name": "Винт самонарезающий со сверлом и шестигранной головкой",
+      "type": "Винт Самонарезной",
+      "standard": "DIN7504K",
+      "diameter": "6,3",
+      "length": "38",
+      "material": "оц."
+    },
+    {
+      "id": "hw_276",
+      "article": "Гайка М10, DIN6334, оц., 8",
+      "name": "Гайка высокая",
+      "type": "Гайка",
+      "standard": "DIN6334",
+      "diameter": "10",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_277",
+      "article": "Гайка М10, DIN934, flZn/720, 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "10",
+      "length": "",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_278",
+      "article": "Гайка М10, DIN934, flZn/960, 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "10",
+      "length": "",
+      "material": "flZn/960"
+    },
+    {
+      "id": "hw_279",
+      "article": "Гайка М10, DIN934, А2",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "10",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_280",
+      "article": "Гайка М10, DIN934, Гор.цинк, 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "10",
+      "length": "",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_281",
+      "article": "Гайка М10, DIN934, оц., 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "10",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_282",
+      "article": "Гайка М10, DIN934, оц., 8",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "10",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_283",
+      "article": "Гайка М10, DIN934, ТДЦ, 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "10",
+      "length": "",
+      "material": "ТДЦ"
+    },
+    {
+      "id": "hw_284",
+      "article": "Гайка М10, DIN936, оц., 5",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN936",
+      "diameter": "10",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_285",
+      "article": "Гайка М12, DIN439, flZn/720, 8",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN439",
+      "diameter": "12",
+      "length": "",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_286",
+      "article": "Гайка М12, DIN439, оц., 8",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN439",
+      "diameter": "12",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_287",
+      "article": "Гайка М12, DIN6334, б/п, 8",
+      "name": "Гайка высокая",
+      "type": "Гайка",
+      "standard": "DIN6334",
+      "diameter": "12",
+      "length": "",
+      "material": "б/п"
+    },
+    {
+      "id": "hw_288",
+      "article": "Гайка М12, DIN6334, оц., 8",
+      "name": "Гайка высокая",
+      "type": "Гайка",
+      "standard": "DIN6334",
+      "diameter": "12",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_289",
+      "article": "Гайка М12, DIN934, А2",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "12",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_290",
+      "article": "Гайка М12, DIN934, Гор.цинк, 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "12",
+      "length": "",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_291",
+      "article": "Гайка М12, DIN934, оц., 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "12",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_292",
+      "article": "Гайка М12, DIN934, оц., 8",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "12",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_293",
+      "article": "Гайка М12, DIN936, flZn/720, 8",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN936",
+      "diameter": "12",
+      "length": "",
+      "material": "flZn/720"
+    },
+    {
+      "id": "hw_294",
+      "article": "Гайка М12, DIN936, оц., 8",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN936",
+      "diameter": "12",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_295",
+      "article": "Гайка М16, DIN439, оц., 8",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN439",
+      "diameter": "16",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_296",
+      "article": "Гайка М16, DIN6915, оц., 5",
+      "name": "Гайка шестигранная высокопрочная",
+      "type": "Гайка",
+      "standard": "DIN6915",
+      "diameter": "16",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_297",
+      "article": "Гайка М16, DIN934, оц., 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "16",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_298",
+      "article": "Гайка М16, ГОСТ 52645, Ст 40Х",
+      "name": "Гайка шестигранная высокопрочная с увеличенным размером под ключ",
+      "type": "Гайка",
+      "standard": "ГОСТ 52645",
+      "diameter": "16",
+      "length": "",
+      "material": "ст 40Х"
+    },
+    {
+      "id": "hw_299",
+      "article": "Гайка М4, DIN934, А2",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "4",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_300",
+      "article": "Гайка М5, DIN934, А2",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "5",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_301",
+      "article": "Гайка М5, DIN934, оц., 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "5",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_302",
+      "article": "Гайка М6, DIN562, А2",
+      "name": "Гайка квадратная низкая",
+      "type": "Гайка",
+      "standard": "DIN562",
+      "diameter": "6",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_303",
+      "article": "Гайка М6, DIN934, А2",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "6",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_304",
+      "article": "Гайка М6, DIN934, оц., 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "6",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_305",
+      "article": "Гайка М6, DIN936, оц., 5",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN936",
+      "diameter": "6",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_306",
+      "article": "Гайка М6, DIN985, А2",
+      "name": "Гайка низкая самоконтрящаяся",
+      "type": "Гайка",
+      "standard": "DIN985",
+      "diameter": "6",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_307",
+      "article": "Гайка М6, DIN986, А2",
+      "name": "Гайка колпачковая",
+      "type": "Гайка",
+      "standard": "DIN986",
+      "diameter": "6",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_308",
+      "article": "Гайка М8, DIN439, оц., 5",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN439",
+      "diameter": "8",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_309",
+      "article": "Гайка М8, DIN934, А2",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "8",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_310",
+      "article": "Гайка М8, DIN934, Гор.цинк, 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "8",
+      "length": "",
+      "material": "Гор.Цинк"
+    },
+    {
+      "id": "hw_311",
+      "article": "Гайка М8, DIN934, оц., 5",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "8",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_312",
+      "article": "Гайка М8, DIN934, оц., 8",
+      "name": "Гайка шестигранная",
+      "type": "Гайка",
+      "standard": "DIN934",
+      "diameter": "8",
+      "length": "",
+      "material": "оц."
+    },
+    {
+      "id": "hw_313",
+      "article": "Гайка М8, DIN936, А2",
+      "name": "Гайка шестигранная низкая",
+      "type": "Гайка",
+      "standard": "DIN936",
+      "diameter": "8",
+      "length": "",
+      "material": "А2"
+    },
+    {
+      "id": "hw_314",
+      "article": "Гайка-Барашек М8х40, DIN315ABC, оц., 5",
+      "name": "Гайка-Барашек из АБС пластика",
+      "type": "Гайка-Барашек",
+      "standard": "DIN315ABC",
+      "diameter": "8",
+      "length": "40",
+      "material": "оц."
+    },
+    {
+      "id": "hw_315",
+      "article": "Заклепка 3,0х10, DIN7337B, А2/А2",
+      "name": "Заклепка вытяжная с потайным бортиком",
+      "type": "Заклепка",
+      "standard": "DIN7337B",
+      "diameter": "3,0",
+      "length": "10",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_316",
+      "article": "Заклепка 3,0х6, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "3,0",
+      "length": "6",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_317",
+      "article": "Заклепка 3,0х6, DIN7337A, А2/А2 RAL9011 муар",
+      "name": "Заклепка вытяжная крашеная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "3,0",
+      "length": "6",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_318",
+      "article": "Заклепка 3,0х8, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "3,0",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_319",
+      "article": "Заклепка 3,0х8, DIN7337B, А2/А2",
+      "name": "Заклепка вытяжная с потайным бортиком",
+      "type": "Заклепка",
+      "standard": "DIN7337B",
+      "diameter": "3,0",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_320",
+      "article": "Заклепка 3,0х8, DIN7337B, А2/А2 RAL7010",
+      "name": "Заклепка вытяжная с потайным бортиком крашеная",
+      "type": "Заклепка",
+      "standard": "DIN7337B",
+      "diameter": "3,0",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_321",
+      "article": "Заклепка 3,2х10, DIN7337A, Ал/Ал",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "3,2",
+      "length": "10",
+      "material": "Ал/Ал"
+    },
+    {
+      "id": "hw_322",
+      "article": "Заклепка 3,2х10, DIN7337B, А2/А2",
+      "name": "заклепка вытяжная с потайным бортиком",
+      "type": "Заклепка",
+      "standard": "DIN7337B",
+      "diameter": "3,2",
+      "length": "10",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_323",
+      "article": "Заклепка 3,2х6, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "3,2",
+      "length": "6",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_324",
+      "article": "Заклепка 3,2х8, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "3,2",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_325",
+      "article": "Заклепка 3,2х8, DIN7337B, А2/А2",
+      "name": "Заклепка вытяжная с потайным бортиком",
+      "type": "Заклепка",
+      "standard": "DIN7337B",
+      "diameter": "3,2",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_326",
+      "article": "Заклепка 3,2х8, DIN7337C, Ал/Ст",
+      "name": "Заклепка с широким буртом",
+      "type": "Заклепка",
+      "standard": "DIN7337C",
+      "diameter": "3,2",
+      "length": "8",
+      "material": "Ал/Ст"
+    },
+    {
+      "id": "hw_327",
+      "article": "Заклепка 4,0х10, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4,0",
+      "length": "10",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_328",
+      "article": "Заклепка 4,0х12, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4,0",
+      "length": "12",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_329",
+      "article": "Заклепка 4,0х12, DIN7337A, А2/А2 RAL7021",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4,0",
+      "length": "12",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_330",
+      "article": "Заклепка 4,0х6, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4,0",
+      "length": "6",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_331",
+      "article": "Заклепка 4,0х8, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4,0",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_332",
+      "article": "Заклепка 4,0х8, DIN7337A, А2/А2 RAL7016",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4,0",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_333",
+      "article": "Заклепка 4,0х8, DIN7337B, А2/А2",
+      "name": "Заклепка вытяжная с потайным бортиком",
+      "type": "Заклепка",
+      "standard": "DIN7337B",
+      "diameter": "4,0",
+      "length": "8",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_334",
+      "article": "Заклепка 4,8х10, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4.8",
+      "length": "10",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_335",
+      "article": "Заклепка 4,8х12, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4.8",
+      "length": "12",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_336",
+      "article": "Заклепка 4,8х18, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4.8",
+      "length": "18",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_337",
+      "article": "Заклепка 4,8х20, DIN7337A, А2/А2",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4.8",
+      "length": "20",
+      "material": "А2/А2"
+    },
+    {
+      "id": "hw_338",
+      "article": "Заклепка 4,8х8, DIN7337A, ст/ст",
+      "name": "Заклепка вытяжная",
+      "type": "Заклепка",
+      "standard": "DIN7337A",
+      "diameter": "4.8",
+      "length": "8",
+      "material": "ст/ст"
+    },
+    {
+      "id": "hw_339",
+      "article": "Т-Гайка М6х10, DIN508, А2",
+      "name": "Гайка Т-образная для пазов",
+      "type": "Т-Гайка",
+      "standard": "DIN508",
+      "diameter": "6",
+      "length": "10",
+      "material": "А2"
+    }
+  ],
+  "profiles": [
+    {
+      "article": "AYPC.EF100.40.0101",
+      "name": "Рама боковая (стойка)",
+      "system": "Alutech EF100.40",
+      "defaultOffset": 40,
+      "defaultOffsetFormula": "L - 40",
+      "category": "frame_vertical",
+      "suggestedAccessories": [
+        {
+          "article": "EF100.1901",
+          "name": "Уплотнитель межмодульный 35мм",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 / 1000"
+        },
+        {
+          "article": "FRK307",
+          "name": "Резина межмодульная (цех)",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 * 2 / 1000"
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.40.0102",
+      "name": "Рама нижняя",
+      "system": "Alutech EF100.40",
+      "defaultOffset": 60,
+      "defaultOffsetFormula": "W - 60",
+      "category": "frame_horizontal",
+      "suggestedAccessories": [
+        {
+          "article": "ВС 5,5х32, ISO14585, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 12
+        },
+        {
+          "article": "ВС 4,2х32, ISO14585, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 2
+        },
+        {
+          "article": "Alu Спецвинт 3,9х10, ТХ, А2",
+          "name": "Спецвинт",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 2
+        },
+        {
+          "article": "SL160.0948",
+          "name": "Шнур уплотнительный ф2,5мм",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 / 1000"
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.40.0104",
+      "name": "Рама верхняя",
+      "system": "Alutech EF100.40",
+      "defaultOffset": 20,
+      "defaultOffsetFormula": "W - 20",
+      "category": "frame_horizontal",
+      "suggestedAccessories": [
+        {
+          "article": "ВС 5,5х32, ISO14585, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 6
+        },
+        {
+          "article": "ВС 4,2х32, ISO14585, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 2
+        },
+        {
+          "article": "SL160.0948",
+          "name": "Шнур уплотнительный ф2,5мм",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 / 1000"
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.40.0202",
+      "name": "Импост горизонтальный (ригель)",
+      "system": "Alutech EF100.40",
+      "defaultOffset": 60,
+      "defaultOffsetFormula": "W - 60",
+      "category": "transom",
+      "suggestedAccessories": [
+        {
+          "article": "ВС 5,5х32, ISO14585, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 8
+        },
+        {
+          "article": "ВС 4,2х32, ISO14585, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 4
+        },
+        {
+          "article": "Alu Спецвинт 3,9х10, ТХ, А2",
+          "name": "Спецвинт",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 4
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.0601",
+      "name": "Прижим 40мм",
+      "system": "Alutech EF100",
+      "defaultOffset": 28,
+      "defaultOffsetFormula": "L - 28",
+      "category": "clamp",
+      "suggestedAccessories": [
+        {
+          "article": "ВС 4,8х16, DIN7981, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "step",
+          "stepMm": 200,
+          "formula": "ROUNDUP(L / 200, 0) + 1"
+        },
+        {
+          "article": "FRK316",
+          "name": "Уплотнитель в прижим 4мм",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 / 1000"
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.0501",
+      "name": "Крышка рамная 40мм",
+      "system": "Alutech EF100",
+      "defaultOffset": 24,
+      "defaultOffsetFormula": "L - 24",
+      "category": "cap",
+      "suggestedAccessories": [
+        {
+          "article": "ВС 3,9х13, DIN7982, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 2
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.0602",
+      "name": "Прижим 60мм",
+      "system": "Alutech EF100",
+      "defaultOffset": 108,
+      "defaultOffsetFormula": "W - 108",
+      "category": "clamp",
+      "suggestedAccessories": [
+        {
+          "article": "ВС 4,8х16, DIN7981, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "step",
+          "stepMm": 200,
+          "formula": "ROUNDUP(L / 200, 0) + 1"
+        },
+        {
+          "article": "FRK316",
+          "name": "Уплотнитель в прижим 4мм",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 2.05 / 1000"
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.0502",
+      "name": "Крышка 60мм",
+      "system": "Alutech EF100",
+      "defaultOffset": 104,
+      "defaultOffsetFormula": "W - 104",
+      "category": "cap",
+      "suggestedAccessories": [
+        {
+          "article": "ВС 3,9х13, DIN7982, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 1
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "AYPC.EF100.40.0401",
+      "name": "Профиль стыка",
+      "system": "Alutech EF100",
+      "defaultOffset": 37.5,
+      "defaultOffsetFormula": "L - 37.5",
+      "category": "joint",
+      "suggestedAccessories": [
+        {
+          "article": "FRK300",
+          "name": "Уплотнитель",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 4.2 / 1000"
+        },
+        {
+          "article": "ВС 3,9х13, DIN7982, А2",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "step",
+          "stepMm": 300,
+          "formula": "ROUNDUP(L / 300, 0) + 1"
+        },
+        {
+          "article": "FRK308",
+          "name": "Уплотнитель вертикальный межмодульный",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 / 1000"
+        }
+      ],
+      "company": "Alutech"
+    },
+    {
+      "article": "Sc 398120",
+      "name": "Стойка Schüco FW 50+",
+      "system": "Schüco FW 50+",
+      "company": "Alutech",
+      "defaultOffset": 40,
+      "defaultOffsetFormula": "L - 40",
+      "category": "frame_vertical",
+      "suggestedAccessories": [
+        {
+          "article": "Sc 205080 ВС 3,9х13, DIN7982, А4",
+          "name": "Винт с потайной головкой",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 8
+        },
+        {
+          "article": "Sc 224050 Уплотнитель",
+          "name": "Уплотнитель резиновый",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 / 1000"
+        }
+      ]
+    },
+    {
+      "article": "Sc 398240",
+      "name": "Ригель Schüco FW 50+",
+      "system": "Schüco FW 50+",
+      "company": "Alutech",
+      "defaultOffset": 50,
+      "defaultOffsetFormula": "W - 50",
+      "category": "transom",
+      "suggestedAccessories": [
+        {
+          "article": "Sc 205437 ВС 3,9х13, ISO14585, А4",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "article": "Sc 334510",
+      "name": "Прижимная планка Schüco 50мм",
+      "system": "Schüco FW 50+",
+      "company": "Alutech",
+      "defaultOffset": 25,
+      "defaultOffsetFormula": "L - 25",
+      "category": "clamp",
+      "suggestedAccessories": [
+        {
+          "article": "Sc 205440 ВС 4,8х28, DIN7981, А4",
+          "name": "Винт крепления прижима",
+          "unit": "шт",
+          "calcType": "step",
+          "stepMm": 200,
+          "formula": "ROUNDUP(L / 200, 0) + 1"
+        }
+      ]
+    },
+    {
+      "article": "Sc 338900",
+      "name": "Декоративная крышка Schüco 50мм",
+      "system": "Schüco FW 50+",
+      "company": "Alutech",
+      "defaultOffset": 20,
+      "defaultOffsetFormula": "L - 20",
+      "category": "cap",
+      "suggestedAccessories": []
+    },
+    {
+      "article": "Sc 398120",
+      "name": "Стойка Schüco FW 50+",
+      "system": "Schüco FW 50+",
+      "company": "Schüco",
+      "defaultOffset": 40,
+      "defaultOffsetFormula": "L - 40",
+      "category": "frame_vertical",
+      "suggestedAccessories": [
+        {
+          "article": "Sc 205080 ВС 3,9х13, DIN7982, А4",
+          "name": "Винт с потайной головкой",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 8
+        },
+        {
+          "article": "Sc 224050 Уплотнитель",
+          "name": "Уплотнитель резиновый",
+          "unit": "м",
+          "calcType": "formula",
+          "formula": "L * 1.05 / 1000"
+        }
+      ]
+    },
+    {
+      "article": "Sc 398240",
+      "name": "Ригель Schüco FW 50+",
+      "system": "Schüco FW 50+",
+      "company": "Schüco",
+      "defaultOffset": 50,
+      "defaultOffsetFormula": "W - 50",
+      "category": "transom",
+      "suggestedAccessories": [
+        {
+          "article": "Sc 205437 ВС 3,9х13, ISO14585, А4",
+          "name": "Винт самонарезающий",
+          "unit": "шт",
+          "calcType": "fixed",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "article": "Sc 334510",
+      "name": "Прижимная планка Schüco 50мм",
+      "system": "Schüco FW 50+",
+      "company": "Schüco",
+      "defaultOffset": 25,
+      "defaultOffsetFormula": "L - 25",
+      "category": "clamp",
+      "suggestedAccessories": [
+        {
+          "article": "Sc 205440 ВС 4,8х28, DIN7981, А4",
+          "name": "Винт крепления прижима",
+          "unit": "шт",
+          "calcType": "step",
+          "stepMm": 200,
+          "formula": "ROUNDUP(L / 200, 0) + 1"
+        }
+      ]
+    },
+    {
+      "article": "Sc 338900",
+      "name": "Декоративная крышка Schüco 50мм",
+      "system": "Schüco FW 50+",
+      "company": "Schüco",
+      "defaultOffset": 20,
+      "defaultOffsetFormula": "L - 20",
+      "category": "cap",
+      "suggestedAccessories": []
+    }
+  ]
+}

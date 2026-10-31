@@ -6,6 +6,7 @@ node_modules/
 # Production build
 dist/
 build/
+release/
 
 # Environment / Logs
 *.log
@@ -24,3 +25,4 @@ Thumbs.db
 
 # Temp test files
 test_*.cjs
+

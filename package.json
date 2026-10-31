@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "CAD Конструктор модульных фасадов и спецификаций",
   "author": "Spectool",
-  "main": "electron/main.js",
+  "main": "electron/main.cjs",
   "type": "module",
   "scripts": {
     "dev": "vite --host --port 3000",

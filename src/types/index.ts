@@ -110,12 +110,34 @@ export interface ModuleModel {
 export interface CatalogHardwareItem {
   id: string;
   article: string;
+  code?: string;
   name: string;
   type: string;
   standard: string;
   diameter: string;
   length: string;
   material: string;
+  strength?: string;
+  color?: string;
+}
+
+export interface CatalogMaterialItem {
+  id: string;
+  section: string;      // Раздел верхнего уровня (Профили, Листовые, Заполнения, и т.д.)
+  subsection: string;   // Подраздел (Стойки, Ригели, Оцинковка, Стеклопакеты...)
+  article: string;      // Артикул / Марка
+  name: string;         // Наименование
+  material: string;     // Сплав / состав
+  unit: string;         // п.м., м2, шт, кг
+  weight?: number;      // Вес единицы (кг/п.м. или кг/м2)
+  stockLength?: number; // Длина хлыста (мм)
+  width?: number;       // Ширина сечения (мм)
+  depth?: number;       // Глубина сечения (мм)
+  company?: string;     // Alutech, Schuco и т.д.
+  system?: string;      // EF100, FWS50 и т.д.
+  defaultOffset?: number;
+  defaultOffsetFormula?: string;
+  category?: 'frame_vertical' | 'frame_horizontal' | 'transom' | 'clamp' | 'cap' | 'joint' | 'sheet' | 'glass' | 'other';
 }
 
 export interface CatalogProfileItem {

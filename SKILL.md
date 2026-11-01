@@ -24,7 +24,11 @@ description: >-
 [`src/components/ParametersBox.tsx`](src/components/ParametersBox.tsx) | Инспектор свойств | Параметры выделенной линии/ячейки (отступы подрезки 1/2, расчет $L$, выбор цвета, марка по формуле).
 [`src/components/ProfileNumberingPopover.tsx`](src/components/ProfileNumberingPopover.tsx) | Плавающая таблица «№ Палок» | Сводная таблица по осям (H: n L, n R / W: Up, Down, Middle) и полный список всех линий с номерами.
 [`src/components/ColorManagerPopover.tsx`](src/components/ColorManagerPopover.tsx) | Менеджер цветов проекта | Управление цветами проекта (мульти-RAL палитра для профилей, крышек и стоек).
-[`src/utils/namingService.ts`](src/utils/namingService.ts) | Генератор заводских марок | Формула `[Проект] [Арт]-[Ось]-[№]` («Модуль Жукова»), авто-присвоение ролей `n L`, `n R`, `Up`, `Down`.
+[`src/components/NamingFormulaModal.tsx`](src/components/NamingFormulaModal.tsx) | Настройка формулы марки | Выбор отраслевого стандарта или своего шаблона `{project} {article}-{axialLength}-{order}`.
+[`src/components/ProcessTemplatesModal.tsx`](src/components/ProcessTemplatesModal.tsx) | База шаблонов ТП | Управление шаблонами технологических процессов (27 категорий для интеграции с Vogbit).
+[`src/components/StandaloneItemModal.tsx`](src/components/StandaloneItemModal.tsx) | Кронштейны и сб. единицы | Добавление независимых деталей (кронштейны, пластины, закладные) и сборочных единиц.
+[`src/utils/projectStorageService.ts`](src/utils/projectStorageService.ts) | Сохранение/загрузка проектов | Экспорт и импорт модулей целиком в формате `.spectool` (JSON).
+[`src/utils/excelImportService.ts`](src/utils/excelImportService.ts) | Импорт спецификации Excel | Парсинг листа «Спецификация» (19 колонок), габаритов и автоматическое извлечение деталей.
 [`src/components/DependenciesPanel.tsx`](src/components/DependenciesPanel.tsx) | Привязка комплектации | Расчёт метизов и уплотнителей по шагу (мм), формуле (`L * 1.05 / 1000`) или фикс. количеству.
 [`src/utils/bomEngine.ts`](src/utils/bomEngine.ts) | BOM-движок спецификаций | 19-колоночный расчёт ведомости и генерация стилизованного `.xlsx` файла («Модуль Жукова» / А1187 М507).
 [`electron/main.cjs`](electron/main.cjs) | Главный процесс Electron | CommonJS-запуск окна, безопасная загрузка `dist/index.html` из `app.asar`, перехват ошибок.

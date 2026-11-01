@@ -13,6 +13,8 @@ import { createDefaultModule } from './data/defaultModule';
 import { generateBOM } from './utils/bomEngine';
 import { detectCellsFromLines } from './utils/cellDetector';
 import { generateProfileMark } from './utils/namingService';
+import { exportProjectFile, importProjectFile } from './utils/projectStorageService';
+import { importSpecificationFromExcel } from './utils/excelImportService';
 import { Header } from './components/Header';
 import { Canvas } from './components/Canvas';
 import { ParametersBox } from './components/ParametersBox';
@@ -21,8 +23,12 @@ import { HardwareDatabase } from './components/HardwareDatabase';
 import { DependenciesPanel } from './components/DependenciesPanel';
 import { SpecificationTable } from './components/SpecificationTable';
 import { CustomProfileModal } from './components/CustomProfileModal';
+import { NamingFormulaModal } from './components/NamingFormulaModal';
+import { ProcessTemplatesModal } from './components/ProcessTemplatesModal';
+import { StandaloneItemModal } from './components/StandaloneItemModal';
 import { AgentFeedbackOverlay } from './components/AgentFeedbackOverlay';
 import { ResizeDivider } from './components/ResizeDivider';
+import { StandaloneItem } from './types';
 
 export const App: React.FC = () => {
   const [module, setModule] = useState<ModuleModel>(createDefaultModule);
@@ -38,6 +44,10 @@ export const App: React.FC = () => {
     return r?.profileBindings[0]?.id || null;
   });
   const [isCustomProfileModalOpen, setIsCustomProfileModalOpen] = useState(false);
+  const [isNamingModalOpen, setIsNamingModalOpen] = useState(false);
+  const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
+  const [isStandaloneModalOpen, setIsStandaloneModalOpen] = useState(false);
+  const [editingStandaloneItem, setEditingStandaloneItem] = useState<StandaloneItem | null>(null);
 
   // Layout panel dimensions with local persistence
   const [layoutSizes, setLayoutSizes] = useState<{
@@ -502,6 +512,88 @@ export const App: React.FC = () => {
         if (field === 'mark') handleUpdateCell({ ...cell, mark: value });
         if (field === 'name') handleUpdateCell({ ...cell, name: value });
       }
+    } else if (targetRow.sourceType === 'standalone') {
+      setModule((prev) => ({
+        ...prev,
+        standaloneItems: (prev.standaloneItems || []).map((item) => {
+          if (item.id !== targetRow.sourceId) return item;
+          const updated = { ...item };
+          if (field === 'mark') updated.mark = value;
+          if (field === 'name') updated.name = value;
+          if (field === 'materialMark') updated.material = value;
+          if (field === 'materialName') updated.materialName = value;
+          if (field === 'processTemplate') updated.processTemplate = value;
+          if (field === 'linkType') updated.linkType = value;
+          if (field === 'specQty') updated.quantity = parseFloat(value) || 1;
+          if (field === 'vgbL' || field === 'lengthMm') updated.lengthMm = parseFloat(value) || undefined;
+          if (field === 'vgbB' || field === 'widthMm') updated.widthMm = parseFloat(value) || undefined;
+          if (field === 'vgbColor') updated.color = value;
+          return updated;
+        })
+      }));
+    }
+  };
+
+  // Standalone Items Handlers
+  const handleSaveStandaloneItem = (item: StandaloneItem) => {
+    setModule((prev) => {
+      const items = prev.standaloneItems || [];
+      const exists = items.some((it) => it.id === item.id);
+      return {
+        ...prev,
+        standaloneItems: exists
+          ? items.map((it) => (it.id === item.id ? item : it))
+          : [...items, item]
+      };
+    });
+    setEditingStandaloneItem(null);
+  };
+
+  const handleDeleteStandaloneItem = (id: string) => {
+    setModule((prev) => ({
+      ...prev,
+      standaloneItems: (prev.standaloneItems || []).filter((it) => it.id !== id)
+    }));
+  };
+
+  // Export / Import Projects & Specifications
+  const handleExportProject = () => {
+    exportProjectFile(module);
+  };
+
+  const handleImportFile = async (file: File) => {
+    try {
+      const lowerName = file.name.toLowerCase();
+      if (lowerName.endsWith('.spectool') || lowerName.endsWith('.json')) {
+        const imported = await importProjectFile(file);
+        setModule(imported);
+        if (imported.lines.length > 0) {
+          setSelectedLineId(imported.lines[0].id);
+          setSelectedProfileId(imported.lines[0].profileBindings[0]?.id || null);
+        }
+        alert(`Проект "${file.name}" успешно загружен!`);
+      } else if (lowerName.endsWith('.xlsx') || lowerName.endsWith('.xls')) {
+        const spec = await importSpecificationFromExcel(file);
+        setModule((prev) => ({
+          ...prev,
+          width: spec.width || prev.width,
+          height: spec.height || prev.height,
+          project: spec.projectName || prev.project,
+          name: spec.moduleName || prev.name,
+          color: spec.color || prev.color,
+          standaloneItems: [
+            ...(prev.standaloneItems || []),
+            ...spec.standaloneItems
+          ]
+        }));
+        alert(
+          `Спецификация "${file.name}" импортирована!\n` +
+          `Габариты модуля: L = ${spec.width || 'сохранено'} мм, H = ${spec.height || 'сохранено'} мм\n` +
+          `Добавлено позиций: ${spec.standaloneItems.length} (кронштейны, закладные, узлы)`
+        );
+      }
+    } catch (err) {
+      alert(`Ошибка импорта файла: ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
@@ -564,6 +656,12 @@ export const App: React.FC = () => {
           return;
         }
       }
+    } else if (sourceType === 'standalone') {
+      const found = (module.standaloneItems || []).find((it) => it.id === sourceId);
+      if (found) {
+        setEditingStandaloneItem(found);
+        setIsStandaloneModalOpen(true);
+      }
     }
   };
 
@@ -590,7 +688,14 @@ export const App: React.FC = () => {
           setSelectedCellId(null);
           setSelectedProfileId(selLine?.profileBindings[0]?.id || null);
         }}
-        onImportExcel={(imp) => setModule((m) => ({ ...m, ...imp }))}
+        onOpenNamingModal={() => setIsNamingModalOpen(true)}
+        onOpenProcessTemplatesModal={() => setIsProcessModalOpen(true)}
+        onOpenStandaloneItemModal={() => {
+          setEditingStandaloneItem(null);
+          setIsStandaloneModalOpen(true);
+        }}
+        onExportProject={handleExportProject}
+        onImportFile={handleImportFile}
       />
 
       {/* Main Upper Workspace with 5 organized panels and interactive column splitters */}
@@ -705,6 +810,15 @@ export const App: React.FC = () => {
         height={layoutSizes.tableHeight}
         onSelectRow={handleSelectRow}
         onUpdateBOMCell={handleUpdateBOMCell}
+        onAddStandaloneItem={() => {
+          setEditingStandaloneItem(null);
+          setIsStandaloneModalOpen(true);
+        }}
+        onEditStandaloneItem={(item) => {
+          setEditingStandaloneItem(item);
+          setIsStandaloneModalOpen(true);
+        }}
+        onDeleteStandaloneItem={handleDeleteStandaloneItem}
       />
 
       {/* Add Custom Profile Modal */}
@@ -714,6 +828,48 @@ export const App: React.FC = () => {
         onAddProfile={(newP) => {
           handleBindProfileFromTree(newP);
         }}
+      />
+
+      {/* Naming Formula Configuration Modal */}
+      <NamingFormulaModal
+        isOpen={isNamingModalOpen}
+        onClose={() => setIsNamingModalOpen(false)}
+        projectCode={module.project}
+        onPatternChanged={(pat) => {
+          setModule((m) => ({
+            ...m,
+            namingPattern: pat,
+            lines: m.lines.map((l) => ({
+              ...l,
+              profileBindings: l.profileBindings.map((p) => {
+                const cutL = p.calculatedLength !== undefined ? p.calculatedLength : l.length;
+                return {
+                  ...p,
+                  customMark: generateProfileMark(m.project, p.article, l.length, p.orderNumber || 1, cutL, pat)
+                };
+              })
+            }))
+          }));
+        }}
+      />
+
+      {/* Technological Process Templates DB Modal */}
+      <ProcessTemplatesModal
+        isOpen={isProcessModalOpen}
+        onClose={() => setIsProcessModalOpen(false)}
+      />
+
+      {/* Standalone Part / Assembly Modal (Кронштейны, закладные) */}
+      <StandaloneItemModal
+        isOpen={isStandaloneModalOpen}
+        initialItem={editingStandaloneItem}
+        projectCode={module.project}
+        defaultColor={module.color || 'RAL 7012'}
+        onClose={() => {
+          setIsStandaloneModalOpen(false);
+          setEditingStandaloneItem(null);
+        }}
+        onSave={handleSaveStandaloneItem}
       />
 
       {/* Floating Agent UI Feedback & Review Tool */}

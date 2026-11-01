@@ -114,10 +114,10 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
                 <span className="text-slate-600 font-semibold">n L (Левая):</span>
                 <input
                   type="text"
-                  value={leftLine?.orderNumber ?? (leftLine?.profileBindings?.[0]?.orderNumber || '512')}
+                  value={leftLine?.orderNumber ?? (leftLine?.profileBindings?.[0]?.orderNumber || '1')}
                   onChange={(e) => leftLine && handleUpdateLineOrderNumber(leftLine.id, e.target.value)}
                   className="w-16 bg-slate-50 border border-slate-300 rounded px-1.5 py-0.5 text-center font-bold text-blue-700 text-xs focus:bg-white focus:outline-none focus:border-blue-500"
-                  placeholder="512"
+                  placeholder="1"
                 />
               </div>
               {/* n R */}
@@ -125,10 +125,10 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
                 <span className="text-slate-600 font-semibold">n R (Правая):</span>
                 <input
                   type="text"
-                  value={rightLine?.orderNumber ?? (rightLine?.profileBindings?.[0]?.orderNumber || '522')}
+                  value={rightLine?.orderNumber ?? (rightLine?.profileBindings?.[0]?.orderNumber || '2')}
                   onChange={(e) => rightLine && handleUpdateLineOrderNumber(rightLine.id, e.target.value)}
                   className="w-16 bg-slate-50 border border-slate-300 rounded px-1.5 py-0.5 text-center font-bold text-blue-700 text-xs focus:bg-white focus:outline-none focus:border-blue-500"
-                  placeholder="522"
+                  placeholder="2"
                 />
               </div>
             </div>
@@ -144,10 +144,10 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
                 <span className="text-slate-600 font-semibold">Up (Верх):</span>
                 <input
                   type="text"
-                  value={upLine?.orderNumber ?? (upLine?.profileBindings?.[0]?.orderNumber || '500')}
+                  value={upLine?.orderNumber ?? (upLine?.profileBindings?.[0]?.orderNumber || '3')}
                   onChange={(e) => upLine && handleUpdateLineOrderNumber(upLine.id, e.target.value)}
                   className="w-16 bg-slate-50 border border-slate-300 rounded px-1.5 py-0.5 text-center font-bold text-amber-800 text-xs focus:bg-white focus:outline-none focus:border-amber-600"
-                  placeholder="500"
+                  placeholder="3"
                 />
               </div>
               {/* Down */}
@@ -155,10 +155,10 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
                 <span className="text-slate-600 font-semibold">Down (Низ):</span>
                 <input
                   type="text"
-                  value={downLine?.orderNumber ?? (downLine?.profileBindings?.[0]?.orderNumber || '500')}
+                  value={downLine?.orderNumber ?? (downLine?.profileBindings?.[0]?.orderNumber || '4')}
                   onChange={(e) => downLine && handleUpdateLineOrderNumber(downLine.id, e.target.value)}
                   className="w-16 bg-slate-50 border border-slate-300 rounded px-1.5 py-0.5 text-center font-bold text-amber-800 text-xs focus:bg-white focus:outline-none focus:border-amber-600"
-                  placeholder="500"
+                  placeholder="4"
                 />
               </div>
               {/* Middle */}
@@ -167,10 +167,10 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
                   <span className="text-slate-600 font-semibold">Middle {mIdx + 1}:</span>
                   <input
                     type="text"
-                    value={mLine?.orderNumber ?? (mLine?.profileBindings?.[0]?.orderNumber || '500')}
+                    value={mLine?.orderNumber ?? (mLine?.profileBindings?.[0]?.orderNumber || `${5 + mIdx}`)}
                     onChange={(e) => handleUpdateLineOrderNumber(mLine.id, e.target.value)}
                     className="w-16 bg-slate-50 border border-slate-300 rounded px-1.5 py-0.5 text-center font-bold text-amber-800 text-xs focus:bg-white focus:outline-none focus:border-amber-600"
-                    placeholder="500"
+                    placeholder={`${5 + mIdx}`}
                   />
                 </div>
               ))}
@@ -186,20 +186,20 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
             </span>
             <div className="flex items-center gap-1.5">
               <button
-                onClick={applyStandardNumbers}
-                className="text-[10px] text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded font-semibold flex items-center gap-1 cursor-pointer transition border border-blue-200"
-                title="Присвоить стандартные заводские номера 512, 522, 500"
-              >
-                <Sparkles className="w-2.5 h-2.5 text-blue-600" />
-                Заводской (512/522/500)
-              </button>
-              <button
                 onClick={applySequentialNumbers}
-                className="text-[10px] text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded font-medium flex items-center gap-1 cursor-pointer transition"
+                className="text-[10px] text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded font-bold flex items-center gap-1 cursor-pointer transition border border-blue-200"
                 title="Присвоить порядковые номера 1, 2, 3..."
               >
                 <ListOrdered className="w-2.5 h-2.5" />
-                По порядку (1, 2...)
+                Сбросить 1, 2, 3...
+              </button>
+              <button
+                onClick={applyStandardNumbers}
+                className="text-[10px] text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded font-medium flex items-center gap-1 cursor-pointer transition"
+                title="Присвоить заводские номера 512, 522, 500"
+              >
+                <Sparkles className="w-2.5 h-2.5 text-amber-500" />
+                Заводской (512/522/500)
               </button>
             </div>
           </div>

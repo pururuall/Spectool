@@ -272,6 +272,48 @@ export function generateBOM(module: ModuleModel): BOMRow[] {
     }
   }
 
+  // 3. Process Standalone Items (Отдельные детали и сборочные единицы: кронштейны, закладные и т.д.)
+  if (module.standaloneItems && module.standaloneItems.length > 0) {
+    for (const item of module.standaloneItems) {
+      const isAssembly = item.itemType === 'assembly' || item.linkType === 'Сборочная единица';
+      const isPart = item.itemType === 'part' || item.linkType === 'деталь';
+
+      const hasDims = item.lengthMm && item.lengthMm > 0;
+      const area = item.lengthMm && item.widthMm ? (item.lengthMm * item.widthMm) / 1000000 : 0;
+
+      rows.push({
+        id: `bom-standalone-${item.id}`,
+        sourceType: 'standalone',
+        sourceId: item.id,
+        parentName: isAssembly ? 'Сборочная единица' : 'Деталь',
+        mark: item.mark,
+        name: item.name,
+        materialMark: item.material || '',
+        materialName: item.materialName || '',
+        materialQty: hasDims ? (item.widthMm ? Math.round(area * 100) / 100 : item.lengthMm!) : '',
+        materialUnit: hasDims ? (item.widthMm ? 'м2' : 'мм') : item.material ? 'шт' : '',
+        processTemplate: item.processTemplate || '',
+        linkType: item.linkType || (isAssembly ? 'Сборочная единица' : isPart ? 'деталь' : 'комплектующие'),
+        specQty: item.quantity || 1,
+        specUnit: item.unit || 'шт',
+        vgbPlanGroup: item.planGroup || (isAssembly ? 'Сборочные единицы' : 'Детали ЦМК'),
+        vgbL: item.lengthMm ?? '',
+        vgbB: item.widthMm ?? '',
+        vgbLB: item.lengthMm && item.widthMm ? Math.round(item.lengthMm * item.widthMm) : item.thicknessMm ?? '',
+        vgbColor: item.color || module.color || '',
+        vgpLeft: item.miterLeft ?? (isPart ? 90 : ''),
+        vgpRight: item.miterRight ?? (isPart ? 90 : ''),
+        vgpLeft2: isPart ? 90 : '',
+        vgpRight2: isPart ? 90 : '',
+        lengthMm: item.lengthMm,
+        widthMm: item.widthMm,
+        areaM2: area > 0 ? Math.round(area * 100) / 100 : undefined,
+        color: item.color || module.color,
+        planGroup: item.planGroup || (isAssembly ? 'Сборочные единицы' : 'Детали ЦМК')
+      });
+    }
+  }
+
   return rows;
 }
 

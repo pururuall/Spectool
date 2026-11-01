@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { BOMRow, ModuleModel } from '../types';
-import { Download, Copy, Search, Check, FileSpreadsheet } from 'lucide-react';
+import { BOMRow, ModuleModel, StandaloneItem } from '../types';
+import { Download, Copy, Search, Check, FileSpreadsheet, PlusCircle, Edit2, Trash2 } from 'lucide-react';
 import { exportToExcel, EXACT_EXCEL_HEADERS } from '../utils/bomEngine';
 
 interface SpecificationTableProps {
@@ -10,6 +10,9 @@ interface SpecificationTableProps {
   height?: number;
   onSelectRow: (sourceType: string, sourceId: string) => void;
   onUpdateBOMCell: (rowId: string, field: keyof BOMRow, value: any) => void;
+  onAddStandaloneItem?: () => void;
+  onEditStandaloneItem?: (item: StandaloneItem) => void;
+  onDeleteStandaloneItem?: (id: string) => void;
 }
 
 export const SpecificationTable: React.FC<SpecificationTableProps> = ({
@@ -18,7 +21,10 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
   selectedSourceId,
   height = 260,
   onSelectRow,
-  onUpdateBOMCell
+  onUpdateBOMCell,
+  onAddStandaloneItem,
+  onEditStandaloneItem,
+  onDeleteStandaloneItem
 }) => {
   const [filterQuery, setFilterQuery] = useState('');
   const [copied, setCopied] = useState(false);
@@ -99,6 +105,17 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {onAddStandaloneItem && (
+            <button
+              onClick={onAddStandaloneItem}
+              className="px-2.5 py-1 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              title="Добавить отдельную деталь или сборочную единицу (кронштейн, закладную, узел)"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>+ Деталь / СБ</span>
+            </button>
+          )}
+
           <button
             onClick={handleCopyClipboard}
             className="px-2.5 py-1 text-xs rounded bg-white hover:bg-slate-100 text-slate-700 font-medium transition flex items-center gap-1.5 border border-slate-300 shadow-2xs"
@@ -143,7 +160,8 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
               <th className="py-1.5 px-2 font-bold border-r border-slate-200 min-w-[70px] text-center">VGP_left</th>
               <th className="py-1.5 px-2 font-bold border-r border-slate-200 min-w-[70px] text-center">VGP_Right</th>
               <th className="py-1.5 px-2 font-bold border-r border-slate-200 min-w-[80px] text-center">VGP_Left_2</th>
-              <th className="py-1.5 px-2 font-bold min-w-[80px] text-center">VGP_Right_2</th>
+              <th className="py-1.5 px-2 font-bold border-r border-slate-200 min-w-[80px] text-center">VGP_Right_2</th>
+              <th className="py-1.5 px-2 font-bold text-center text-slate-700 text-[11px] w-14">Действия</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 text-slate-800">
@@ -300,8 +318,43 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
                   </td>
 
                   {/* 19. VGP_Right_2 */}
-                  <td className="py-1 px-2 text-center font-mono text-slate-700 text-[11px]">
+                  <td className="py-1 px-2 border-r border-slate-200 text-center font-mono text-slate-700 text-[11px]">
                     {row.vgpRight2}
+                  </td>
+
+                  {/* Actions for standalone items */}
+                  <td className="py-1 px-1.5 text-center">
+                    {row.sourceType === 'standalone' && (
+                      <div className="flex items-center justify-center gap-1">
+                        {onEditStandaloneItem && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const found = module.standaloneItems?.find((it) => it.id === row.sourceId);
+                              if (found) onEditStandaloneItem(found);
+                            }}
+                            className="p-1 text-slate-400 hover:text-blue-600 rounded hover:bg-blue-50 transition cursor-pointer"
+                            title="Редактировать параметры позиции"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                        )}
+                        {onDeleteStandaloneItem && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteStandaloneItem(row.sourceId);
+                            }}
+                            className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition cursor-pointer"
+                            title="Удалить позицию"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </td>
                 </tr>
               );

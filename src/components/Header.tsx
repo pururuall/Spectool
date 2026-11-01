@@ -1,10 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { ModuleModel, BOMRow, LineSegment } from '../types';
-import { Upload, Download, Sparkles, PlusCircle, Hash, Palette } from 'lucide-react';
+import {
+  Upload,
+  Download,
+  Sparkles,
+  PlusCircle,
+  Hash,
+  Palette,
+  Layers,
+  Tag,
+  Save,
+  Component,
+  FolderOpen
+} from 'lucide-react';
 import { exportToExcel } from '../utils/bomEngine';
 import { ProfileNumberingPopover } from './ProfileNumberingPopover';
 import { ColorManagerPopover } from './ColorManagerPopover';
-import * as XLSX from 'xlsx';
 
 interface HeaderProps {
   module: ModuleModel;
@@ -19,7 +30,11 @@ interface HeaderProps {
   onUpdateDimensions: (width: number, height: number) => void;
   onNewEmptyModule: () => void;
   onLoadPreset: () => void;
-  onImportExcel: (importedModule: Partial<ModuleModel>) => void;
+  onOpenNamingModal: () => void;
+  onOpenProcessTemplatesModal: () => void;
+  onOpenStandaloneItemModal: () => void;
+  onExportProject: () => void;
+  onImportFile: (file: File) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -35,81 +50,76 @@ export const Header: React.FC<HeaderProps> = ({
   onUpdateDimensions,
   onNewEmptyModule,
   onLoadPreset,
-  onImportExcel
+  onOpenNamingModal,
+  onOpenProcessTemplatesModal,
+  onOpenStandaloneItemModal,
+  onExportProject,
+  onImportFile
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showNumberingPopover, setShowNumberingPopover] = useState(false);
   const [showColorPopover, setShowColorPopover] = useState(false);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const data = new Uint8Array(evt.target?.result as ArrayBuffer);
-        const wb = XLSX.read(data, { type: 'array' });
-        const sheetName = wb.SheetNames[0];
-        const ws = wb.Sheets[sheetName];
-
-        const y1Val = ws['Y1']?.v;
-        const z1Val = ws['Z1']?.v;
-
-        if (y1Val && z1Val) {
-          onUpdateDimensions(parseFloat(z1Val) || 1000, parseFloat(y1Val) || 2555);
-        }
-        alert(`Файл "${file.name}" загружен. Лист: "${sheetName}".`);
-      } catch (err) {
-        alert('Ошибка при чтении Excel файла: ' + err);
-      }
-    };
-    reader.readAsArrayBuffer(file);
+    if (file) {
+      onImportFile(file);
+      e.target.value = '';
+    }
   };
 
   const colorsList = module.colors && module.colors.length > 0 ? module.colors : [module.color || 'RAL 7012'];
 
   return (
-    <header className="h-14 bg-white border-b border-slate-200 px-4 flex items-center justify-between select-none shadow-xs z-30 relative">
-      {/* Left: Excel Import / Name Input as in sketch */}
-      <div className="flex items-center gap-3">
-        {/* Import Excel Button */}
+    <header className="h-14 bg-white border-b border-slate-200 px-3 flex items-center justify-between select-none shadow-xs z-30 relative">
+      {/* Left: Project / File Operations & Module Info */}
+      <div className="flex items-center gap-2">
+        {/* Universal File Import (.xlsx, .spectool, .json) */}
         <input
           type="file"
           ref={fileInputRef}
-          onChange={handleFileUpload}
-          accept=".xlsx, .xls"
+          onChange={handleFileChange}
+          accept=".xlsx, .xls, .spectool, .json"
           className="hidden"
         />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg transition flex items-center gap-1 font-medium shadow-2xs cursor-pointer"
-          title="Загрузить Excel файл спецификации"
-        >
-          <Upload className="w-3.5 h-3.5 text-blue-600" />
-          Импорт Excel
-        </button>
 
-        {/* Export Excel Button */}
-        <button
-          onClick={() => exportToExcel(module, bomRows)}
-          className="px-3 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition flex items-center gap-1.5 font-semibold shadow-2xs cursor-pointer"
-          title="Выгрузить спецификацию в Excel (.xlsx)"
-        >
-          <Download className="w-3.5 h-3.5" />
-          Экспорт Excel
-        </button>
+        <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="px-2 py-1 text-xs bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-lg transition flex items-center gap-1 font-medium shadow-2xs cursor-pointer"
+            title="Импортировать файл спецификации (.xlsx) или проект Spectool (.spectool / .json)"
+          >
+            <FolderOpen className="w-3.5 h-3.5 text-blue-600" />
+            <span>Импорт</span>
+          </button>
 
-        <div className="h-6 w-px bg-slate-200 mx-0.5"></div>
+          <button
+            onClick={onExportProject}
+            className="px-2 py-1 text-xs bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-lg transition flex items-center gap-1 font-medium shadow-2xs cursor-pointer"
+            title="Сохранить весь проект целиком в файл .spectool"
+          >
+            <Save className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Сохранить</span>
+          </button>
+
+          <button
+            onClick={() => exportToExcel(module, bomRows)}
+            className="px-2.5 py-1 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition flex items-center gap-1 font-semibold shadow-2xs cursor-pointer"
+            title="Выгрузить 19-колоночную производственную спецификацию в Excel (.xlsx)"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Экспорт Excel</span>
+          </button>
+        </div>
 
         {/* Input: Module Name */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs font-semibold text-slate-600">Имя модуля:</span>
+        <div className="flex items-center gap-1.5 ml-1">
+          <span className="text-xs font-semibold text-slate-600">Модуль:</span>
           <input
             type="text"
             value={module.name}
             onChange={(e) => onUpdateModuleName(e.target.value)}
-            className="bg-slate-50 border border-slate-300 hover:border-slate-400 focus:bg-white rounded-lg px-2 py-1 text-xs text-slate-900 font-mono font-bold w-44 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
+            className="bg-slate-50 border border-slate-300 hover:border-slate-400 focus:bg-white rounded-lg px-2 py-1 text-xs text-slate-900 font-mono font-bold w-40 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
             placeholder="Ввод имени модуля..."
           />
         </div>
@@ -126,8 +136,8 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Center: Dimensions H & L, Numbering popover button & Color (Скриншот 3) */}
-      <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
+      {/* Center: Dimensions H & L, stick numbering, colors, formula, TP templates */}
+      <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs">
         {/* L Width */}
         <div className="flex items-center gap-1">
           <span className="font-semibold text-slate-500 font-mono">L (ширина):</span>
@@ -162,7 +172,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         <span className="text-slate-300">|</span>
 
-        {/* Numbering Table Trigger Button (Скриншот 3 -> Скриншот 1) */}
+        {/* Numbering Table Trigger Button (№ Палок) */}
         <button
           onClick={() => {
             setShowNumberingPopover(!showNumberingPopover);
@@ -173,7 +183,7 @@ export const Header: React.FC<HeaderProps> = ({
               ? 'bg-blue-600 text-white border-blue-700 font-bold'
               : 'bg-white text-slate-700 border-slate-300 hover:border-blue-400 hover:text-blue-700'
           }`}
-          title="Открыть плавающую таблицу порядковых номеров профилей («палок»)"
+          title="Открыть таблицу порядковых номеров профилей («палок»)"
         >
           <Hash className="w-3 h-3 text-blue-500" />
           <span>№ Палок</span>
@@ -181,8 +191,6 @@ export const Header: React.FC<HeaderProps> = ({
             {module.lines.length}
           </span>
         </button>
-
-        <span className="text-slate-300">|</span>
 
         {/* Color Button with Popover */}
         <button
@@ -195,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
               ? 'bg-blue-600 text-white border-blue-700 font-bold'
               : 'bg-white text-slate-700 border-slate-300 hover:border-blue-400'
           }`}
-          title="Настроить цвета проекта (можно задать несколько для крышек и стоек)"
+          title="Настроить цвета проекта (мульти-RAL для профилей и крышек)"
         >
           <Palette className="w-3 h-3 text-amber-500" />
           <span>{module.color || 'RAL 7012'}</span>
@@ -204,6 +212,38 @@ export const Header: React.FC<HeaderProps> = ({
               +{colorsList.length - 1}
             </span>
           )}
+        </button>
+
+        <span className="text-slate-300">|</span>
+
+        {/* Naming Formula Settings Button */}
+        <button
+          onClick={onOpenNamingModal}
+          className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 hover:border-blue-400 rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
+          title="Настройка формулы автоматического наименования профилей и деталей"
+        >
+          <Tag className="w-3 h-3 text-indigo-600" />
+          <span>Формула марки</span>
+        </button>
+
+        {/* Technological Process Templates DB */}
+        <button
+          onClick={onOpenProcessTemplatesModal}
+          className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 hover:border-blue-400 rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
+          title="База данных шаблонов техпроцесса (ТП для Vogbit)"
+        >
+          <Layers className="w-3 h-3 text-blue-600" />
+          <span>Шаблоны ТП</span>
+        </button>
+
+        {/* Add Standalone Item (Кронштейн / СБ) */}
+        <button
+          onClick={onOpenStandaloneItemModal}
+          className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 rounded-lg text-xs font-bold flex items-center gap-1 transition shadow-2xs cursor-pointer"
+          title="Добавить независимую деталь или сборочную единицу (кронштейн, закладную, узел)"
+        >
+          <PlusCircle className="w-3.5 h-3.5 text-blue-600" />
+          <span>+ Деталь / СБ</span>
         </button>
       </div>
 
@@ -233,11 +273,11 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Create empty module for drawing from scratch */}
         <button
           onClick={onNewEmptyModule}
-          className="px-2.5 py-1.5 text-xs bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-lg transition flex items-center gap-1 font-medium shadow-2xs cursor-pointer"
+          className="px-2 py-1.5 text-xs bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-lg transition flex items-center gap-1 font-medium shadow-2xs cursor-pointer"
           title="Очистить и начертить оси модуля с нуля"
         >
           <PlusCircle className="w-3.5 h-3.5 text-blue-600" />
-          Чистый лист (с нуля)
+          <span>С нуля</span>
         </button>
 
         {/* Load Zhukov preset */}
@@ -247,7 +287,7 @@ export const Header: React.FC<HeaderProps> = ({
           title="Загрузить тестовую спецификацию модуля Жукова (М507)"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          Пример Жукова (М507)
+          <span>Пример Жукова</span>
         </button>
       </div>
     </header>

@@ -100,6 +100,28 @@ export interface CellTemplate {
   }>;
 }
 
+export interface StandaloneItem {
+  id: string;
+  itemType: 'part' | 'assembly' | 'accessory'; // деталь, сборочная единица или комплектующее
+  linkType: 'деталь' | 'Сборочная единица' | 'комплектующие';
+  mark: string;            // Обозначение чертежа (напр. "А1187-КР01-01")
+  name: string;            // Наименование (напр. "Кронштейн верхний опорный")
+  pos?: string;            // Позиция на чертеже (напр. "КР-1")
+  processTemplate: string; // Шаблон техпроцесса (из базы ТП, напр. "Кронштейны сварные/сборные модульные")
+  quantity: number;        // Количество в модуле (шт)
+  unit?: string;           // ЕИ (по умолчанию "шт")
+  planGroup?: string;      // VGB_Plan_Group (напр. "Детали ЦМК", "Кронштейны")
+  material?: string;       // Материал обозначение (напр. "Лист 4мм" или артикул профиля)
+  materialName?: string;   // Материал наименование (напр. "Сталь 09Г2С ГОСТ 19903-2015")
+  lengthMm?: number;       // VGB_L_MM (мм)
+  widthMm?: number;        // VGB_B_MM (мм)
+  thicknessMm?: number;    // Толщина K (мм)
+  color?: string;          // VGB_Color / покрытие (напр. "Горячий цинк", "RAL 7012")
+  notes?: string;          // Производственный комментарий
+  miterLeft?: number;      // VGP_left
+  miterRight?: number;     // VGP_Right
+}
+
 export interface ModuleModel {
   id: string;
   name: string;
@@ -108,8 +130,10 @@ export interface ModuleModel {
   height: number; // H (мм)
   color: string;
   colors?: string[]; // Массив цветов проекта (напр. ['RAL 7012', 'RAL 9005', 'RAL 9006'])
+  namingPattern?: string; // Формула наименования (напр. "{project} {article}-{axialLength}-{order}")
   lines: LineSegment[];
   cells: Cell[];
+  standaloneItems?: StandaloneItem[]; // Отдельные детали и сборочные единицы (кронштейны, закладные и т.д.)
 }
 
 export interface CatalogHardwareItem {
@@ -166,7 +190,7 @@ export interface CatalogProfileItem {
 
 export interface BOMRow {
   id: string;
-  sourceType: 'profile' | 'cell' | 'accessory' | 'hardware';
+  sourceType: 'profile' | 'cell' | 'accessory' | 'hardware' | 'standalone';
   sourceId: string;
   parentName?: string;
   // 19 exact columns from А1187 М507_Модуль Жукова.xlsx

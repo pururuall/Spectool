@@ -102,3 +102,4 @@ cmd /c "set ELECTRON_RUN_AS_NODE=& npx.cmd electron-builder --win portable"
 cmd /c "gh release upload v1.0.0 release\Spectool.exe --clobber"
 ```
 Результат сборки: `release/Spectool.exe` (~109 МБ, полностью портативный, работает без Node.js на любом ПК с Windows x64).
+

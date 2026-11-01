@@ -26,6 +26,8 @@ export interface ProfileBinding {
   endOffset: number;   // Отступ в конце (мм)
   calculatedLength: number; // L = line.length - startOffset - endOffset
   color: string;
+  orderNumber?: number | string; // Порядковый номер детали ("палки"), напр. 512, 522, 500
+  role?: string;        // Роль: 'n L', 'n R', 'Up', 'Down', 'Middle 1' и т.д.
   miterLeft?: number;   // 90 или 45
   miterRight?: number;  // 90 или 45
   miterLeft2?: number;  // Угол подрезки 2 плоскость
@@ -42,6 +44,8 @@ export interface LineSegment {
   x2: number; // мм
   y2: number; // мм
   length: number; // мм
+  orderNumber?: number | string; // Порядковый номер палки
+  role?: string;        // 'n L', 'n R', 'Up', 'Down', 'Middle 1' и т.д.
   profileBindings: ProfileBinding[];
 }
 
@@ -103,6 +107,7 @@ export interface ModuleModel {
   width: number;  // W (мм)
   height: number; // H (мм)
   color: string;
+  colors?: string[]; // Массив цветов проекта (напр. ['RAL 7012', 'RAL 9005', 'RAL 9006'])
   lines: LineSegment[];
   cells: Cell[];
 }

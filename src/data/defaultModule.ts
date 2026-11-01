@@ -12,10 +12,13 @@ export const createDefaultModule = (): ModuleModel => {
     width,
     height,
     color: 'RAL 7012',
+    colors: ['RAL 7012', 'RAL 9005', 'RAL 9006'],
     lines: [
       {
         id: 'line-left',
         name: 'Рама левая (осевая)',
+        role: 'n L',
+        orderNumber: 512,
         x1: 0,
         y1: 0,
         x2: 0,
@@ -25,6 +28,8 @@ export const createDefaultModule = (): ModuleModel => {
           {
             id: 'prof-l-1',
             lineId: 'line-left',
+            role: 'n L',
+            orderNumber: 512,
             article: 'AYPC.EF100.40.0101',
             name: 'Рама левая',
             customMark: 'А1187 0101-2555-512',
@@ -141,6 +146,8 @@ export const createDefaultModule = (): ModuleModel => {
       {
         id: 'line-right',
         name: 'Рама правая (осевая)',
+        role: 'n R',
+        orderNumber: 522,
         x1: width,
         y1: 0,
         x2: width,
@@ -150,6 +157,8 @@ export const createDefaultModule = (): ModuleModel => {
           {
             id: 'prof-r-1',
             lineId: 'line-right',
+            role: 'n R',
+            orderNumber: 522,
             article: 'AYPC.EF100.40.0101',
             name: 'Рама правая',
             customMark: 'А1187 0101-2555-522',
@@ -193,6 +202,8 @@ export const createDefaultModule = (): ModuleModel => {
       {
         id: 'line-bottom',
         name: 'Рама нижняя (осевая)',
+        role: 'Down',
+        orderNumber: 500,
         x1: 0,
         y1: 0,
         x2: width,
@@ -202,6 +213,8 @@ export const createDefaultModule = (): ModuleModel => {
           {
             id: 'prof-b-1',
             lineId: 'line-bottom',
+            role: 'Down',
+            orderNumber: 500,
             article: 'AYPC.EF100.40.0102',
             name: 'Рама нижняя',
             customMark: 'А1187 0102-1000-500',
@@ -265,6 +278,8 @@ export const createDefaultModule = (): ModuleModel => {
       {
         id: 'line-top',
         name: 'Рама верхняя (осевая)',
+        role: 'Up',
+        orderNumber: 500,
         x1: 0,
         y1: height,
         x2: width,
@@ -274,6 +289,8 @@ export const createDefaultModule = (): ModuleModel => {
           {
             id: 'prof-t-1',
             lineId: 'line-top',
+            role: 'Up',
+            orderNumber: 500,
             article: 'AYPC.EF100.40.0104',
             name: 'Рама верхняя',
             customMark: 'А1187 0104-1000-500',
@@ -327,6 +344,8 @@ export const createDefaultModule = (): ModuleModel => {
       {
         id: 'line-transom-1',
         name: 'Ригель промежуточный (осевая)',
+        role: 'Middle 1',
+        orderNumber: 500,
         x1: 0,
         y1: transomY,
         x2: width,
@@ -336,6 +355,8 @@ export const createDefaultModule = (): ModuleModel => {
           {
             id: 'prof-tr-1',
             lineId: 'line-transom-1',
+            role: 'Middle 1',
+            orderNumber: 500,
             article: 'AYPC.EF100.40.0202',
             name: 'Импост горизонтальный (ригель)',
             customMark: 'А1187 0202-1000-500',

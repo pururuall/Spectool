@@ -12,6 +12,7 @@ import {
 import { createDefaultModule } from './data/defaultModule';
 import { generateBOM } from './utils/bomEngine';
 import { detectCellsFromLines } from './utils/cellDetector';
+import { generateProfileMark } from './utils/namingService';
 import { Header } from './components/Header';
 import { Canvas } from './components/Canvas';
 import { ParametersBox } from './components/ParametersBox';
@@ -109,6 +110,8 @@ export const App: React.FC = () => {
     const l1: LineSegment = {
       id: `line-left-${Date.now()}`,
       name: 'Левая рама',
+      role: 'n L',
+      orderNumber: 512,
       x1: 0,
       y1: 0,
       x2: 0,
@@ -119,6 +122,8 @@ export const App: React.FC = () => {
     const l2: LineSegment = {
       id: `line-right-${Date.now() + 1}`,
       name: 'Правая рама',
+      role: 'n R',
+      orderNumber: 522,
       x1: w,
       y1: 0,
       x2: w,
@@ -129,6 +134,8 @@ export const App: React.FC = () => {
     const l3: LineSegment = {
       id: `line-bottom-${Date.now() + 2}`,
       name: 'Нижняя рама',
+      role: 'Down',
+      orderNumber: 500,
       x1: 0,
       y1: 0,
       x2: w,
@@ -139,6 +146,8 @@ export const App: React.FC = () => {
     const l4: LineSegment = {
       id: `line-top-${Date.now() + 3}`,
       name: 'Верхняя рама',
+      role: 'Up',
+      orderNumber: 500,
       x1: 0,
       y1: h,
       x2: w,
@@ -222,11 +231,16 @@ export const App: React.FC = () => {
 
   // Add a newly drawn line
   const handleAddLine = (line: LineSegment) => {
+    const nextOrder = module.lines.length + 1;
+    const lineWithOrder: LineSegment = {
+      ...line,
+      orderNumber: line.orderNumber ?? nextOrder
+    };
     setModule((prev) => ({
       ...prev,
-      lines: [...prev.lines, line]
+      lines: [...prev.lines, lineWithOrder]
     }));
-    setSelectedLineId(line.id);
+    setSelectedLineId(lineWithOrder.id);
     setSelectedCellId(null);
   };
 
@@ -300,13 +314,17 @@ export const App: React.FC = () => {
     }
 
     const calcLength = Math.max(0, targetLine.length - profileItem.defaultOffset);
+    const orderNum = targetLine.orderNumber ?? (targetLine.profileBindings?.[0]?.orderNumber || 500);
+    const customMark = generateProfileMark(module.project, profileItem.article, targetLine.length, orderNum);
 
     const newProf: ProfileBinding = {
       id: `prof-${Date.now()}`,
       lineId: targetLine.id,
+      role: targetLine.role,
+      orderNumber: orderNum,
       article: profileItem.article,
       name: profileItem.name,
-      customMark: `${module.project || 'А1187'} ${profileItem.article.slice(-4)}-${calcLength}`,
+      customMark: customMark,
       company: profileItem.company,
       category: profileItem.category === 'frame_horizontal' ? 'transom' : 'profile',
       material: profileItem.article,
@@ -555,6 +573,11 @@ export const App: React.FC = () => {
       <Header
         module={module}
         bomRows={bomRows}
+        selectedLineId={selectedLineId}
+        onSelectLine={handleSelectLine}
+        onUpdateLines={(lines) => setModule((m) => ({ ...m, lines }))}
+        onUpdateColor={(color) => setModule((m) => ({ ...m, color }))}
+        onUpdateColorsList={(colors) => setModule((m) => ({ ...m, colors }))}
         onUpdateModuleName={(name) => setModule((m) => ({ ...m, name }))}
         onUpdateProjectName={(project) => setModule((m) => ({ ...m, project }))}
         onUpdateDimensions={handleUpdateDimensions}
@@ -603,6 +626,8 @@ export const App: React.FC = () => {
           selectedCell={selectedCell}
           selectedProfileId={activeProfileId}
           width={layoutSizes.paramsWidth}
+          projectCode={module.project}
+          projectColors={module.colors && module.colors.length > 0 ? module.colors : [module.color || 'RAL 7012']}
           onSelectLine={handleSelectLine}
           onSelectCell={handleSelectCell}
           onUpdateLine={handleUpdateLine}

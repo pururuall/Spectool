@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { LineSegment, Cell, ProfileBinding } from '../types';
-import { Trash2, Plus, Layers, Tag, Ruler, BookmarkPlus, Sparkles, Box, Info } from 'lucide-react';
+import { Trash2, Plus, Layers, Tag, Ruler, BookmarkPlus, Sparkles, Box, Info, Palette } from 'lucide-react';
 import { getAllCellTemplates, applyTemplateToCell, saveCustomCellTemplate } from '../utils/cellTemplates';
+import { generateProfileMark } from '../utils/namingService';
 
 interface ParametersBoxProps {
   allLines?: LineSegment[];
@@ -9,6 +10,8 @@ interface ParametersBoxProps {
   selectedLine: LineSegment | null;
   selectedCell: Cell | null;
   selectedProfileId: string | null;
+  projectCode?: string;
+  projectColors?: string[];
   width?: number;
   onSelectLine?: (id: string | null) => void;
   onSelectCell?: (id: string | null) => void;
@@ -28,6 +31,8 @@ export const ParametersBox: React.FC<ParametersBoxProps> = ({
   selectedLine,
   selectedCell,
   selectedProfileId,
+  projectCode = 'А1187',
+  projectColors = ['RAL 7012'],
   width = 320,
   onSelectLine,
   onSelectCell,
@@ -213,20 +218,197 @@ export const ParametersBox: React.FC<ParametersBoxProps> = ({
                           </button>
                         </div>
 
-                        {/* Custom mark */}
-                        <div>
-                          <label className="text-[10px] text-slate-500 block mb-0.5">Обозначение детали:</label>
-                          <input
-                            type="text"
-                            value={prof.customMark || ''}
-                            onChange={(e) => {
-                              onUpdateProfile(selectedLine.id, {
-                                ...prof,
-                                customMark: e.target.value
-                              });
-                            }}
-                            className="w-full bg-white border border-slate-300 rounded px-2 py-0.5 font-mono text-xs font-semibold text-blue-700"
-                          />
+                        {/* 1. Offsets from ends of line and calculated cut length */}
+                        <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1.5">
+                          <div className="flex items-center justify-between text-[11px] font-semibold text-slate-700">
+                            <span className="flex items-center gap-1">
+                              <Ruler className="w-3 h-3 text-blue-600" />
+                              Отступы от концов (подрезка):
+                            </span>
+                            <span className="font-mono text-emerald-700 font-bold text-xs bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                              L = {Math.max(0, selectedLine.length - (prof.startOffset || 0) - (prof.endOffset || 0))} мм
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                              <label className="text-[10px] text-slate-500 block">Отступ 1 (начало):</label>
+                              <div className="flex items-center gap-1">
+                                <input
+                                  type="number"
+                                  value={prof.startOffset ?? 0}
+                                  onChange={(e) => {
+                                    const s = parseFloat(e.target.value) || 0;
+                                    const newL = Math.max(0, selectedLine.length - s - (prof.endOffset || 0));
+                                    onUpdateProfile(selectedLine.id, {
+                                      ...prof,
+                                      startOffset: s,
+                                      calculatedLength: newL
+                                    });
+                                  }}
+                                  className="w-full bg-white border border-slate-300 rounded px-1.5 py-0.5 text-right font-mono font-bold text-xs focus:outline-none focus:border-blue-500"
+                                />
+                                <span className="text-[10px] text-slate-400">мм</span>
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="text-[10px] text-slate-500 block">Отступ 2 (конец):</label>
+                              <div className="flex items-center gap-1">
+                                <input
+                                  type="number"
+                                  value={prof.endOffset ?? 0}
+                                  onChange={(e) => {
+                                    const end = parseFloat(e.target.value) || 0;
+                                    const newL = Math.max(0, selectedLine.length - (prof.startOffset || 0) - end);
+                                    onUpdateProfile(selectedLine.id, {
+                                      ...prof,
+                                      endOffset: end,
+                                      calculatedLength: newL
+                                    });
+                                  }}
+                                  className="w-full bg-white border border-slate-300 rounded px-1.5 py-0.5 text-right font-mono font-bold text-xs focus:outline-none focus:border-blue-500"
+                                />
+                                <span className="text-[10px] text-slate-400">мм</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Quick presets */}
+                          <div className="flex items-center gap-1 text-[9px] pt-1 border-t border-slate-200">
+                            <span className="text-slate-400">Быстро:</span>
+                            {[
+                              { label: '0 / 0', s: 0, e: 0 },
+                              { label: '40 / 0', s: 40, e: 0 },
+                              { label: '30 / 30', s: 30, e: 30 },
+                              { label: '20 / 20', s: 20, e: 20 }
+                            ].map((preset) => (
+                              <button
+                                key={preset.label}
+                                type="button"
+                                onClick={() => {
+                                  const newL = Math.max(0, selectedLine.length - preset.s - preset.e);
+                                  onUpdateProfile(selectedLine.id, {
+                                    ...prof,
+                                    startOffset: preset.s,
+                                    endOffset: preset.e,
+                                    calculatedLength: newL
+                                  });
+                                }}
+                                className="px-1.5 py-0.5 bg-white hover:bg-slate-100 border border-slate-200 rounded text-slate-600 font-mono transition cursor-pointer"
+                              >
+                                {preset.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 2. Custom mark & Order number */}
+                        <div className="space-y-1.5 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                          <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-semibold text-slate-700">Обозначение детали (Марка):</label>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const ord = prof.orderNumber || selectedLine.orderNumber || 500;
+                                const autoMark = generateProfileMark(projectCode || 'А1187', prof.article, selectedLine.length, ord);
+                                onUpdateProfile(selectedLine.id, {
+                                  ...prof,
+                                  customMark: autoMark
+                                });
+                              }}
+                              className="text-[10px] text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 cursor-pointer"
+                              title="Сгенерировать марку: [Проект] [Код арт.]-[Ось]-[Порядковый №]"
+                            >
+                              <Sparkles className="w-2.5 h-2.5" /> По формуле
+                            </button>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-1.5">
+                            <div className="col-span-2">
+                              <input
+                                type="text"
+                                value={prof.customMark || ''}
+                                onChange={(e) => {
+                                  onUpdateProfile(selectedLine.id, {
+                                    ...prof,
+                                    customMark: e.target.value
+                                  });
+                                }}
+                                placeholder="А1187 0101-2555-512"
+                                className="w-full bg-white border border-slate-300 rounded px-2 py-0.5 font-mono text-xs font-bold text-blue-800 focus:outline-none focus:border-blue-500"
+                              />
+                            </div>
+
+                            <div>
+                              <input
+                                type="text"
+                                value={prof.orderNumber ?? (selectedLine.orderNumber ?? '')}
+                                onChange={(e) => {
+                                  const ord = e.target.value;
+                                  const autoMark = generateProfileMark(projectCode || 'А1187', prof.article, selectedLine.length, ord);
+                                  onUpdateProfile(selectedLine.id, {
+                                    ...prof,
+                                    orderNumber: ord,
+                                    customMark: autoMark
+                                  });
+                                }}
+                                placeholder="№ 512"
+                                className="w-full bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-center text-xs font-bold text-amber-800 focus:outline-none focus:border-amber-600"
+                                title="Порядковый номер палки (512, 522, 500, 1, 2...)"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 3. Profile Color */}
+                        <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1">
+                          <div className="flex items-center justify-between text-[10px] font-semibold text-slate-700">
+                            <span className="flex items-center gap-1">
+                              <Palette className="w-3 h-3 text-amber-500" />
+                              Цвет профиля / покраска:
+                            </span>
+                            <span className="font-mono text-slate-500 text-[10px]">{prof.color || 'RAL 7012'}</span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              type="text"
+                              value={prof.color || ''}
+                              onChange={(e) => {
+                                onUpdateProfile(selectedLine.id, {
+                                  ...prof,
+                                  color: e.target.value
+                                });
+                              }}
+                              placeholder="RAL 7012"
+                              className="w-full bg-white border border-slate-300 rounded px-2 py-0.5 font-mono text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                            />
+                          </div>
+
+                          {projectColors && projectColors.length > 0 && (
+                            <div className="flex flex-wrap gap-1 pt-0.5">
+                              {projectColors.map((col) => (
+                                <button
+                                  key={col}
+                                  type="button"
+                                  onClick={() => {
+                                    onUpdateProfile(selectedLine.id, {
+                                      ...prof,
+                                      color: col
+                                    });
+                                  }}
+                                  className={`text-[9px] font-mono px-1.5 py-0.5 rounded border transition cursor-pointer ${
+                                    prof.color === col
+                                      ? 'bg-blue-600 text-white border-blue-700 font-bold'
+                                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                                  }`}
+                                >
+                                  {col}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
                         {/* Attached Hardware for this profile */}

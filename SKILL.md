@@ -21,7 +21,10 @@ description: >-
 [`src/utils/databaseService.ts`](src/utils/databaseService.ts) | Сервис баз данных | Парсинг Excel-файлов (`Метизы.xlsx`, `Материалы.xlsx`), вечная синхронизация в `localStorage`.
 [`src/components/HardwareDatabase.tsx`](src/components/HardwareDatabase.tsx) | Панель метизов | Каталог крепежа (338+ поз.), фильтры (самонарезы, болты, заклепки, уплотнители), кнопка загрузки Excel.
 [`src/components/MaterialsTree.tsx`](src/components/MaterialsTree.tsx) | Дерево материалов | Иерархическое дерево (Раздел → Подраздел → Позиция), привязка профилей к линиям, загрузка Excel.
-[`src/components/ParametersBox.tsx`](src/components/ParametersBox.tsx) | Инспектор свойств | Параметры выделенной линии или ячейки (зазор стеклопакета, развертка короба, выбор материала).
+[`src/components/ParametersBox.tsx`](src/components/ParametersBox.tsx) | Инспектор свойств | Параметры выделенной линии/ячейки (отступы подрезки 1/2, расчет $L$, выбор цвета, марка по формуле).
+[`src/components/ProfileNumberingPopover.tsx`](src/components/ProfileNumberingPopover.tsx) | Плавающая таблица «№ Палок» | Сводная таблица по осям (H: n L, n R / W: Up, Down, Middle) и полный список всех линий с номерами.
+[`src/components/ColorManagerPopover.tsx`](src/components/ColorManagerPopover.tsx) | Менеджер цветов проекта | Управление цветами проекта (мульти-RAL палитра для профилей, крышек и стоек).
+[`src/utils/namingService.ts`](src/utils/namingService.ts) | Генератор заводских марок | Формула `[Проект] [Арт]-[Ось]-[№]` («Модуль Жукова»), авто-присвоение ролей `n L`, `n R`, `Up`, `Down`.
 [`src/components/DependenciesPanel.tsx`](src/components/DependenciesPanel.tsx) | Привязка комплектации | Расчёт метизов и уплотнителей по шагу (мм), формуле (`L * 1.05 / 1000`) или фикс. количеству.
 [`src/utils/bomEngine.ts`](src/utils/bomEngine.ts) | BOM-движок спецификаций | 19-колоночный расчёт ведомости и генерация стилизованного `.xlsx` файла («Модуль Жукова» / А1187 М507).
 [`electron/main.cjs`](electron/main.cjs) | Главный процесс Electron | CommonJS-запуск окна, безопасная загрузка `dist/index.html` из `app.asar`, перехват ошибок.

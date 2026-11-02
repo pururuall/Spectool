@@ -1,5 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { ModuleModel, LineSegment } from '../types';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
+import { ModuleModel, LineSegment, DimensionDisplayMode } from '../types';
+import { DimensionOverlay } from './DimensionOverlay';
 import {
   ZoomIn,
   ZoomOut,
@@ -11,7 +12,8 @@ import {
   Check,
   X,
   PlusSquare,
-  LayoutGrid
+  LayoutGrid,
+  Eye
 } from 'lucide-react';
 
 function distToSegmentMm(px: number, py: number, x1: number, y1: number, x2: number, y2: number): number {
@@ -28,6 +30,8 @@ interface CanvasProps {
   module: ModuleModel;
   selectedLineId: string | null;
   selectedCellId: string | null;
+  dimensionDisplayMode?: DimensionDisplayMode;
+  onChangeDimensionMode?: (mode: DimensionDisplayMode) => void;
   width?: number;
   onSelectLine: (id: string | null) => void;
   onSelectCell: (id: string | null) => void;
@@ -43,6 +47,8 @@ export const Canvas: React.FC<CanvasProps> = ({
   module,
   selectedLineId,
   selectedCellId,
+  dimensionDisplayMode = 'selection_inputs',
+  onChangeDimensionMode,
   width = 490,
   onSelectLine,
   onSelectCell,
@@ -88,14 +94,29 @@ export const Canvas: React.FC<CanvasProps> = ({
   const baseScale = 380 / maxDim;
   const scale = baseScale * zoom;
 
-  const svgWidth = Math.max(module.width * scale + 140, 480);
-  const svgHeight = Math.max(module.height * scale + 140, 420);
+  const svgWidth = Math.max(module.width * scale + 180, 520);
+  const svgHeight = Math.max(module.height * scale + 180, 460);
 
-  const toSvgX = (mmX: number) => 60 + mmX * scale;
-  const toSvgY = (mmY: number) => svgHeight - 60 - mmY * scale;
+  const toSvgX = (mmX: number) => 80 + mmX * scale;
+  const toSvgY = (mmY: number) => svgHeight - 80 - mmY * scale;
 
-  const fromSvgX = (svgX: number) => (svgX - 60) / scale;
-  const fromSvgY = (svgY: number) => (svgHeight - 60 - svgY) / scale;
+  const fromSvgX = (svgX: number) => (svgX - 80) / scale;
+  const fromSvgY = (svgY: number) => (svgHeight - 80 - svgY) / scale;
+
+  // CAD Architectural Dimension Chains (levels & bays)
+  const cadLevels = useMemo(() => {
+    const horiz = module.lines.filter((l) => Math.abs(l.y1 - l.y2) <= 2);
+    const set = new Set<number>([0, module.height]);
+    horiz.forEach((l) => set.add(Math.round((l.y1 + l.y2) / 2)));
+    return Array.from(set).sort((a, b) => a - b);
+  }, [module.lines, module.height]);
+
+  const cadBays = useMemo(() => {
+    const vert = module.lines.filter((l) => Math.abs(l.x1 - l.x2) <= 2);
+    const set = new Set<number>([0, module.width]);
+    vert.forEach((l) => set.add(Math.round((l.x1 + l.x2) / 2)));
+    return Array.from(set).sort((a, b) => a - b);
+  }, [module.lines, module.width]);
 
   // Active selected elements
   const selectedLine = module.lines.find((l) => l.id === selectedLineId) || null;
@@ -570,16 +591,17 @@ export const Canvas: React.FC<CanvasProps> = ({
           backgroundSize: '20px 20px'
         }}
       >
-        <svg
-          ref={svgRef}
-          width={svgWidth}
-          height={svgHeight}
-          className={`overflow-visible bg-white shadow-sm border border-slate-300 rounded ${
-            tool === 'line' ? 'cursor-crosshair' : 'cursor-default'
-          }`}
-          onMouseDown={handleSvgMouseDown}
-          onMouseMove={handleSvgMouseMove}
-        >
+        <div className="relative">
+          <svg
+            ref={svgRef}
+            width={svgWidth}
+            height={svgHeight}
+            className={`overflow-visible bg-white shadow-sm border border-slate-300 rounded ${
+              tool === 'line' ? 'cursor-crosshair' : 'cursor-default'
+            }`}
+            onMouseDown={handleSvgMouseDown}
+            onMouseMove={handleSvgMouseMove}
+          >
           {/* 1. CELLS / FIELDS (GLASS / SPANDRELS) */}
           {module.cells.map((cell) => {
             const x = toSvgX(cell.x);
@@ -730,43 +752,46 @@ export const Canvas: React.FC<CanvasProps> = ({
                 />
 
                 {/* Dimension Tag on the line (Click to select, double click to edit!) */}
-                <g
-                  transform={`translate(${midX}, ${midY})`}
-                  cursor={tool === 'select' ? 'pointer' : 'crosshair'}
-                  onMouseDown={tool === 'select' ? handleSelectThisLine : undefined}
-                  onClick={tool === 'select' ? handleSelectThisLine : undefined}
-                  onDoubleClick={(e) => {
-                    if (tool !== 'select') return;
-                    e.stopPropagation();
-                    setInlineEditingLineId(line.id);
-                    setInlineEditValue(line.length.toString());
-                  }}
-                  className="cursor-pointer"
-                  style={{ pointerEvents: tool === 'select' ? 'auto' : 'none' }}
-                >
-                  <rect
-                    x="-28"
-                    y="-10"
-                    width="56"
-                    height="20"
-                    rx="4"
-                    fill={isSelected ? '#2563eb' : isHovered ? '#eff6ff' : '#ffffff'}
-                    stroke={isSelected ? '#1d4ed8' : isHovered ? '#3b82f6' : '#94a3b8'}
-                    strokeWidth={isSelected || isHovered ? 2 : 1.5}
-                    style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))' }}
-                  />
-                  <text
-                    textAnchor="middle"
-                    dy="4"
-                    fill={isSelected ? '#ffffff' : isHovered ? '#1d4ed8' : '#0f172a'}
-                    fontSize="9.5"
-                    fontFamily="JetBrains Mono"
-                    fontWeight="bold"
-                    style={{ pointerEvents: 'none' }}
+                {(dimensionDisplayMode === 'all_lines' ||
+                  (dimensionDisplayMode === 'selection_inputs' && isSelected)) && (
+                  <g
+                    transform={`translate(${midX}, ${midY})`}
+                    cursor={tool === 'select' ? 'pointer' : 'crosshair'}
+                    onMouseDown={tool === 'select' ? handleSelectThisLine : undefined}
+                    onClick={tool === 'select' ? handleSelectThisLine : undefined}
+                    onDoubleClick={(e) => {
+                      if (tool !== 'select') return;
+                      e.stopPropagation();
+                      setInlineEditingLineId(line.id);
+                      setInlineEditValue(line.length.toString());
+                    }}
+                    className="cursor-pointer"
+                    style={{ pointerEvents: tool === 'select' ? 'auto' : 'none' }}
                   >
-                    {line.length}
-                  </text>
-                </g>
+                    <rect
+                      x="-28"
+                      y="-10"
+                      width="56"
+                      height="20"
+                      rx="4"
+                      fill={isSelected ? '#2563eb' : isHovered ? '#eff6ff' : '#ffffff'}
+                      stroke={isSelected ? '#1d4ed8' : isHovered ? '#3b82f6' : '#94a3b8'}
+                      strokeWidth={isSelected || isHovered ? 2 : 1.5}
+                      style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))' }}
+                    />
+                    <text
+                      textAnchor="middle"
+                      dy="4"
+                      fill={isSelected ? '#ffffff' : isHovered ? '#1d4ed8' : '#0f172a'}
+                      fontSize="9.5"
+                      fontFamily="JetBrains Mono"
+                      fontWeight="bold"
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      {line.length}
+                    </text>
+                  </g>
+                )}
 
                 {/* Endpoint Draggable Handles (only in select mode) */}
                 {isSelected && tool === 'select' && (
@@ -905,8 +930,132 @@ export const Canvas: React.FC<CanvasProps> = ({
               )}
             </g>
           )}
+
+          {/* CAD Architectural Outer Dimension Chains */}
+          {dimensionDisplayMode === 'outer_chains' && (
+            <g className="cad-dimension-chains" style={{ pointerEvents: 'none' }}>
+              {/* Left Vertical Chains (Levels) */}
+              {cadLevels.map((lvl, idx) => {
+                if (idx === cadLevels.length - 1) return null;
+                const nextLvl = cadLevels[idx + 1];
+                const dist = nextLvl - lvl;
+                if (dist <= 0) return null;
+                const yA = toSvgY(lvl);
+                const yB = toSvgY(nextLvl);
+                const chainX = toSvgX(-25);
+                const midY = (yA + yB) / 2;
+                return (
+                  <g key={`lvl_chain_${idx}`}>
+                    <line x1={toSvgX(0)} y1={yA} x2={toSvgX(-32)} y2={yA} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                    <line x1={toSvgX(0)} y1={yB} x2={toSvgX(-32)} y2={yB} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                    <line x1={chainX} y1={yA} x2={chainX} y2={yB} stroke="#475569" strokeWidth="1.2" />
+                    <line x1={chainX - 3} y1={yA + 3} x2={chainX + 3} y2={yA - 3} stroke="#334155" strokeWidth="1.5" />
+                    <line x1={chainX - 3} y1={yB + 3} x2={chainX + 3} y2={yB - 3} stroke="#334155" strokeWidth="1.5" />
+                    <text
+                      x={chainX - 5}
+                      y={midY}
+                      textAnchor="end"
+                      dominantBaseline="central"
+                      fill="#0f172a"
+                      fontSize="9"
+                      fontFamily="JetBrains Mono"
+                      fontWeight="bold"
+                    >
+                      {dist}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Total Height Chain */}
+              <g key="total_h_chain">
+                <line x1={toSvgX(0)} y1={toSvgY(0)} x2={toSvgX(-60)} y2={toSvgY(0)} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                <line x1={toSvgX(0)} y1={toSvgY(module.height)} x2={toSvgX(-60)} y2={toSvgY(module.height)} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                <line x1={toSvgX(-52)} y1={toSvgY(0)} x2={toSvgX(-52)} y2={toSvgY(module.height)} stroke="#2563eb" strokeWidth="1.5" />
+                <line x1={toSvgX(-52) - 4} y1={toSvgY(0) + 4} x2={toSvgX(-52) + 4} y2={toSvgY(0) - 4} stroke="#2563eb" strokeWidth="1.8" />
+                <line x1={toSvgX(-52) - 4} y1={toSvgY(module.height) + 4} x2={toSvgX(-52) + 4} y2={toSvgY(module.height) - 4} stroke="#2563eb" strokeWidth="1.8" />
+                <text
+                  x={toSvgX(-52) - 6}
+                  y={(toSvgY(0) + toSvgY(module.height)) / 2}
+                  textAnchor="end"
+                  dominantBaseline="central"
+                  fill="#2563eb"
+                  fontSize="10"
+                  fontFamily="JetBrains Mono"
+                  fontWeight="bold"
+                >
+                  H={module.height}
+                </text>
+              </g>
+
+              {/* Bottom Horizontal Chains (Bays) */}
+              {cadBays.map((bay, idx) => {
+                if (idx === cadBays.length - 1) return null;
+                const nextBay = cadBays[idx + 1];
+                const dist = nextBay - bay;
+                if (dist <= 0) return null;
+                const xA = toSvgX(bay);
+                const xB = toSvgX(nextBay);
+                const chainY = toSvgY(-25);
+                const midX = (xA + xB) / 2;
+                return (
+                  <g key={`bay_chain_${idx}`}>
+                    <line x1={xA} y1={toSvgY(0)} x2={xA} y2={toSvgY(-32)} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                    <line x1={xB} y1={toSvgY(0)} x2={xB} y2={toSvgY(-32)} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                    <line x1={xA} y1={chainY} x2={xB} y2={chainY} stroke="#475569" strokeWidth="1.2" />
+                    <line x1={xA - 3} y1={chainY + 3} x2={xA + 3} y2={chainY - 3} stroke="#334155" strokeWidth="1.5" />
+                    <line x1={xB - 3} y1={chainY + 3} x2={xB + 3} y2={chainY - 3} stroke="#334155" strokeWidth="1.5" />
+                    <text
+                      x={midX}
+                      y={chainY + 11}
+                      textAnchor="middle"
+                      fill="#0f172a"
+                      fontSize="9"
+                      fontFamily="JetBrains Mono"
+                      fontWeight="bold"
+                    >
+                      {dist}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Total Width Chain */}
+              <g key="total_w_chain">
+                <line x1={toSvgX(0)} y1={toSvgY(0)} x2={toSvgX(0)} y2={toSvgY(-60)} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                <line x1={toSvgX(module.width)} y1={toSvgY(0)} x2={toSvgX(module.width)} y2={toSvgY(-60)} stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
+                <line x1={toSvgX(0)} y1={toSvgY(-52)} x2={toSvgX(module.width)} y2={toSvgY(-52)} stroke="#2563eb" strokeWidth="1.5" />
+                <line x1={toSvgX(0) - 4} y1={toSvgY(-52) + 4} x2={toSvgX(0) + 4} y2={toSvgY(-52) - 4} stroke="#2563eb" strokeWidth="1.8" />
+                <line x1={toSvgX(module.width) - 4} y1={toSvgY(-52) + 4} x2={toSvgX(module.width) + 4} y2={toSvgY(-52) - 4} stroke="#2563eb" strokeWidth="1.8" />
+                <text
+                  x={(toSvgX(0) + toSvgX(module.width)) / 2}
+                  y={toSvgY(-52) + 14}
+                  textAnchor="middle"
+                  fill="#2563eb"
+                  fontSize="10"
+                  fontFamily="JetBrains Mono"
+                  fontWeight="bold"
+                >
+                  L={module.width}
+                </text>
+              </g>
+            </g>
+          )}
         </svg>
+
+        {/* Interactive Selection Inputs Overlay */}
+        {dimensionDisplayMode === 'selection_inputs' && (
+          <DimensionOverlay
+            selectedLine={selectedLine}
+            allLines={module.lines}
+            module={module}
+            toSvgX={toSvgX}
+            toSvgY={toSvgY}
+            onUpdateLine={onUpdateLine}
+          />
+        )}
       </div>
+    </div>
 
       {/* Bottom CAD Info Bar */}
       <div className="p-2 border-t border-slate-200 bg-white flex items-center justify-between text-xs">

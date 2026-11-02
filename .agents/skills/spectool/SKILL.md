@@ -16,22 +16,26 @@ description: >-
 
 Файл / Модуль | Назначение | Ключевые функции
 :--- | :--- | :---
-[`src/components/Canvas.tsx`](../../src/components/Canvas.tsx) | CAD-холст | Черчение стоек/ригелей, магнитная привязка, ORTHO, перетаскивание узлов, масштабирование (зум/пан).
-[`src/utils/cellDetector.ts`](../../src/utils/cellDetector.ts) | Алгоритм детекции ячеек | Интервальный луч-анализ для поиска замкнутых проёмов в сетке стоек и ригелей (включая Т-примыкания).
-[`src/utils/databaseService.ts`](../../src/utils/databaseService.ts) | Сервис баз данных | Парсинг Excel-файлов (`Метизы.xlsx`, `Материалы.xlsx`), вечная синхронизация в `localStorage`.
-[`src/components/HardwareDatabase.tsx`](../../src/components/HardwareDatabase.tsx) | Панель метизов | Каталог крепежа (338+ поз.), фильтры (самонарезы, болты, заклепки, уплотнители), кнопка загрузки Excel.
-[`src/components/MaterialsTree.tsx`](../../src/components/MaterialsTree.tsx) | Дерево материалов | Иерархическое дерево (Раздел → Подраздел → Позиция), привязка профилей к линиям, загрузка Excel.
-[`src/components/ParametersBox.tsx`](../../src/components/ParametersBox.tsx) | Инспектор свойств | Параметры выделенной линии/ячейки (отступы подрезки 1/2, расчет $L$, выбор цвета, марка по формуле).
-[`src/components/ProfileNumberingPopover.tsx`](../../src/components/ProfileNumberingPopover.tsx) | Плавающая таблица «№ Палок» | Сводная таблица по осям (H: n L, n R / W: Up, Down, Middle) и полный список всех линий с номерами.
-[`src/components/ColorManagerPopover.tsx`](../../src/components/ColorManagerPopover.tsx) | Менеджер цветов проекта | Управление цветами проекта (мульти-RAL палитра для профилей, крышек и стоек).
-[`src/components/NamingFormulaModal.tsx`](../../src/components/NamingFormulaModal.tsx) | Настройка формулы марки | Выбор отраслевого стандарта или своего шаблона `{project} {article}-{axialLength}-{order}`.
-[`src/components/ProcessTemplatesModal.tsx`](../../src/components/ProcessTemplatesModal.tsx) | База шаблонов ТП | Управление шаблонами технологических процессов (27 категорий для интеграции с Vogbit).
-[`src/components/StandaloneItemModal.tsx`](../../src/components/StandaloneItemModal.tsx) | Кронштейны и сб. единицы | Добавление независимых деталей (кронштейны, пластины, закладные) и сборочных единиц.
-[`src/utils/projectStorageService.ts`](../../src/utils/projectStorageService.ts) | Сохранение/загрузка проектов | Экспорт и импорт модулей целиком в формате `.spectool` (JSON).
-[`src/utils/excelImportService.ts`](../../src/utils/excelImportService.ts) | Импорт спецификации Excel | Парсинг листа «Спецификация» (19 колонок), габаритов и автоматическое извлечение деталей.
-[`src/components/DependenciesPanel.tsx`](../../src/components/DependenciesPanel.tsx) | Привязка комплектации | Расчёт метизов и уплотнителей по шагу (мм), формуле (`L * 1.05 / 1000`) или фикс. количеству.
-[`src/utils/bomEngine.ts`](../../src/utils/bomEngine.ts) | BOM-движок спецификаций | 19-колоночный расчёт ведомости и генерация стилизованного `.xlsx` файла («Модуль Жукова» / А1187 М507).
-[`electron/main.cjs`](../../electron/main.cjs) | Главный процесс Electron | CommonJS-запуск окна, безопасная загрузка `dist/index.html` из `app.asar`, перехват ошибок.
+[`src/components/MenuBar.tsx`](src/components/MenuBar.tsx) | Настольная лента меню | Файл (Импорт/Экспорт/Сохранить), Правка, Вид (4 режима образмеривания), Настройки БД и цветов, Окно.
+[`src/components/DimensionOverlay.tsx`](src/components/DimensionOverlay.tsx) | Интерактивные размеры | Floating HTML `<input>` над ригелями и стойками для прямого ввода расстояний до соседних профилей.
+[`src/components/DatabaseManagerModal.tsx`](src/components/DatabaseManagerModal.tsx) | Единый менеджер БД | Управление иерархией материалов (любая глубина папок), метизами (динамические фильтры) и ТП (Vogbit).
+[`src/data/defaultMaterialTree.ts`](src/data/defaultMaterialTree.ts) | Заводская база материалов | Полная иерархия: Лист (черный, оцинковка, ал, нерж), Краска, Профиль (Alutech, Schueco...), Стандартные профили.
+[`src/components/Canvas.tsx`](src/components/Canvas.tsx) | CAD-холст | Черчение стоек/ригелей, магнитная привязка, ORTHO, перетаскивание узлов, масштабирование (зум/пан).
+[`src/utils/cellDetector.ts`](src/utils/cellDetector.ts) | Алгоритм детекции ячеек | Интервальный луч-анализ для поиска замкнутых проёмов в сетке стоек и ригелей (включая Т-примыкания).
+[`src/utils/databaseService.ts`](src/utils/databaseService.ts) | Сервис баз данных | Парсинг Excel-файлов (`Метизы.xlsx`, `Материалы.xlsx`), вечная синхронизация в `localStorage`.
+[`src/components/HardwareDatabase.tsx`](src/components/HardwareDatabase.tsx) | Панель метизов | Каталог крепежа (338+ поз.), фильтры (самонарезы, болты, заклепки, уплотнители), кнопка загрузки Excel.
+[`src/components/MaterialsTree.tsx`](src/components/MaterialsTree.tsx) | Дерево материалов | Иерархическое дерево (Раздел → Подраздел → Позиция), привязка профилей к линиям, загрузка Excel.
+[`src/components/ParametersBox.tsx`](src/components/ParametersBox.tsx) | Инспектор свойств | Параметры выделенной линии/ячейки (отступы подрезки 1/2, расчет $L$, выбор цвета, марка по формуле).
+[`src/components/ProfileNumberingPopover.tsx`](src/components/ProfileNumberingPopover.tsx) | Плавающая таблица «№ Палок» | Сводная таблица по осям (H: n L, n R / W: Up, Down, Middle) и полный список всех линий с номерами.
+[`src/components/ColorManagerPopover.tsx`](src/components/ColorManagerPopover.tsx) | Менеджер цветов проекта | Управление цветами проекта (мульти-RAL палитра для профилей, крышек и стоек).
+[`src/components/NamingFormulaModal.tsx`](src/components/NamingFormulaModal.tsx) | Настройка формулы марки | Выбор отраслевого стандарта или своего шаблона `{project} {article}-{axialLength}-{order}`.
+[`src/components/ProcessTemplatesModal.tsx`](src/components/ProcessTemplatesModal.tsx) | База шаблонов ТП | Управление шаблонами технологических процессов (27 категорий для интеграции с Vogbit).
+[`src/components/StandaloneItemModal.tsx`](src/components/StandaloneItemModal.tsx) | Кронштейны и сб. единицы | Добавление независимых деталей (кронштейны, пластины, закладные) и сборочных единиц.
+[`src/utils/projectStorageService.ts`](src/utils/projectStorageService.ts) | Сохранение/загрузка проектов | Экспорт и импорт модулей целиком в формате `.spectool` (JSON).
+[`src/utils/excelImportService.ts`](src/utils/excelImportService.ts) | Импорт спецификации Excel | Парсинг листа «Спецификация» (19 колонок), габаритов и автоматическое извлечение деталей.
+[`src/components/DependenciesPanel.tsx`](src/components/DependenciesPanel.tsx) | Привязка комплектации | Расчёт метизов и уплотнителей по шагу (мм), формуле (`L * 1.05 / 1000`) или фикс. количеству.
+[`src/utils/bomEngine.ts`](src/utils/bomEngine.ts) | BOM-движок спецификаций | 19-колоночный расчёт ведомости и генерация стилизованного `.xlsx` файла («Модуль Жукова» / А1187 М507).
+[`electron/main.cjs`](electron/main.cjs) | Главный процесс Electron | CommonJS-запуск окна, безопасная загрузка `dist/index.html` из `app.asar`, перехват ошибок.
 
 ---
 

@@ -90,6 +90,8 @@ export function removeProcessTemplate(templateName: string): string[] {
   return updated;
 }
 
+export { removeProcessTemplate as deleteProcessTemplate };
+
 /**
  * Сбросить шаблоны ТП к заводским 27 категориям из «Типы деталей в производстве.xlsx»
  */

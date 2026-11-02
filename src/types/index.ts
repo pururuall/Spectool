@@ -32,6 +32,8 @@ export interface ProfileBinding {
   miterRight?: number;  // 90 или 45
   miterLeft2?: number;  // Угол подрезки 2 плоскость
   miterRight2?: number; // Угол подрезки 2 плоскость
+  useCustomMarkFormula?: boolean;
+  customFormulaType?: string;
   planGroup: string;
   dependencies: DependencyRule[];
 }
@@ -150,14 +152,28 @@ export interface CatalogHardwareItem {
   color?: string;
 }
 
+export type DimensionDisplayMode = 'selection_inputs' | 'outer_chains' | 'all_lines' | 'hidden';
+
+export interface MaterialFolderNode {
+  id: string;
+  name: string;
+  parentId?: string | null;
+  subfolders: MaterialFolderNode[];
+  items: CatalogMaterialItem[];
+}
+
 export interface CatalogMaterialItem {
   id: string;
   section: string;      // Раздел верхнего уровня (Профили, Листовые, Заполнения, и т.д.)
   subsection: string;   // Подраздел (Стойки, Ригели, Оцинковка, Стеклопакеты...)
+  folderPath?: string[]; // Полный иерархический путь, напр. ['Лист', 'Сталь чёрная', 'С245']
   article: string;      // Артикул / Марка
-  name: string;         // Наименование
+  code?: string;        // Обозначение (напр. "С245 06мм")
+  name: string;         // Наименование (напр. "Лист 6 С245 ГОСТ 19903-2015")
   material: string;     // Сплав / состав
+  standard?: string;    // ГОСТ / DIN / ТУ
   unit: string;         // п.м., м2, шт, кг
+  thickness?: number;   // Толщина (мм)
   weight?: number;      // Вес единицы (кг/п.м. или кг/м2)
   stockLength?: number; // Длина хлыста (мм)
   width?: number;       // Ширина сечения (мм)
@@ -166,7 +182,7 @@ export interface CatalogMaterialItem {
   system?: string;      // EF100, FWS50 и т.д.
   defaultOffset?: number;
   defaultOffsetFormula?: string;
-  category?: 'frame_vertical' | 'frame_horizontal' | 'transom' | 'clamp' | 'cap' | 'joint' | 'sheet' | 'glass' | 'other';
+  category?: 'frame_vertical' | 'frame_horizontal' | 'transom' | 'clamp' | 'cap' | 'joint' | 'sheet' | 'glass' | 'profile' | 'other';
 }
 
 export interface CatalogProfileItem {

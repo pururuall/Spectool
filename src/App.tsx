@@ -28,7 +28,10 @@ import { ProcessTemplatesModal } from './components/ProcessTemplatesModal';
 import { StandaloneItemModal } from './components/StandaloneItemModal';
 import { AgentFeedbackOverlay } from './components/AgentFeedbackOverlay';
 import { ResizeDivider } from './components/ResizeDivider';
-import { StandaloneItem } from './types';
+import { MenuBar } from './components/MenuBar';
+import { DatabaseManagerModal } from './components/DatabaseManagerModal';
+import { StandaloneItem, DimensionDisplayMode, CatalogMaterialItem } from './types';
+import { exportToExcel } from './utils/bomEngine';
 
 export const App: React.FC = () => {
   const [module, setModule] = useState<ModuleModel>(createDefaultModule);
@@ -48,6 +51,53 @@ export const App: React.FC = () => {
   const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
   const [isStandaloneModalOpen, setIsStandaloneModalOpen] = useState(false);
   const [editingStandaloneItem, setEditingStandaloneItem] = useState<StandaloneItem | null>(null);
+
+  // Desktop Menu & Dimension display mode
+  const [dimensionDisplayMode, setDimensionDisplayMode] = useState<DimensionDisplayMode>(() => {
+    try {
+      const saved = localStorage.getItem('spectool_dim_mode');
+      if (saved) return saved as DimensionDisplayMode;
+    } catch (_) {}
+    return 'selection_inputs';
+  });
+
+  const handleSetDimensionMode = (mode: DimensionDisplayMode) => {
+    setDimensionDisplayMode(mode);
+    try {
+      localStorage.setItem('spectool_dim_mode', mode);
+    } catch (_) {}
+  };
+
+  const [isDatabaseManagerOpen, setIsDatabaseManagerOpen] = useState(false);
+  const [dbManagerInitialTab, setDbManagerInitialTab] = useState<'materials' | 'hardware' | 'processes'>('materials');
+
+  const [panelVisibility, setPanelVisibility] = useState<{
+    params: boolean;
+    materials: boolean;
+    hardware: boolean;
+    table: boolean;
+  }>(() => {
+    try {
+      const saved = localStorage.getItem('spectool_panel_visibility');
+      if (saved) return JSON.parse(saved);
+    } catch (_) {}
+    return {
+      params: true,
+      materials: true,
+      hardware: true,
+      table: true
+    };
+  });
+
+  const togglePanelVisibility = (panel: 'params' | 'materials' | 'hardware' | 'table') => {
+    setPanelVisibility((prev) => {
+      const updated = { ...prev, [panel]: !prev[panel] };
+      try {
+        localStorage.setItem('spectool_panel_visibility', JSON.stringify(updated));
+      } catch (_) {}
+      return updated;
+    });
+  };
 
   // Layout panel dimensions with local persistence
   const [layoutSizes, setLayoutSizes] = useState<{
@@ -364,6 +414,53 @@ export const App: React.FC = () => {
     setSelectedProfileId(newProf.id);
   };
 
+  const handleResetLayoutSizes = () => {
+    const defaults = {
+      canvasWidth: 480,
+      paramsWidth: 320,
+      materialsWidth: 300,
+      hardwareWidth: 290,
+      tableHeight: 260
+    };
+    setLayoutSizes(defaults);
+    setPanelVisibility({
+      params: true,
+      materials: true,
+      hardware: true,
+      table: true
+    });
+    try {
+      localStorage.setItem('spectool_layout_sizes', JSON.stringify(defaults));
+      localStorage.removeItem('spectool_panel_visibility');
+    } catch (_) {}
+  };
+
+  // Attach Material as Accessory (e.g. EF100.1901, MacTex rubber, insulation)
+  const handleBindMaterialAsAccessory = (mat: CatalogMaterialItem) => {
+    const isProfileTarget = !!(activeProfileId && selectedLine);
+    const isCellTarget = !!selectedCell;
+
+    if (!isProfileTarget && !isCellTarget) {
+      alert('Сначала выберите профиль или ячейку на холсте для привязки комплектующего');
+      return;
+    }
+
+    const isLinear = mat.unit === 'п.м.' || mat.unit === 'м';
+    const newDep: DependencyRule = {
+      id: `dep-${Date.now()}`,
+      article: mat.code || mat.article,
+      name: mat.name,
+      type: mat.category === 'sheet' ? 'insulation' : 'gasket',
+      unit: isLinear ? 'м' : ((mat.unit as any) || 'шт'),
+      calcType: isLinear ? 'formula' : 'fixed',
+      quantity: 1,
+      formula: isLinear ? 'L / 1000' : undefined,
+      evaluatedQty: isLinear && selectedLine ? Math.round((selectedLine.length / 1000) * 100) / 100 : 1
+    };
+
+    handleAddDependencyRule(newDep);
+  };
+
   // Attach Hardware from HardwareDatabase
   const handleSelectHardwareFromDB = (item: CatalogHardwareItem) => {
     const isScrew = item.name.toLowerCase().includes('винт') || item.name.toLowerCase().includes('самонарез');
@@ -667,7 +764,61 @@ export const App: React.FC = () => {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-slate-100 font-sans text-slate-800 overflow-hidden">
-      {/* Header bar */}
+      {/* 1. Desktop Application Menu Bar */}
+      <MenuBar
+        dimensionMode={dimensionDisplayMode}
+        onChangeDimensionMode={handleSetDimensionMode}
+        onNewEmptyModule={handleClearCanvas}
+        onLoadPreset={() => {
+          const def = createDefaultModule();
+          setModule(def);
+          const selLine = def.lines.find((l) => l.id === 'line-right') || def.lines[0];
+          setSelectedLineId(selLine?.id || null);
+          setSelectedCellId(null);
+          setSelectedProfileId(selLine?.profileBindings[0]?.id || null);
+        }}
+        onImportClick={() => {
+          const inp = document.createElement('input');
+          inp.type = 'file';
+          inp.accept = '.xlsx, .xls, .spectool, .json';
+          inp.onchange = (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (file) handleImportFile(file);
+          };
+          inp.click();
+        }}
+        onExportProject={handleExportProject}
+        onExportExcel={() => exportToExcel(module, bomRows)}
+        onClearCanvas={handleClearCanvas}
+        onAddBoxContour={() => handleAddBoxContour(module.width, module.height)}
+        onOpenDatabaseManager={(tab) => {
+          setDbManagerInitialTab(tab || 'materials');
+          setIsDatabaseManagerOpen(true);
+        }}
+        onOpenColorManager={() => {
+          // Trigger color popover via Header or direct modal
+          const btn = document.querySelector('button[title*="Настроить цвета проекта"]') as HTMLButtonElement;
+          btn?.click();
+        }}
+        onOpenNamingModal={() => setIsNamingModalOpen(true)}
+        onOpenProcessTemplatesModal={() => setIsProcessModalOpen(true)}
+        onOpenStandaloneModal={() => {
+          setEditingStandaloneItem(null);
+          setIsStandaloneModalOpen(true);
+        }}
+        onOpenNumberingPopover={() => {
+          const btn = document.querySelector('button[title*="Таблица порядковых номеров"]') as HTMLButtonElement;
+          btn?.click();
+        }}
+        onResetLayout={handleResetLayoutSizes}
+        onOpenAboutModal={() => {
+          alert('Spectool v1.1.0 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций по отраслевому эталону Модуля Жукова.');
+        }}
+        panelVisibility={panelVisibility}
+        onTogglePanel={togglePanelVisibility}
+      />
+
+      {/* 2. Top Header bar */}
       <Header
         module={module}
         bomRows={bomRows}
@@ -705,6 +856,8 @@ export const App: React.FC = () => {
           module={module}
           selectedLineId={selectedLineId}
           selectedCellId={selectedCellId}
+          dimensionDisplayMode={dimensionDisplayMode}
+          onChangeDimensionMode={handleSetDimensionMode}
           width={layoutSizes.canvasWidth}
           onSelectLine={handleSelectLine}
           onSelectCell={handleSelectCell}
@@ -717,64 +870,87 @@ export const App: React.FC = () => {
         />
 
         {/* Resizable Divider 1-2 */}
-        <ResizeDivider
-          direction="vertical"
-          onResize={(dx) => updateLayoutSize('canvasWidth', dx, 320, 950)}
-          title="Потяните для изменения ширины холста"
-        />
+        {panelVisibility.params && (
+          <>
+            <ResizeDivider
+              direction="vertical"
+              onResize={(dx) => updateLayoutSize('canvasWidth', dx, 320, 950)}
+              title="Потяните для изменения ширины холста"
+            />
 
-        {/* Column 2: "Окно параметров" (ParametersBox) right next to canvas */}
-        <ParametersBox
-          allLines={module.lines}
-          allCells={module.cells}
-          selectedLine={selectedLine}
-          selectedCell={selectedCell}
-          selectedProfileId={activeProfileId}
-          width={layoutSizes.paramsWidth}
-          projectCode={module.project}
-          projectColors={module.colors && module.colors.length > 0 ? module.colors : [module.color || 'RAL 7012']}
-          onSelectLine={handleSelectLine}
-          onSelectCell={handleSelectCell}
-          onUpdateLine={handleUpdateLine}
-          onDeleteLine={handleDeleteLine}
-          onUpdateCell={handleUpdateCell}
-          onDeleteCell={handleDeleteCell}
-          onUpdateProfile={handleUpdateProfile}
-          onDeleteProfile={handleDeleteProfile}
-          onSelectProfile={setSelectedProfileId}
-          onOpenFastenerModal={() => {}}
-        />
+            {/* Column 2: "Окно параметров" (ParametersBox) right next to canvas */}
+            <ParametersBox
+              allLines={module.lines}
+              allCells={module.cells}
+              selectedLine={selectedLine}
+              selectedCell={selectedCell}
+              selectedProfileId={activeProfileId}
+              width={layoutSizes.paramsWidth}
+              projectCode={module.project}
+              projectColors={module.colors && module.colors.length > 0 ? module.colors : [module.color || 'RAL 7012']}
+              onSelectLine={handleSelectLine}
+              onSelectCell={handleSelectCell}
+              onUpdateLine={handleUpdateLine}
+              onDeleteLine={handleDeleteLine}
+              onUpdateCell={handleUpdateCell}
+              onDeleteCell={handleDeleteCell}
+              onUpdateProfile={handleUpdateProfile}
+              onDeleteProfile={handleDeleteProfile}
+              onSelectProfile={setSelectedProfileId}
+              onOpenFastenerModal={() => {}}
+            />
+          </>
+        )}
 
         {/* Resizable Divider 2-3 */}
-        <ResizeDivider
-          direction="vertical"
-          onResize={(dx) => updateLayoutSize('paramsWidth', dx, 240, 600)}
-          title="Потяните для изменения ширины окна параметров"
-        />
+        {panelVisibility.materials && (
+          <>
+            <ResizeDivider
+              direction="vertical"
+              onResize={(dx) => updateLayoutSize('paramsWidth', dx, 240, 600)}
+              title="Потяните для изменения ширины окна параметров"
+            />
 
-        {/* Column 3: БД: Материалы и Профили */}
-        <MaterialsTree
-          selectedLineId={selectedLineId}
-          width={layoutSizes.materialsWidth}
-          onBindProfileToSelectedLine={handleBindProfileFromTree}
-          onAddCustomProfile={() => setIsCustomProfileModalOpen(true)}
-        />
+            {/* Column 3: БД: Материалы и Профили */}
+            <MaterialsTree
+              selectedLineId={selectedLineId}
+              selectedProfileId={activeProfileId}
+              selectedCellId={selectedCellId}
+              width={layoutSizes.materialsWidth}
+              onBindProfileToSelectedLine={handleBindProfileFromTree}
+              onBindAsAccessory={handleBindMaterialAsAccessory}
+              onOpenDatabaseManager={() => {
+                setDbManagerInitialTab('materials');
+                setIsDatabaseManagerOpen(true);
+              }}
+              onAddCustomProfile={() => setIsCustomProfileModalOpen(true)}
+            />
+          </>
+        )}
 
         {/* Resizable Divider 3-4 */}
-        <ResizeDivider
-          direction="vertical"
-          onResize={(dx) => updateLayoutSize('materialsWidth', dx, 200, 550)}
-          title="Потяните для изменения ширины базы профилей"
-        />
+        {panelVisibility.hardware && (
+          <>
+            <ResizeDivider
+              direction="vertical"
+              onResize={(dx) => updateLayoutSize('materialsWidth', dx, 200, 550)}
+              title="Потяните для изменения ширины базы профилей"
+            />
 
-        {/* Column 4: БД: Метизы и Комплектующие */}
-        <HardwareDatabase
-          selectedLineId={selectedLineId}
-          selectedProfileId={activeProfileId}
-          selectedCellId={selectedCellId}
-          width={layoutSizes.hardwareWidth}
-          onSelectHardware={handleSelectHardwareFromDB}
-        />
+            {/* Column 4: БД: Метизы и Комплектующие */}
+            <HardwareDatabase
+              selectedLineId={selectedLineId}
+              selectedProfileId={activeProfileId}
+              selectedCellId={selectedCellId}
+              width={layoutSizes.hardwareWidth}
+              onSelectHardware={handleSelectHardwareFromDB}
+              onOpenDatabaseManager={() => {
+                setDbManagerInitialTab('hardware');
+                setIsDatabaseManagerOpen(true);
+              }}
+            />
+          </>
+        )}
 
         {/* Resizable Divider 4-5 */}
         <ResizeDivider
@@ -796,30 +972,34 @@ export const App: React.FC = () => {
       </div>
 
       {/* Horizontal Resizable Divider between Upper Workspace and Bottom Table */}
-      <ResizeDivider
-        direction="horizontal"
-        onResize={(dy) => updateLayoutSize('tableHeight', dy, 140, 650)}
-        title="Потяните вверх/вниз для изменения высоты таблицы спецификации"
-      />
+      {panelVisibility.table && (
+        <>
+          <ResizeDivider
+            direction="horizontal"
+            onResize={(dy) => updateLayoutSize('tableHeight', dy, 140, 650)}
+            title="Потяните вверх/вниз для изменения высоты таблицы спецификации"
+          />
 
-      {/* Bottom Live BOM Table (Full Width 19-Column Excel-like Sheet) */}
-      <SpecificationTable
-        module={module}
-        bomRows={bomRows}
-        selectedSourceId={selectedProfileId || selectedCellId || selectedLineId}
-        height={layoutSizes.tableHeight}
-        onSelectRow={handleSelectRow}
-        onUpdateBOMCell={handleUpdateBOMCell}
-        onAddStandaloneItem={() => {
-          setEditingStandaloneItem(null);
-          setIsStandaloneModalOpen(true);
-        }}
-        onEditStandaloneItem={(item) => {
-          setEditingStandaloneItem(item);
-          setIsStandaloneModalOpen(true);
-        }}
-        onDeleteStandaloneItem={handleDeleteStandaloneItem}
-      />
+          {/* Bottom Live BOM Table (Full Width 19-Column Excel-like Sheet) */}
+          <SpecificationTable
+            module={module}
+            bomRows={bomRows}
+            selectedSourceId={selectedProfileId || selectedCellId || selectedLineId}
+            height={layoutSizes.tableHeight}
+            onSelectRow={handleSelectRow}
+            onUpdateBOMCell={handleUpdateBOMCell}
+            onAddStandaloneItem={() => {
+              setEditingStandaloneItem(null);
+              setIsStandaloneModalOpen(true);
+            }}
+            onEditStandaloneItem={(item) => {
+              setEditingStandaloneItem(item);
+              setIsStandaloneModalOpen(true);
+            }}
+            onDeleteStandaloneItem={handleDeleteStandaloneItem}
+          />
+        </>
+      )}
 
       {/* Add Custom Profile Modal */}
       <CustomProfileModal
@@ -857,6 +1037,13 @@ export const App: React.FC = () => {
       <ProcessTemplatesModal
         isOpen={isProcessModalOpen}
         onClose={() => setIsProcessModalOpen(false)}
+      />
+
+      {/* Unified Database Manager Modal */}
+      <DatabaseManagerModal
+        isOpen={isDatabaseManagerOpen}
+        initialTab={dbManagerInitialTab}
+        onClose={() => setIsDatabaseManagerOpen(false)}
       />
 
       {/* Standalone Part / Assembly Modal (Кронштейны, закладные) */}

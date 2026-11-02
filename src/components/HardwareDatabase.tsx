@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { Search, Plus, Database, Check, Upload, RotateCcw, AlertCircle } from 'lucide-react';
+import React, { useState, useRef, useMemo } from 'react';
+import { Search, Plus, Database, Check, Upload, RotateCcw, AlertCircle, Wrench } from 'lucide-react';
 import { CatalogHardwareItem } from '../types';
 import {
   getHardwareDB,
   parseAndSaveHardwareExcel,
-  resetHardwareDB
+  resetHardwareDB,
+  getHardwareTypes
 } from '../utils/databaseService';
 
 interface HardwareDatabaseProps {
@@ -13,6 +14,7 @@ interface HardwareDatabaseProps {
   selectedCellId: string | null;
   width?: number;
   onSelectHardware: (item: CatalogHardwareItem) => void;
+  onOpenDatabaseManager?: () => void;
 }
 
 export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
@@ -20,16 +22,19 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
   selectedProfileId,
   selectedCellId,
   width = 300,
-  onSelectHardware
+  onSelectHardware,
+  onOpenDatabaseManager
 }) => {
   const [dbState, setDbState] = useState(() => getHardwareDB());
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'screws' | 'bolts' | 'rivets' | 'gaskets'>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const hardwareTypes = useMemo(() => getHardwareTypes(dbState.items), [dbState.items]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,34 +66,24 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
 
   const allItems = dbState.items;
 
-  const filteredItems = allItems.filter((item) => {
-    const t = (item.type || '').toLowerCase();
-    const n = (item.name || '').toLowerCase();
-    const art = (item.article || '').toLowerCase();
-
-    if (categoryFilter === 'screws' && !n.includes('винт') && !n.includes('самонарез') && !t.includes('винт') && !t.includes('самонарез')) {
-      return false;
-    }
-    if (categoryFilter === 'bolts' && !n.includes('болт') && !n.includes('гайка') && !n.includes('шайба') && !t.includes('болт') && !t.includes('гайка')) {
-      return false;
-    }
-    if (categoryFilter === 'rivets' && !n.includes('заклеп') && !t.includes('заклеп')) {
-      return false;
-    }
-    if (categoryFilter === 'gaskets' && !t.includes('уплотнитель') && !t.includes('резина') && !t.includes('лента') && !n.includes('уплотнитель') && !n.includes('резина')) {
-      return false;
-    }
-
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      art.includes(q) ||
-      n.includes(q) ||
-      (item.standard || '').toLowerCase().includes(q) ||
-      (item.material || '').toLowerCase().includes(q) ||
-      t.includes(q)
-    );
-  });
+  const filteredItems = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return allItems.filter((item) => {
+      if (selectedType !== 'all' && item.type !== selectedType) {
+        return false;
+      }
+      if (!q) return true;
+      return (
+        item.article.toLowerCase().includes(q) ||
+        item.name.toLowerCase().includes(q) ||
+        (item.standard || '').toLowerCase().includes(q) ||
+        (item.material || '').toLowerCase().includes(q) ||
+        (item.diameter && item.diameter.toLowerCase().includes(q)) ||
+        (item.length && item.length.toLowerCase().includes(q)) ||
+        item.type.toLowerCase().includes(q)
+      );
+    });
+  }, [allItems, selectedType, searchQuery]);
 
   const handleAdd = (item: CatalogHardwareItem) => {
     onSelectHardware(item);
@@ -112,22 +107,33 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
         className="hidden"
       />
 
-      {/* Header with Database link badge */}
+      {/* Header */}
       <div className="h-10 border-b border-slate-200 px-3.5 flex items-center justify-between bg-slate-50/80">
         <div className="flex items-center gap-1.5">
           <Database className="w-3.5 h-3.5 text-blue-600" />
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">БД: Метизы</h3>
         </div>
-        <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-          ● {allItems.length} поз.
-        </span>
+        <div className="flex items-center gap-2">
+          {onOpenDatabaseManager && (
+            <button
+              onClick={onOpenDatabaseManager}
+              className="text-[11px] text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
+              title="Открыть менеджер баз данных (полное редактирование)"
+            >
+              Менеджер
+            </button>
+          )}
+          <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+            ● {allItems.length} поз.
+          </span>
+        </div>
       </div>
 
       {/* Database connection banner with Action Buttons */}
       <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-[11px] gap-1">
         <span
           className="text-slate-600 truncate font-mono text-[10px] max-w-[170px]"
-          title={`Файл: ${dbState.filename}${dbState.updatedAt ? ` (сохранен: ${dbState.updatedAt})` : ''}`}
+          title={`Файл: ${dbState.filename}`}
         >
           📁 <strong>{dbState.filename}</strong>
         </span>
@@ -163,95 +169,103 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
         </div>
       )}
 
-      {/* Filter and Search */}
-      <div className="p-2.5 border-b border-slate-200 space-y-2 bg-white">
-        {/* Search */}
+      {/* Search Input & Dynamic Type Filter Dropdown */}
+      <div className="p-2 border-b border-slate-200 bg-white space-y-1.5">
         <div className="relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Поиск (4.2x32, 5.5, EPDM, DIN...)"
+            placeholder="Поиск по марке, названию, ГОСТ, d..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-300 rounded pl-8 pr-2 py-1 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 font-mono"
+            className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-7 pr-2 py-1 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white"
           />
         </div>
 
-        {/* Quick category filter tags */}
-        <div className="flex gap-1 text-[10px] overflow-x-auto pb-0.5">
-          {(['all', 'screws', 'bolts', 'rivets', 'gaskets'] as const).map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategoryFilter(cat)}
-              className={`px-2 py-0.5 rounded font-medium whitespace-nowrap transition cursor-pointer ${
-                categoryFilter === cat
-                  ? 'bg-blue-600 text-white font-bold'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {cat === 'all' && 'Все'}
-              {cat === 'screws' && 'Винты / Самонарезы'}
-              {cat === 'bolts' && 'Болты / Гайки'}
-              {cat === 'rivets' && 'Заклепки'}
-              {cat === 'gaskets' && 'Уплотнители'}
-            </button>
-          ))}
+        {/* Dynamic Category Dropdown matching Метизы.xlsx exact column filter */}
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] font-semibold text-slate-500 shrink-0">Тип:</span>
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-300 rounded px-1.5 py-0.5 text-[11px] font-semibold text-slate-800 focus:outline-none focus:border-blue-500 cursor-pointer"
+          >
+            <option value="all">Все типы ({allItems.length})</option>
+            {hardwareTypes.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Target hint */}
-      <div className="px-3 py-1 bg-amber-50/60 border-b border-amber-100 text-[10px] text-amber-800 flex items-center justify-between">
-        <span>{isTargetSelected ? 'Нажмите «+» для добавления к выбранной детали' : 'Выберите профиль или ячейку для привязки'}</span>
-      </div>
+      {/* Selection context helper */}
+      {!isTargetSelected && (
+        <div className="px-3 py-1 bg-amber-50 border-b border-amber-200 text-amber-800 text-[10px] font-medium flex items-center justify-between">
+          <span>⚠️ Выберите линию, профиль или проём для привязки</span>
+        </div>
+      )}
 
-      {/* Database items list */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-1.5 text-xs font-mono">
+      {/* Items list */}
+      <div className="flex-1 overflow-y-auto p-1.5 space-y-1">
         {filteredItems.length === 0 ? (
-          <div className="py-6 text-center text-slate-400 text-xs font-sans">
-            Ничего не найдено
+          <div className="text-center py-8 text-slate-400 text-xs">
+            Метизы не найдены
           </div>
         ) : (
-          filteredItems.slice(0, 100).map((item) => {
-            const isAdded = justAddedId === item.id;
-
+          filteredItems.map((item) => {
+            const isJustAdded = justAddedId === item.id;
             return (
               <div
                 key={item.id}
-                className="p-2 rounded-lg border border-slate-200 bg-white hover:border-blue-400 hover:shadow-2xs transition flex items-center justify-between gap-2"
+                className="bg-slate-50 border border-slate-200 hover:border-blue-300 rounded-lg p-2 transition group flex flex-col gap-1"
               >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-slate-900 truncate text-[11px]">{item.article}</span>
-                    {item.material && (
-                      <span className="text-[9px] bg-slate-100 text-slate-600 px-1 py-0.2 rounded font-sans">
-                        {item.material}
-                      </span>
-                    )}
+                <div className="flex items-start justify-between gap-1">
+                  <div className="flex-1 min-w-0">
+                    <span className="font-mono font-bold text-xs text-slate-900 truncate block">
+                      {item.article}
+                    </span>
+                    <p className="text-[11px] text-slate-600 line-clamp-2 leading-tight mt-0.5">
+                      {item.name}
+                    </p>
                   </div>
-                  <div className="text-[10px] text-slate-500 truncate font-sans">{item.name}</div>
-                  <div className="flex items-center gap-2 text-[9px] text-slate-400 truncate">
-                    {item.type && <span className="text-slate-500">{item.type}</span>}
-                    {item.standard && <span>{item.standard}</span>}
-                    {item.diameter && <span>Ø{item.diameter}</span>}
-                    {item.length && <span>L={item.length}</span>}
-                  </div>
+                  <button
+                    onClick={() => handleAdd(item)}
+                    disabled={!isTargetSelected}
+                    className={`shrink-0 p-1 rounded-md transition cursor-pointer ${
+                      isJustAdded
+                        ? 'bg-emerald-600 text-white'
+                        : isTargetSelected
+                        ? 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white'
+                        : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    }`}
+                    title={isTargetSelected ? 'Привязать метиз' : 'Сначала выберите профиль или проём'}
+                  >
+                    {isJustAdded ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                  </button>
                 </div>
 
-                {/* Add button */}
-                <button
-                  onClick={() => handleAdd(item)}
-                  disabled={!isTargetSelected}
-                  className={`p-1.5 rounded transition shrink-0 ${
-                    isAdded
-                      ? 'bg-emerald-600 text-white'
-                      : isTargetSelected
-                      ? 'bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white cursor-pointer'
-                      : 'bg-slate-100 text-slate-300 cursor-not-allowed'
-                  }`}
-                  title={isTargetSelected ? 'Привязать к выбранной детали' : 'Сначала выберите деталь или линию'}
-                >
-                  {isAdded ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                </button>
+                <div className="flex items-center gap-1.5 flex-wrap text-[10px] text-slate-500 font-mono">
+                  <span className="bg-white px-1 py-0.5 rounded border border-slate-200">
+                    {item.type}
+                  </span>
+                  {item.diameter && (
+                    <span className="bg-white px-1 py-0.5 rounded border border-slate-200">
+                      Ø{item.diameter}
+                    </span>
+                  )}
+                  {item.length && (
+                    <span className="bg-white px-1 py-0.5 rounded border border-slate-200">
+                      L={item.length}
+                    </span>
+                  )}
+                  {item.standard && (
+                    <span className="bg-white px-1 py-0.5 rounded border border-slate-200 text-slate-600">
+                      {item.standard}
+                    </span>
+                  )}
+                </div>
               </div>
             );
           })

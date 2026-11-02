@@ -181,7 +181,7 @@ export function generateBOM(module: ModuleModel): BOMRow[] {
     const matName = hasMat ? (cell.materialName || 'Лист 0,9 Оц сталь ГОСТ 14918-80') : '';
     const tmpl = cell.processTemplate !== undefined ? cell.processTemplate : (hasMat ? 'Короб' : '');
     const lkType = cell.linkType || (hasMat ? 'деталь' : 'комплектующие');
-    const planGrp = cell.planGroup || (hasMat ? 'Детали ЦМК' : 'Комплектующие');
+    const planGrp = cell.planGroup || (hasMat ? 'Детали ЦМК' : '');
 
     rows.push({
       id: `bom-${cell.id}`,
@@ -396,7 +396,6 @@ export async function exportToExcel(module: ModuleModel, bomRows: BOMRow[]) {
   // Add data rows starting at Row 2!
   bomRows.forEach((row, idx) => {
     const rowNumber = idx + 2; // 1-based, Row 1 is header, data starts at Row 2
-    const isPart = row.linkType === 'деталь' || row.linkType === 'Сборочная единица';
 
     // Build cell values (using formulas where applicable!)
     const valE = row.excelFormulaE
@@ -440,8 +439,32 @@ export async function exportToExcel(module: ModuleModel, bomRows: BOMRow[]) {
     const excelRow = worksheet.addRow(rowData);
     excelRow.height = 20;
 
-    if (isPart) {
-      // 1. Детали: Светло-зеленый цвет (A до S - все 19 колонок!)
+    const isAssembly = row.linkType === 'Сборочная единица';
+    const isPart = row.linkType === 'деталь';
+
+    if (isAssembly) {
+      // 1. Сборочные единицы: Пастельный желтый (#FFFFF2CC)
+      for (let c = 1; c <= 19; c++) {
+        const cell = excelRow.getCell(c);
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFF2CC' }
+        };
+        cell.font = {
+          name: 'Calibri',
+          size: 10,
+          bold: c <= 2,
+          color: { argb: c <= 2 ? 'FF92400E' : 'FF1F2937' }
+        };
+        cell.border = thinBorder;
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: c === 5 || c === 9 || c === 12 || c === 13 || c === 14 ? 'right' : c === 6 || c === 10 || c >= 16 ? 'center' : 'left'
+        };
+      }
+    } else if (isPart) {
+      // 2. Детали: Светло-зеленый цвет (A до S - все 19 колонок!)
       for (let c = 1; c <= 19; c++) {
         const cell = excelRow.getCell(c);
         cell.fill = {
@@ -462,7 +485,7 @@ export async function exportToExcel(module: ModuleModel, bomRows: BOMRow[]) {
         };
       }
     } else {
-      // 2. Комплектующие: Светло-синий цвет (A до K - первые 11 колонок!)
+      // 3. Комплектующие: Светло-синий цвет (A до K - первые 11 колонок!)
       for (let c = 1; c <= 11; c++) {
         const cell = excelRow.getCell(c);
         cell.fill = {
@@ -481,8 +504,6 @@ export async function exportToExcel(module: ModuleModel, bomRows: BOMRow[]) {
           horizontal: c === 5 || c === 9 ? 'right' : c === 6 || c === 10 ? 'center' : 'left'
         };
       }
-
-      // Columns L to S for accessories: clean white/neutral border
       for (let c = 12; c <= 19; c++) {
         const cell = excelRow.getCell(c);
         cell.border = thinBorder;

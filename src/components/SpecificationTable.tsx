@@ -167,7 +167,8 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
           <tbody className="divide-y divide-slate-200 text-slate-800">
             {filteredRows.map((row, idx) => {
               const isSelected = selectedSourceId === row.sourceId;
-              const isPart = row.linkType === 'деталь' || row.linkType === 'Сборочная единица';
+              const isAssembly = row.linkType === 'Сборочная единица';
+              const isPart = row.linkType === 'деталь';
               const isChild = !!row.parentName || row.linkType === 'комплектующие';
 
               return (
@@ -177,6 +178,8 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
                   className={`cursor-pointer transition-colors ${
                     isSelected
                       ? 'bg-blue-200/90 font-bold ring-1 ring-blue-500'
+                      : isAssembly
+                      ? 'bg-[#FFF2CC]/80 hover:bg-[#FEEFC3] text-amber-950 font-semibold'
                       : isPart
                       ? 'bg-[#E2EFDA]/70 hover:bg-[#D4E8CD] text-slate-900 font-semibold'
                       : 'bg-[#DDEBF7]/55 hover:bg-[#CDDFEF] text-slate-700'

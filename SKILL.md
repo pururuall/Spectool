@@ -16,6 +16,10 @@ description: >-
 
 Файл / Модуль | Назначение | Ключевые функции
 :--- | :--- | :---
+[`src/components/MenuBar.tsx`](src/components/MenuBar.tsx) | Настольная лента меню | Файл (Импорт/Экспорт/Сохранить), Правка, Вид (4 режима образмеривания), Настройки БД и цветов, Окно.
+[`src/components/DimensionOverlay.tsx`](src/components/DimensionOverlay.tsx) | Интерактивные размеры | Floating HTML `<input>` над ригелями и стойками для прямого ввода расстояний до соседних профилей.
+[`src/components/DatabaseManagerModal.tsx`](src/components/DatabaseManagerModal.tsx) | Единый менеджер БД | Управление иерархией материалов (любая глубина папок), метизами (динамические фильтры) и ТП (Vogbit).
+[`src/data/defaultMaterialTree.ts`](src/data/defaultMaterialTree.ts) | Заводская база материалов | Полная иерархия: Лист (черный, оцинковка, ал, нерж), Краска, Профиль (Alutech, Schueco...), Стандартные профили.
 [`src/components/Canvas.tsx`](src/components/Canvas.tsx) | CAD-холст | Черчение стоек/ригелей, магнитная привязка, ORTHO, перетаскивание узлов, масштабирование (зум/пан).
 [`src/utils/cellDetector.ts`](src/utils/cellDetector.ts) | Алгоритм детекции ячеек | Интервальный луч-анализ для поиска замкнутых проёмов в сетке стоек и ригелей (включая Т-примыкания).
 [`src/utils/databaseService.ts`](src/utils/databaseService.ts) | Сервис баз данных | Парсинг Excel-файлов (`Метизы.xlsx`, `Материалы.xlsx`), вечная синхронизация в `localStorage`.

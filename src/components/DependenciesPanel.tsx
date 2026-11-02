@@ -18,6 +18,7 @@ interface DependenciesPanelProps {
   selectedLine: LineSegment | null;
   selectedProfileId: string | null;
   selectedCell: Cell | null;
+  selectedFillId?: string | null;
   selectedRuleId?: string | null;
   onAddDependency: (rule: DependencyRule) => void;
   onUpdateDependency: (rule: DependencyRule) => void;
@@ -28,6 +29,7 @@ export const DependenciesPanel: React.FC<DependenciesPanelProps> = ({
   selectedLine,
   selectedProfileId,
   selectedCell,
+  selectedFillId,
   selectedRuleId,
   onAddDependency,
   onUpdateDependency,
@@ -54,13 +56,29 @@ export const DependenciesPanel: React.FC<DependenciesPanelProps> = ({
 
   const selectedProfile =
     selectedLine?.profileBindings.find((p) => p.id === selectedProfileId) || null;
-  const activeDependencies =
-    selectedProfile?.dependencies || selectedCell?.dependencies || [];
 
-  const targetLength = selectedProfile ? selectedProfile.calculatedLength : 2555;
-  const targetArea = selectedCell
-    ? ((selectedCell.glassWidth || selectedCell.width) * (selectedCell.glassHeight || selectedCell.height)) / 1_000_000
-    : 1;
+  const activeFill =
+    selectedCell?.fills?.find((f) => f.id === selectedFillId) ||
+    selectedCell?.fills?.[0] ||
+    null;
+
+  const activeDependencies = selectedProfile
+    ? selectedProfile.dependencies || []
+    : activeFill
+    ? activeFill.dependencies || []
+    : selectedCell?.dependencies || [];
+
+  const targetLength = selectedProfile
+    ? selectedProfile.calculatedLength
+    : activeFill
+    ? activeFill.height || selectedCell?.height || 2555
+    : selectedCell?.height || 2555;
+
+  const targetWidth = activeFill
+    ? activeFill.width || selectedCell?.width || 1000
+    : selectedCell?.width || 1000;
+
+  const targetArea = Math.round(((targetWidth * targetLength) / 1_000_000) * 100) / 100 || 1;
 
   // Helper to calculate evaluated qty for any rule settings
   const evaluateRuleQty = (
@@ -77,8 +95,8 @@ export const DependenciesPanel: React.FC<DependenciesPanelProps> = ({
     if (type === 'formula') {
       return calculateFormula(formula, {
         L: targetLength,
-        W: selectedCell?.width || 1000,
-        H: selectedCell?.height || 2555,
+        W: targetWidth,
+        H: targetLength,
         Area: targetArea
       });
     }
@@ -203,24 +221,37 @@ export const DependenciesPanel: React.FC<DependenciesPanelProps> = ({
 
       <div className="flex-1 overflow-y-auto p-3 space-y-3 text-xs">
         {/* Active Target Banner */}
-        <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between">
+        <div className={`p-2.5 rounded-lg border flex items-center justify-between ${
+          selectedProfile || activeFill
+            ? 'bg-blue-50/70 border-blue-300 shadow-2xs'
+            : 'bg-slate-50 border-slate-200'
+        }`}>
           <div className="truncate">
-            <span className="text-[10px] text-slate-400 block font-semibold">Целевой элемент:</span>
-            <span className="font-bold text-slate-800 truncate block">
+            <span className="text-[10px] text-slate-500 block font-semibold flex items-center gap-1">
+              <span className={`w-1.5 h-1.5 rounded-full ${selectedProfile || activeFill ? 'bg-blue-600 animate-pulse' : 'bg-slate-400'}`} />
+              Целевой элемент для метизов:
+            </span>
+            <span className="font-bold text-slate-900 truncate block text-xs">
               {selectedProfile
-                ? `Профиль: ${selectedProfile.name}`
+                ? `Профиль: ${selectedProfile.name} (${selectedProfile.customMark || selectedProfile.article})`
                 : selectedLine
                 ? `Линия: ${selectedLine.name}`
+                : activeFill
+                ? `Слой проёма: ${activeFill.name} [${activeFill.mark || 'без марки'}]`
                 : selectedCell
-                ? `Заполнение: ${selectedCell.name}`
+                ? `Проём: ${selectedCell.name || 'Область'}`
                 : 'Не выбран (выберите деталь слева)'}
             </span>
           </div>
-          {selectedProfile && (
+          {selectedProfile ? (
             <span className="text-[10px] font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">
               L = {selectedProfile.calculatedLength} мм
             </span>
-          )}
+          ) : activeFill ? (
+            <span className="text-[10px] font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">
+              {targetWidth} × {targetLength} мм
+            </span>
+          ) : null}
         </div>
 
         {/* 1. Add new Dependency Rule with FREE STEP input and presets */}
@@ -337,29 +368,54 @@ export const DependenciesPanel: React.FC<DependenciesPanelProps> = ({
               {/* Quick formula presets */}
               <div className="flex flex-wrap gap-1">
                 <button
+                  type="button"
                   onClick={() => {
                     setCustomFormula('ROUNDUP(L * 1.05 / 1000, 1)');
                     setCustomUnit('м');
                   }}
-                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
+                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 cursor-pointer"
                 >
                   Резина: L * 1.05 (м)
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setCustomFormula('ROUNDUP(L * 1.05 * 2 / 1000, 1)');
                     setCustomUnit('м');
                   }}
-                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
+                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 cursor-pointer"
                 >
                   2 нити (цех): L * 1.05 * 2
                 </button>
                 <button
+                  type="button"
+                  onClick={() => {
+                    setCustomFormula('ROUNDUP(Периметр * 1.05 / 1000, 1)');
+                    setCustomUnit('м');
+                  }}
+                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 font-bold cursor-pointer"
+                  title="Уплотнитель по периметру проёма / коробки с запасом 5%"
+                >
+                  🔄 По периметру: (Ш+В)*2 (м)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomFormula('ROUNDUP(Периметр / 200, 0)');
+                    setCustomUnit('шт');
+                  }}
+                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 cursor-pointer"
+                  title="Крепеж по всему периметру с шагом 200 мм"
+                >
+                  🔄 Крепеж по периметру (шаг 200)
+                </button>
+                <button
+                  type="button"
                   onClick={() => {
                     setCustomFormula('ROUNDUP(Area * 6, 0)');
                     setCustomUnit('шт');
                   }}
-                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
+                  className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 cursor-pointer"
                 >
                   Гвозди утеплителя: 6 шт/м²
                 </button>

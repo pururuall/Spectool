@@ -30,26 +30,68 @@ import { AgentFeedbackOverlay } from './components/AgentFeedbackOverlay';
 import { ResizeDivider } from './components/ResizeDivider';
 import { MenuBar } from './components/MenuBar';
 import { DatabaseManagerModal } from './components/DatabaseManagerModal';
-import { StandaloneItem, DimensionDisplayMode, CatalogMaterialItem } from './types';
+import { UserSettingsModal } from './components/UserSettingsModal';
+import { ModuleTabBar } from './components/ModuleTabBar';
+import { CellTemplatesModal } from './components/CellTemplatesModal';
+import { StandaloneItem, DimensionDisplayMode, CatalogMaterialItem, UserSettings } from './types';
+import { getUserSettings } from './utils/userSettingsService';
+import { normalizeCellFills, syncCellWithPrimaryFill } from './utils/cellTemplates';
 import { exportToExcel } from './utils/bomEngine';
 
+const createNewModuleFromSettings = (settings = getUserSettings()): ModuleModel => ({
+  id: `mod-${Date.now()}`,
+  name: settings.defaultModuleName || 'Новый модуль',
+  project: settings.defaultProjectCode || 'ПРОЕКТ',
+  width: settings.defaultWidth || 1000,
+  height: settings.defaultHeight || 2500,
+  color: settings.defaultPrimaryColor || (settings.defaultColors[0] || ''),
+  colors: [...settings.defaultColors],
+  namingPattern: settings.defaultNamingPattern,
+  lines: [],
+  cells: [],
+  standaloneItems: []
+});
+
 export const App: React.FC = () => {
-  const [module, setModule] = useState<ModuleModel>(createDefaultModule);
-  const [selectedLineId, setSelectedLineId] = useState<string | null>(() => {
-    const def = createDefaultModule();
-    return def.lines.find((l) => l.id === 'line-right')?.id || def.lines[0]?.id || null;
+  const [tabsState, setTabsState] = useState<{ modules: ModuleModel[]; activeModuleId: string }>(() => {
+    const first = createNewModuleFromSettings();
+    return { modules: [first], activeModuleId: first.id };
   });
+
+  const modules = tabsState.modules;
+  const activeModuleId = tabsState.activeModuleId;
+
+  const module = useMemo(() => {
+    return (
+      tabsState.modules.find((m) => m.id === tabsState.activeModuleId) ||
+      tabsState.modules[0] ||
+      createNewModuleFromSettings()
+    );
+  }, [tabsState]);
+
+  const setModule = (action: React.SetStateAction<ModuleModel>) => {
+    setTabsState((prev) => {
+      const nextModules = prev.modules.map((m) => {
+        if (m.id !== prev.activeModuleId) return m;
+        const nextVal = typeof action === 'function' ? action(m) : action;
+        // Always preserve the tab's current ID so activeModuleId and tabs never desync!
+        return { ...nextVal, id: m.id };
+      });
+      return { ...prev, modules: nextModules };
+    });
+  };
+
+  const [selectedLineId, setSelectedLineId] = useState<string | null>(null);
   const [selectedCellId, setSelectedCellId] = useState<string | null>(null);
+  const [selectedFillId, setSelectedFillId] = useState<string | null>(null);
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
-  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(() => {
-    const def = createDefaultModule();
-    const r = def.lines.find((l) => l.id === 'line-right') || def.lines[0];
-    return r?.profileBindings[0]?.id || null;
-  });
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
   const [isCustomProfileModalOpen, setIsCustomProfileModalOpen] = useState(false);
   const [isNamingModalOpen, setIsNamingModalOpen] = useState(false);
   const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
+  const [isCellTemplatesModalOpen, setIsCellTemplatesModalOpen] = useState(false);
   const [isStandaloneModalOpen, setIsStandaloneModalOpen] = useState(false);
+  const [isUserSettingsOpen, setIsUserSettingsOpen] = useState(false);
   const [editingStandaloneItem, setEditingStandaloneItem] = useState<StandaloneItem | null>(null);
 
   // Desktop Menu & Dimension display mode
@@ -58,7 +100,7 @@ export const App: React.FC = () => {
       const saved = localStorage.getItem('spectool_dim_mode');
       if (saved) return saved as DimensionDisplayMode;
     } catch (_) {}
-    return 'selection_inputs';
+    return getUserSettings().defaultDimensionMode || 'selection_inputs';
   });
 
   const handleSetDimensionMode = (mode: DimensionDisplayMode) => {
@@ -153,15 +195,27 @@ export const App: React.FC = () => {
     return null;
   }, [selectedLine, selectedProfileId, selectedCellId]);
 
-  // Clear Canvas Completely (Полностью чистый холст для черчения с нуля)
+  // Target description for status banners and hardware bindings
+  const targetDescription = useMemo(() => {
+    if (activeProfileId && selectedLine) {
+      const prof = selectedLine.profileBindings.find((p) => p.id === activeProfileId);
+      return prof ? `Профиль: ${prof.name} (${prof.customMark || prof.article})` : `Линия: ${selectedLine.name}`;
+    }
+    if (selectedCell) {
+      const fills = normalizeCellFills(selectedCell);
+      const activeF = fills.find((f) => f.id === selectedFillId) || fills[0];
+      return activeF ? `Слой: ${activeF.name} [${activeF.mark || 'без марки'}]` : `Проём: ${selectedCell.name || 'Область'}`;
+    }
+    return undefined;
+  }, [activeProfileId, selectedLine, selectedCell, selectedFillId]);
+
+  // Clear Canvas Completely (Полностью чистый холст для черчения с нуля на основе пользовательских настроек)
   const handleClearCanvas = () => {
-    setModule((prev) => ({
-      ...prev,
-      lines: [],
-      cells: []
-    }));
+    const settings = getUserSettings();
+    setModule(createNewModuleFromSettings(settings));
     setSelectedLineId(null);
     setSelectedCellId(null);
+    setSelectedFillId(null);
     setSelectedProfileId(null);
   };
 
@@ -171,7 +225,7 @@ export const App: React.FC = () => {
       id: `line-left-${Date.now()}`,
       name: 'Левая рама',
       role: 'n L',
-      orderNumber: 512,
+      orderNumber: 1,
       x1: 0,
       y1: 0,
       x2: 0,
@@ -183,7 +237,7 @@ export const App: React.FC = () => {
       id: `line-right-${Date.now() + 1}`,
       name: 'Правая рама',
       role: 'n R',
-      orderNumber: 522,
+      orderNumber: 2,
       x1: w,
       y1: 0,
       x2: w,
@@ -195,7 +249,7 @@ export const App: React.FC = () => {
       id: `line-bottom-${Date.now() + 2}`,
       name: 'Нижняя рама',
       role: 'Down',
-      orderNumber: 500,
+      orderNumber: 3,
       x1: 0,
       y1: 0,
       x2: w,
@@ -207,7 +261,7 @@ export const App: React.FC = () => {
       id: `line-top-${Date.now() + 3}`,
       name: 'Верхняя рама',
       role: 'Up',
-      orderNumber: 500,
+      orderNumber: 4,
       x1: 0,
       y1: h,
       x2: w,
@@ -235,7 +289,28 @@ export const App: React.FC = () => {
       glassHeight: Math.max(0, h - 50),
       thickness: 32,
       color: '#e0f2fe',
-      dependencies: []
+      dependencies: [],
+      fills: [
+        {
+          id: `fill-box-${Date.now()}`,
+          fillType: 'glass',
+          name: 'Стеклопакет СПО 32мм',
+          mark: 'СП-1',
+          linkType: 'комплектующие',
+          hasMaterial: false,
+          material: '',
+          materialName: '',
+          processTemplate: '',
+          planGroup: 'Комплектующие',
+          widthOffset: -50,
+          heightOffset: -50,
+          width: Math.max(0, w - 50),
+          height: Math.max(0, h - 50),
+          thickness: 32,
+          color: '#e0f2fe',
+          dependencies: []
+        }
+      ]
     };
 
     setModule((prev) => ({
@@ -374,7 +449,7 @@ export const App: React.FC = () => {
     }
 
     const calcLength = Math.max(0, targetLine.length - profileItem.defaultOffset);
-    const orderNum = targetLine.orderNumber ?? (targetLine.profileBindings?.[0]?.orderNumber || 500);
+    const orderNum = targetLine.orderNumber ?? (targetLine.profileBindings?.[0]?.orderNumber || 1);
     const customMark = generateProfileMark(module.project, profileItem.article, targetLine.length, orderNum);
 
     const newProf: ProfileBinding = {
@@ -393,9 +468,9 @@ export const App: React.FC = () => {
       startOffset: profileItem.defaultOffset > 0 ? profileItem.defaultOffset / 2 : 0,
       endOffset: profileItem.defaultOffset > 0 ? profileItem.defaultOffset / 2 : 0,
       calculatedLength: calcLength,
-      color: module.color || 'RAL 7012',
-      miterLeft: 500,
-      miterRight: 500,
+      color: module.color || '',
+      miterLeft: 90,
+      miterRight: 90,
       planGroup: 'Профиль Алюминиевый',
       dependencies: []
     };
@@ -412,6 +487,34 @@ export const App: React.FC = () => {
     }));
 
     setSelectedProfileId(newProf.id);
+  };
+
+  // Bind a material from the MaterialsTree catalog to the currently selected cell/fill
+  const handleBindMaterialToSelectedCell = (item: CatalogMaterialItem) => {
+    if (!selectedCellId) return;
+    setModule((prev) => ({
+      ...prev,
+      cells: prev.cells.map((c) => {
+        if (c.id !== selectedCellId) return c;
+        const fills = normalizeCellFills(c);
+        const targetFillId = selectedFillId || fills[0]?.id;
+        const updatedFills = fills.map((f) => {
+          if (f.id === targetFillId) {
+            return {
+              ...f,
+              hasMaterial: true,
+              material: item.article,
+              materialName: item.name,
+              thickness: item.thickness || f.thickness || 1,
+              linkType: 'деталь' as const,
+              planGroup: 'Детали ЦМК'
+            };
+          }
+          return f;
+        });
+        return syncCellWithPrimaryFill(c, updatedFills);
+      })
+    }));
   };
 
   const handleResetLayoutSizes = () => {
@@ -446,6 +549,13 @@ export const App: React.FC = () => {
     }
 
     const isLinear = mat.unit === 'п.м.' || mat.unit === 'м';
+    const activeFill = selectedCell
+      ? (selectedCell.fills?.find((f) => f.id === selectedFillId) || selectedCell.fills?.[0])
+      : null;
+    const targetL = selectedLine
+      ? selectedLine.length
+      : (activeFill ? (activeFill.height || selectedCell?.height || 1000) : 1000);
+
     const newDep: DependencyRule = {
       id: `dep-${Date.now()}`,
       article: mat.code || mat.article,
@@ -455,7 +565,7 @@ export const App: React.FC = () => {
       calcType: isLinear ? 'formula' : 'fixed',
       quantity: 1,
       formula: isLinear ? 'L / 1000' : undefined,
-      evaluatedQty: isLinear && selectedLine ? Math.round((selectedLine.length / 1000) * 100) / 100 : 1
+      evaluatedQty: isLinear ? Math.round((targetL / 1000) * 100) / 100 : 1
     };
 
     handleAddDependencyRule(newDep);
@@ -486,9 +596,9 @@ export const App: React.FC = () => {
     handleAddDependencyRule(newDep);
   };
 
-  // Add dependency rule
+  // Add dependency rule (attaches to active profile or selected layer of cell)
   const handleAddDependencyRule = (rule: DependencyRule) => {
-    if (selectedLineId && selectedProfileId) {
+    if (selectedLineId && activeProfileId) {
       setModule((prev) => ({
         ...prev,
         lines: prev.lines.map((l) => {
@@ -496,7 +606,7 @@ export const App: React.FC = () => {
           return {
             ...l,
             profileBindings: l.profileBindings.map((p) => {
-              if (p.id !== selectedProfileId) return p;
+              if (p.id !== activeProfileId) return p;
               return {
                 ...p,
                 dependencies: [...p.dependencies, rule]
@@ -510,10 +620,18 @@ export const App: React.FC = () => {
         ...prev,
         cells: prev.cells.map((c) => {
           if (c.id !== selectedCellId) return c;
-          return {
-            ...c,
-            dependencies: [...c.dependencies, rule]
-          };
+          const fills = normalizeCellFills(c);
+          const targetFillId = selectedFillId || fills[0]?.id;
+          const updatedFills = fills.map((f) => {
+            if (f.id === targetFillId) {
+              return {
+                ...f,
+                dependencies: [...(f.dependencies || []), rule]
+              };
+            }
+            return f;
+          });
+          return syncCellWithPrimaryFill(c, updatedFills);
         })
       }));
     } else if (selectedLineId) {
@@ -546,7 +664,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Remove dependency rule
+  // Remove dependency rule from profile or cell fill
   const handleRemoveDependency = (ruleId: string) => {
     setModule((prev) => ({
       ...prev,
@@ -554,17 +672,24 @@ export const App: React.FC = () => {
         ...l,
         profileBindings: l.profileBindings.map((p) => ({
           ...p,
-          dependencies: p.dependencies.filter((d) => d.id !== ruleId)
+          dependencies: (p.dependencies || []).filter((d) => d.id !== ruleId)
         }))
       })),
-      cells: prev.cells.map((c) => ({
-        ...c,
-        dependencies: c.dependencies.filter((d) => d.id !== ruleId)
-      }))
+      cells: prev.cells.map((c) => {
+        const fills = normalizeCellFills(c);
+        const updatedFills = fills.map((f) => ({
+          ...f,
+          dependencies: (f.dependencies || []).filter((d) => d.id !== ruleId)
+        }));
+        return syncCellWithPrimaryFill({
+          ...c,
+          dependencies: (c.dependencies || []).filter((d) => d.id !== ruleId)
+        }, updatedFills);
+      })
     }));
   };
 
-  // Update existing dependency rule
+  // Update existing dependency rule in profile or cell fill
   const handleUpdateDependency = (updatedRule: DependencyRule) => {
     setModule((prev) => ({
       ...prev,
@@ -572,17 +697,24 @@ export const App: React.FC = () => {
         ...l,
         profileBindings: l.profileBindings.map((p) => ({
           ...p,
-          dependencies: p.dependencies.map((d) => (d.id === updatedRule.id ? updatedRule : d))
+          dependencies: (p.dependencies || []).map((d) => (d.id === updatedRule.id ? updatedRule : d))
         }))
       })),
-      cells: prev.cells.map((c) => ({
-        ...c,
-        dependencies: c.dependencies.map((d) => (d.id === updatedRule.id ? updatedRule : d))
-      }))
+      cells: prev.cells.map((c) => {
+        const fills = normalizeCellFills(c);
+        const updatedFills = fills.map((f) => ({
+          ...f,
+          dependencies: (f.dependencies || []).map((d) => (d.id === updatedRule.id ? updatedRule : d))
+        }));
+        return syncCellWithPrimaryFill({
+          ...c,
+          dependencies: (c.dependencies || []).map((d) => (d.id === updatedRule.id ? updatedRule : d))
+        }, updatedFills);
+      })
     }));
   };
 
-  // Two-way editing from the bottom Excel table
+  // Two-way editing from the bottom Excel table (All 19 columns interactive)
   const handleUpdateBOMCell = (rowId: string, field: keyof BOMRow, value: any) => {
     const targetRow = bomRows.find((r) => r.id === rowId);
     if (!targetRow) return;
@@ -591,24 +723,131 @@ export const App: React.FC = () => {
       for (const line of module.lines) {
         const prof = line.profileBindings.find((p) => p.id === targetRow.sourceId);
         if (prof) {
-          if (field === 'mark') {
-            handleUpdateProfile(line.id, { ...prof, customMark: value });
-          } else if (field === 'name') {
-            handleUpdateProfile(line.id, { ...prof, name: value });
-          } else if (field === 'vgbL' || field === 'lengthMm') {
+          const updatedProf = { ...prof };
+          if (field === 'mark') updatedProf.customMark = value;
+          else if (field === 'name') updatedProf.name = value;
+          else if (field === 'materialMark') updatedProf.material = value;
+          else if (field === 'materialName') updatedProf.materialName = value;
+          else if (field === 'vgbL' || field === 'lengthMm') {
             const numVal = parseFloat(value) || 0;
             const newOffset = Math.max(0, line.length - numVal);
-            handleUpdateProfile(line.id, { ...prof, startOffset: newOffset, calculatedLength: numVal });
+            updatedProf.startOffset = newOffset;
+            updatedProf.calculatedLength = numVal;
+          } else if (field === 'vgbColor') {
+            updatedProf.color = value;
+          } else if (field === 'processTemplate' || field === 'vgbPlanGroup') {
+            updatedProf.planGroup = value;
+          } else if (field === 'vgpLeft') {
+            updatedProf.miterLeft = parseFloat(value) || undefined;
+          } else if (field === 'vgpRight') {
+            updatedProf.miterRight = parseFloat(value) || undefined;
+          } else if (field === 'vgpLeft2') {
+            updatedProf.miterLeft2 = parseFloat(value) || undefined;
+          } else if (field === 'vgpRight2') {
+            updatedProf.miterRight2 = parseFloat(value) || undefined;
           }
+          handleUpdateProfile(line.id, updatedProf);
           break;
         }
       }
     } else if (targetRow.sourceType === 'cell') {
       const cell = module.cells.find((c) => c.id === targetRow.sourceId);
       if (cell) {
-        if (field === 'mark') handleUpdateCell({ ...cell, mark: value });
-        if (field === 'name') handleUpdateCell({ ...cell, name: value });
+        const fillId = targetRow.id.replace(`bom-${cell.id}-`, '');
+        const updatedFills = (cell.fills || []).map((f) => {
+          if (f.id === fillId) {
+            const u = { ...f };
+            if (field === 'mark') u.mark = value;
+            else if (field === 'name') u.name = value;
+            else if (field === 'materialMark') u.material = value;
+            else if (field === 'materialName') u.materialName = value;
+            else if (field === 'processTemplate') u.processTemplate = value;
+            else if (field === 'linkType') u.linkType = value;
+            else if (field === 'vgbL') u.height = parseFloat(value) || u.height;
+            else if (field === 'vgbB') u.width = parseFloat(value) || u.width;
+            else if (field === 'vgbColor') u.color = value;
+            return u;
+          }
+          return f;
+        });
+
+        const updatedCell: Cell = {
+          ...cell,
+          fills: updatedFills.length > 0 ? updatedFills : undefined,
+          mark: field === 'mark' ? value : cell.mark,
+          name: field === 'name' ? value : cell.name,
+          material: field === 'materialMark' ? value : cell.material,
+          materialName: field === 'materialName' ? value : cell.materialName,
+          processTemplate: field === 'processTemplate' ? value : cell.processTemplate,
+          linkType: field === 'linkType' ? value : cell.linkType,
+          glassHeight: field === 'vgbL' ? parseFloat(value) || cell.glassHeight : cell.glassHeight,
+          glassWidth: field === 'vgbB' ? parseFloat(value) || cell.glassWidth : cell.glassWidth,
+          color: field === 'vgbColor' ? value : cell.color
+        };
+        handleUpdateCell(updatedCell);
       }
+    } else if (targetRow.sourceType === 'accessory' || targetRow.sourceType === 'hardware') {
+      // Find dependency in lines or cells
+      setModule((prev) => ({
+        ...prev,
+        lines: prev.lines.map((l) => ({
+          ...l,
+          profileBindings: l.profileBindings.map((p) => ({
+            ...p,
+            dependencies: p.dependencies.map((d) => {
+              if (d.id === targetRow.sourceId) {
+                const updated = { ...d };
+                if (field === 'mark') updated.article = value;
+                if (field === 'name') updated.name = value;
+                if (field === 'specQty') {
+                  updated.quantity = parseFloat(value) || 1;
+                  updated.evaluatedQty = updated.quantity;
+                  updated.calcType = 'fixed';
+                }
+                if (field === 'specUnit' || field === 'materialUnit') updated.unit = value;
+                return updated;
+              }
+              return d;
+            })
+          }))
+        })),
+        cells: prev.cells.map((c) => ({
+          ...c,
+          dependencies: (c.dependencies || []).map((d) => {
+            if (d.id === targetRow.sourceId) {
+              const updated = { ...d };
+              if (field === 'mark') updated.article = value;
+              if (field === 'name') updated.name = value;
+              if (field === 'specQty') {
+                updated.quantity = parseFloat(value) || 1;
+                updated.evaluatedQty = updated.quantity;
+                updated.calcType = 'fixed';
+              }
+              if (field === 'specUnit' || field === 'materialUnit') updated.unit = value;
+              return updated;
+            }
+            return d;
+          }),
+          fills: (c.fills || []).map((f) => ({
+            ...f,
+            dependencies: (f.dependencies || []).map((d) => {
+              if (d.id === targetRow.sourceId) {
+                const updated = { ...d };
+                if (field === 'mark') updated.article = value;
+                if (field === 'name') updated.name = value;
+                if (field === 'specQty') {
+                  updated.quantity = parseFloat(value) || 1;
+                  updated.evaluatedQty = updated.quantity;
+                  updated.calcType = 'fixed';
+                }
+                if (field === 'specUnit' || field === 'materialUnit') updated.unit = value;
+                return updated;
+              }
+              return d;
+            })
+          }))
+        }))
+      }));
     } else if (targetRow.sourceType === 'standalone') {
       setModule((prev) => ({
         ...prev,
@@ -622,9 +861,13 @@ export const App: React.FC = () => {
           if (field === 'processTemplate') updated.processTemplate = value;
           if (field === 'linkType') updated.linkType = value;
           if (field === 'specQty') updated.quantity = parseFloat(value) || 1;
+          if (field === 'specUnit') updated.unit = value;
+          if (field === 'vgbPlanGroup') updated.planGroup = value;
           if (field === 'vgbL' || field === 'lengthMm') updated.lengthMm = parseFloat(value) || undefined;
           if (field === 'vgbB' || field === 'widthMm') updated.widthMm = parseFloat(value) || undefined;
           if (field === 'vgbColor') updated.color = value;
+          if (field === 'vgpLeft') updated.miterLeft = parseFloat(value) || undefined;
+          if (field === 'vgpRight') updated.miterRight = parseFloat(value) || undefined;
           return updated;
         })
       }));
@@ -698,6 +941,7 @@ export const App: React.FC = () => {
     setSelectedLineId(id);
     if (id) {
       setSelectedCellId(null);
+      setSelectedFillId(null);
       const l = module.lines.find((line) => line.id === id);
       if (l && l.profileBindings && l.profileBindings.length > 0) {
         setSelectedProfileId(l.profileBindings[0].id);
@@ -714,21 +958,32 @@ export const App: React.FC = () => {
     if (id) {
       setSelectedLineId(null);
       setSelectedProfileId(null);
+      const targetCell = module.cells.find((c) => c.id === id);
+      if (targetCell) {
+        const fills = normalizeCellFills(targetCell);
+        if (!selectedFillId || !fills.some((f) => f.id === selectedFillId)) {
+          setSelectedFillId(fills[0]?.id || null);
+        }
+      }
+    } else {
+      setSelectedFillId(null);
     }
   };
 
-  const handleSelectRow = (sourceType: string, sourceId: string) => {
+  const handleSelectRow = (sourceType: string, sourceId: string, fillId?: string) => {
     if (sourceType === 'profile') {
       for (const l of module.lines) {
         if (l.profileBindings.some((p) => p.id === sourceId)) {
           setSelectedLineId(l.id);
           setSelectedProfileId(sourceId);
           setSelectedCellId(null);
+          setSelectedFillId(null);
           break;
         }
       }
     } else if (sourceType === 'cell') {
       setSelectedCellId(sourceId);
+      setSelectedFillId(fillId || null);
       setSelectedLineId(null);
       setSelectedProfileId(null);
     } else if (sourceType === 'accessory') {
@@ -740,13 +995,26 @@ export const App: React.FC = () => {
           setSelectedLineId(l.id);
           setSelectedProfileId(parentProf.id);
           setSelectedCellId(null);
+          setSelectedFillId(null);
           setSelectedRuleId(sourceId);
           return;
         }
       }
       for (const c of module.cells) {
+        const fills = normalizeCellFills(c);
+        for (const f of fills) {
+          if ((f.dependencies || []).some((d) => d.id === sourceId)) {
+            setSelectedCellId(c.id);
+            setSelectedFillId(f.id);
+            setSelectedLineId(null);
+            setSelectedProfileId(null);
+            setSelectedRuleId(sourceId);
+            return;
+          }
+        }
         if (c.dependencies.some((d) => d.id === sourceId)) {
           setSelectedCellId(c.id);
+          setSelectedFillId(fills[0]?.id || null);
           setSelectedLineId(null);
           setSelectedProfileId(null);
           setSelectedRuleId(sourceId);
@@ -762,22 +1030,120 @@ export const App: React.FC = () => {
     }
   };
 
-  return (
-    <div className="h-screen w-screen flex flex-col bg-slate-100 font-sans text-slate-800 overflow-hidden">
-      {/* 1. Desktop Application Menu Bar */}
-      <MenuBar
-        dimensionMode={dimensionDisplayMode}
-        onChangeDimensionMode={handleSetDimensionMode}
-        onNewEmptyModule={handleClearCanvas}
-        onLoadPreset={() => {
-          const def = createDefaultModule();
-          setModule(def);
-          const selLine = def.lines.find((l) => l.id === 'line-right') || def.lines[0];
-          setSelectedLineId(selLine?.id || null);
-          setSelectedCellId(null);
-          setSelectedProfileId(selLine?.profileBindings[0]?.id || null);
-        }}
-        onImportClick={() => {
+  const handleLoadPreset = () => {
+    const def = createDefaultModule();
+    setModule(def);
+    const selLine = def.lines.find((l) => l.id === 'line-right') || def.lines[0];
+    setSelectedLineId(selLine?.id || null);
+    setSelectedCellId(null);
+    setSelectedFillId(null);
+    setSelectedProfileId(selLine?.profileBindings[0]?.id || null);
+  };
+
+  // Module Tabs Management
+  const handleSelectModule = (id: string) => {
+    setTabsState((prev) => ({ ...prev, activeModuleId: id }));
+    setSelectedLineId(null);
+    setSelectedCellId(null);
+    setSelectedFillId(null);
+    setSelectedProfileId(null);
+  };
+
+  const handleNewModuleTab = () => {
+    const newMod = createNewModuleFromSettings();
+    setTabsState((prev) => ({
+      modules: [...prev.modules, newMod],
+      activeModuleId: newMod.id
+    }));
+    setSelectedLineId(null);
+    setSelectedCellId(null);
+    setSelectedFillId(null);
+    setSelectedProfileId(null);
+  };
+
+  const handleDuplicateModuleTab = (id: string) => {
+    setTabsState((prev) => {
+      const target =
+        prev.modules.find((m) => m.id === id) ||
+        prev.modules.find((m) => m.id === prev.activeModuleId) ||
+        prev.modules[0];
+      if (!target) return prev;
+      const cloned: ModuleModel = {
+        ...JSON.parse(JSON.stringify(target)),
+        id: `mod-${Date.now()}`,
+        name: `${target.name || 'Модуль'} (Копия)`
+      };
+      return {
+        modules: [...prev.modules, cloned],
+        activeModuleId: cloned.id
+      };
+    });
+    setSelectedLineId(null);
+    setSelectedCellId(null);
+    setSelectedFillId(null);
+    setSelectedProfileId(null);
+  };
+
+  const handleCloseModuleTab = (id: string) => {
+    setTabsState((prev) => {
+      if (prev.modules.length <= 1) return prev;
+      const nextModules = prev.modules.filter((m) => m.id !== id);
+      const nextActiveId =
+        prev.activeModuleId === id
+          ? nextModules[nextModules.length - 1].id
+          : prev.activeModuleId;
+      return { modules: nextModules, activeModuleId: nextActiveId };
+    });
+    setSelectedLineId(null);
+    setSelectedCellId(null);
+    setSelectedFillId(null);
+    setSelectedProfileId(null);
+  };
+
+  const handleLoadPresetTab = () => {
+    const def = createDefaultModule();
+    const newPresetMod: ModuleModel = {
+      ...def,
+      id: `mod-${Date.now()}`,
+      name: `${def.name} (Копия)`
+    };
+    setTabsState((prev) => ({
+      modules: [...prev.modules, newPresetMod],
+      activeModuleId: newPresetMod.id
+    }));
+    const selLine = newPresetMod.lines.find((l) => l.id === 'line-right') || newPresetMod.lines[0];
+    setSelectedLineId(selLine?.id || null);
+    setSelectedCellId(null);
+    setSelectedFillId(null);
+    setSelectedProfileId(selLine?.profileBindings[0]?.id || null);
+  };
+
+  const handleRenameModule = (id: string, newName: string) => {
+    setTabsState((prev) => ({
+      ...prev,
+      modules: prev.modules.map((m) => (m.id === id ? { ...m, name: newName } : m))
+    }));
+  };
+
+  const handleApplyUserSettings = (newSettings: UserSettings) => {
+    setDimensionDisplayMode(newSettings.defaultDimensionMode);
+    setModule((prev) => ({
+      ...prev,
+      project: prev.project === 'ПРОЕКТ' ? newSettings.defaultProjectCode : prev.project,
+      color: prev.color || newSettings.defaultPrimaryColor,
+      colors: prev.colors && prev.colors.length > 0 ? prev.colors : [...newSettings.defaultColors]
+    }));
+  };
+
+  // Listen to native Electron Application Menu actions
+  React.useEffect(() => {
+    if (!window.electronAPI?.onMenuAction) return;
+    const cleanup = window.electronAPI.onMenuAction((action) => {
+      switch (action) {
+        case 'menu-new':
+          handleClearCanvas();
+          break;
+        case 'menu-import': {
           const inp = document.createElement('input');
           inp.type = 'file';
           inp.accept = '.xlsx, .xls, .spectool, .json';
@@ -786,39 +1152,149 @@ export const App: React.FC = () => {
             if (file) handleImportFile(file);
           };
           inp.click();
-        }}
-        onExportProject={handleExportProject}
-        onExportExcel={() => exportToExcel(module, bomRows)}
-        onClearCanvas={handleClearCanvas}
-        onAddBoxContour={() => handleAddBoxContour(module.width, module.height)}
-        onOpenDatabaseManager={(tab) => {
-          setDbManagerInitialTab(tab || 'materials');
-          setIsDatabaseManagerOpen(true);
-        }}
-        onOpenColorManager={() => {
-          // Trigger color popover via Header or direct modal
-          const btn = document.querySelector('button[title*="Настроить цвета проекта"]') as HTMLButtonElement;
-          btn?.click();
-        }}
-        onOpenNamingModal={() => setIsNamingModalOpen(true)}
-        onOpenProcessTemplatesModal={() => setIsProcessModalOpen(true)}
-        onOpenStandaloneModal={() => {
+          break;
+        }
+        case 'menu-save':
+          handleExportProject();
+          break;
+        case 'menu-export-excel':
+          exportToExcel(module, bomRows);
+          break;
+        case 'menu-load-example':
+          handleLoadPreset();
+          break;
+        case 'menu-clear':
+          handleClearCanvas();
+          break;
+        case 'menu-add-outer-frame':
+          handleAddBoxContour(module.width, module.height);
+          break;
+        case 'menu-add-standalone':
           setEditingStandaloneItem(null);
           setIsStandaloneModalOpen(true);
-        }}
-        onOpenNumberingPopover={() => {
+          break;
+        case 'menu-open-numbering': {
           const btn = document.querySelector('button[title*="Таблица порядковых номеров"]') as HTMLButtonElement;
           btn?.click();
-        }}
-        onResetLayout={handleResetLayoutSizes}
-        onOpenAboutModal={() => {
-          alert('Spectool v1.1.0 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций по отраслевому эталону Модуля Жукова.');
-        }}
-        panelVisibility={panelVisibility}
-        onTogglePanel={togglePanelVisibility}
+          break;
+        }
+        case 'menu-dim-inputs':
+          handleSetDimensionMode('selection_inputs');
+          break;
+        case 'menu-dim-chains':
+          handleSetDimensionMode('outer_chains');
+          break;
+        case 'menu-dim-all':
+          handleSetDimensionMode('all_lines');
+          break;
+        case 'menu-dim-hidden':
+          handleSetDimensionMode('hidden');
+          break;
+        case 'menu-toggle-params':
+          togglePanelVisibility('params');
+          break;
+        case 'menu-toggle-materials':
+          togglePanelVisibility('materials');
+          break;
+        case 'menu-toggle-hardware':
+          togglePanelVisibility('hardware');
+          break;
+        case 'menu-toggle-table':
+          togglePanelVisibility('table');
+          break;
+        case 'menu-open-user-settings':
+          setIsUserSettingsOpen(true);
+          break;
+        case 'menu-open-db':
+          setIsDatabaseManagerOpen(true);
+          break;
+        case 'menu-open-colors': {
+          const btn = document.querySelector('button[title*="Настроить цвета проекта"]') as HTMLButtonElement;
+          btn?.click();
+          break;
+        }
+        case 'menu-open-naming':
+          setIsNamingModalOpen(true);
+          break;
+        case 'menu-open-process':
+          setIsProcessModalOpen(true);
+          break;
+        case 'menu-reset-layout':
+          handleResetLayoutSizes();
+          break;
+        case 'menu-about':
+          alert('Spectool v1.1.0 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций.');
+          break;
+      }
+    });
+    return cleanup;
+  }, [module, bomRows]);
+
+  return (
+    <div className="h-screen w-screen flex flex-col bg-slate-100 font-sans text-slate-800 overflow-hidden">
+      {/* 1. Desktop Application Menu Bar (rendered when in web mode; Electron uses native top menu bar) */}
+      {!window.electronAPI?.isElectron && (
+        <MenuBar
+          dimensionMode={dimensionDisplayMode}
+          onChangeDimensionMode={handleSetDimensionMode}
+          onNewEmptyModule={handleClearCanvas}
+          onLoadPreset={handleLoadPreset}
+          onImportClick={() => {
+            const inp = document.createElement('input');
+            inp.type = 'file';
+            inp.accept = '.xlsx, .xls, .spectool, .json';
+            inp.onchange = (e) => {
+              const file = (e.target as HTMLInputElement).files?.[0];
+              if (file) handleImportFile(file);
+            };
+            inp.click();
+          }}
+          onExportProject={handleExportProject}
+          onExportExcel={() => exportToExcel(module, bomRows)}
+          onClearCanvas={handleClearCanvas}
+          onAddBoxContour={() => handleAddBoxContour(module.width, module.height)}
+          onOpenDatabaseManager={(tab) => {
+            setDbManagerInitialTab(tab || 'materials');
+            setIsDatabaseManagerOpen(true);
+          }}
+          onOpenUserSettings={() => setIsUserSettingsOpen(true)}
+          onOpenColorManager={() => {
+            const btn = document.querySelector('button[title*="Настроить цвета проекта"]') as HTMLButtonElement;
+            btn?.click();
+          }}
+          onOpenNamingModal={() => setIsNamingModalOpen(true)}
+          onOpenProcessTemplatesModal={() => setIsProcessModalOpen(true)}
+          onOpenCellTemplatesModal={() => setIsCellTemplatesModalOpen(true)}
+          onOpenStandaloneModal={() => {
+            setEditingStandaloneItem(null);
+            setIsStandaloneModalOpen(true);
+          }}
+          onOpenNumberingPopover={() => {
+            const btn = document.querySelector('button[title*="Таблица порядковых номеров"]') as HTMLButtonElement;
+            btn?.click();
+          }}
+          onResetLayout={handleResetLayoutSizes}
+          onOpenAboutModal={() => {
+            alert('Spectool v2.1.1 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций.');
+          }}
+          panelVisibility={panelVisibility}
+          onTogglePanel={togglePanelVisibility}
+        />
+      )}
+
+      {/* 2. Multi-Module Tabs Bar */}
+      <ModuleTabBar
+        modules={modules}
+        activeModuleId={activeModuleId}
+        onSelectModule={handleSelectModule}
+        onNewEmptyModule={handleNewModuleTab}
+        onDuplicateModule={handleDuplicateModuleTab}
+        onCloseModule={handleCloseModuleTab}
+        onLoadPreset={handleLoadPresetTab}
+        onRenameModule={handleRenameModule}
       />
 
-      {/* 2. Top Header bar */}
+      {/* 3. Top Header bar */}
       <Header
         module={module}
         bomRows={bomRows}
@@ -831,14 +1307,7 @@ export const App: React.FC = () => {
         onUpdateProjectName={(project) => setModule((m) => ({ ...m, project }))}
         onUpdateDimensions={handleUpdateDimensions}
         onNewEmptyModule={handleClearCanvas}
-        onLoadPreset={() => {
-          const def = createDefaultModule();
-          setModule(def);
-          const selLine = def.lines.find((l) => l.id === 'line-right') || def.lines[0];
-          setSelectedLineId(selLine?.id || null);
-          setSelectedCellId(null);
-          setSelectedProfileId(selLine?.profileBindings[0]?.id || null);
-        }}
+        onLoadPreset={handleLoadPreset}
         onOpenNamingModal={() => setIsNamingModalOpen(true)}
         onOpenProcessTemplatesModal={() => setIsProcessModalOpen(true)}
         onOpenStandaloneItemModal={() => {
@@ -885,11 +1354,13 @@ export const App: React.FC = () => {
               selectedLine={selectedLine}
               selectedCell={selectedCell}
               selectedProfileId={activeProfileId}
+              selectedFillId={selectedFillId}
               width={layoutSizes.paramsWidth}
               projectCode={module.project}
               projectColors={module.colors && module.colors.length > 0 ? module.colors : [module.color || 'RAL 7012']}
               onSelectLine={handleSelectLine}
               onSelectCell={handleSelectCell}
+              onSelectFill={setSelectedFillId}
               onUpdateLine={handleUpdateLine}
               onDeleteLine={handleDeleteLine}
               onUpdateCell={handleUpdateCell}
@@ -897,7 +1368,9 @@ export const App: React.FC = () => {
               onUpdateProfile={handleUpdateProfile}
               onDeleteProfile={handleDeleteProfile}
               onSelectProfile={setSelectedProfileId}
-              onOpenFastenerModal={() => {}}
+              onAddDependencyToTarget={handleAddDependencyRule}
+              onRemoveDependency={handleRemoveDependency}
+              onOpenCellTemplatesModal={() => setIsCellTemplatesModalOpen(true)}
             />
           </>
         )}
@@ -918,6 +1391,7 @@ export const App: React.FC = () => {
               selectedCellId={selectedCellId}
               width={layoutSizes.materialsWidth}
               onBindProfileToSelectedLine={handleBindProfileFromTree}
+              onBindAsCellMaterial={handleBindMaterialToSelectedCell}
               onBindAsAccessory={handleBindMaterialAsAccessory}
               onOpenDatabaseManager={() => {
                 setDbManagerInitialTab('materials');
@@ -942,6 +1416,8 @@ export const App: React.FC = () => {
               selectedLineId={selectedLineId}
               selectedProfileId={activeProfileId}
               selectedCellId={selectedCellId}
+              selectedFillId={selectedFillId}
+              targetDescription={targetDescription}
               width={layoutSizes.hardwareWidth}
               onSelectHardware={handleSelectHardwareFromDB}
               onOpenDatabaseManager={() => {
@@ -964,6 +1440,7 @@ export const App: React.FC = () => {
           selectedLine={selectedLine}
           selectedProfileId={activeProfileId}
           selectedCell={selectedCell}
+          selectedFillId={selectedFillId}
           selectedRuleId={selectedRuleId}
           onAddDependency={handleAddDependencyRule}
           onUpdateDependency={handleUpdateDependency}
@@ -984,7 +1461,8 @@ export const App: React.FC = () => {
           <SpecificationTable
             module={module}
             bomRows={bomRows}
-            selectedSourceId={selectedProfileId || selectedCellId || selectedLineId}
+            selectedSourceId={activeProfileId || selectedCellId || selectedLineId}
+            selectedFillId={selectedFillId}
             height={layoutSizes.tableHeight}
             onSelectRow={handleSelectRow}
             onUpdateBOMCell={handleUpdateBOMCell}
@@ -1057,6 +1535,19 @@ export const App: React.FC = () => {
           setEditingStandaloneItem(null);
         }}
         onSave={handleSaveStandaloneItem}
+      />
+
+      {/* User Default Settings & Preferences Modal */}
+      <UserSettingsModal
+        isOpen={isUserSettingsOpen}
+        onClose={() => setIsUserSettingsOpen(false)}
+        onApplySettings={handleApplyUserSettings}
+      />
+
+      {/* Cell Fill Templates Configuration Modal */}
+      <CellTemplatesModal
+        isOpen={isCellTemplatesModalOpen}
+        onClose={() => setIsCellTemplatesModalOpen(false)}
       />
 
       {/* Floating Agent UI Feedback & Review Tool */}

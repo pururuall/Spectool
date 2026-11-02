@@ -1,4 +1,5 @@
 import { ModuleModel, BOMRow } from '../types';
+import { normalizeCellFills } from './cellTemplates';
 import ExcelJS from 'exceljs';
 
 export function calculateFormula(
@@ -6,11 +7,29 @@ export function calculateFormula(
   params: { L: number; W: number; H: number; Area: number }
 ): number {
   try {
-    let expr = formula;
-    expr = expr.replace(/\bL\b/gi, params.L.toString());
-    expr = expr.replace(/\bW\b/gi, params.W.toString());
-    expr = expr.replace(/\bH\b/gi, params.H.toString());
-    expr = expr.replace(/\bArea\b/gi, params.Area.toString());
+    let expr = formula.trim();
+
+    // Replace comma in decimal numbers (e.g. 1,05 -> 1.05, 0,15 -> 0.15)
+    expr = expr.replace(/(\d+),(\d+)/g, '$1.$2');
+
+    // Russian functions -> JS/English equivalents
+    expr = expr.replace(/\bОКРУГЛВВЕРХ\b/gi, 'ROUNDUP');
+    expr = expr.replace(/\bОКРУГЛВНИЗ\b/gi, 'FLOOR');
+    expr = expr.replace(/\bОКРУГЛ\b/gi, 'ROUND');
+    expr = expr.replace(/\bМАКС\b/gi, 'MAX');
+    expr = expr.replace(/\bМИН\b/gi, 'MIN');
+
+    // Russian & English Variables (Perimeter, Area, Length, Width, Height)
+    expr = expr.replace(/\b(ПЕРИМЕТР|PERIMETER)\b/gi, `(${2 * (params.W + params.H)})`);
+    expr = expr.replace(/(^|[^а-яa-z0-9_])П([^а-яa-z0-9_]|$)/gi, `$1(${2 * (params.W + params.H)})$2`);
+    expr = expr.replace(/\b(ПЛОЩАДЬ|AREA)\b/gi, params.Area.toString());
+    expr = expr.replace(/(^|[^а-яa-z0-9_])S([^а-яa-z0-9_]|$)/gi, `$1${params.Area}$2`);
+    expr = expr.replace(/\b(ДЛИНА|LENGTH)\b/gi, params.L.toString());
+    expr = expr.replace(/(^|[^а-яa-z0-9_])(Д|L)([^а-яa-z0-9_]|$)/gi, `$1${params.L}$3`);
+    expr = expr.replace(/\b(ШИРИНА|WIDTH)\b/gi, params.W.toString());
+    expr = expr.replace(/(^|[^а-яa-z0-9_])(Ш|W)([^а-яa-z0-9_]|$)/gi, `$1${params.W}$3`);
+    expr = expr.replace(/\b(ВЫСОТА|HEIGHT)\b/gi, params.H.toString());
+    expr = expr.replace(/(^|[^а-яa-z0-9_])(В|H)([^а-яa-z0-9_]|$)/gi, `$1${params.H}$3`);
 
     const fn = new Function(
       'ROUNDUP',
@@ -167,108 +186,115 @@ export function generateBOM(module: ModuleModel): BOMRow[] {
     }
   }
 
-  // 2. Process all Cells (Spandrels, Panels, Glass)
+  // 2. Process all Cells (Spandrels, Panels, Glass, Screens, multiple fills per cell)
   for (const cell of module.cells) {
-    const isGlass = cell.fillType === 'glass';
-    const cellL = cell.glassHeight || cell.height;
-    const cellB = cell.glassWidth || cell.width;
-    const area = (cellL * cellB) / 1_000_000;
-    const currentCellExcelRow = rows.length + 2;
+    const fills = normalizeCellFills(cell);
+    for (const fill of fills) {
+      const isGlass = fill.fillType === 'glass';
+      const cellL = fill.height;
+      const cellB = fill.width;
+      const area = (cellL * cellB) / 1_000_000;
+      const currentCellExcelRow = rows.length + 2;
 
-    // Has material: true only if explicitly enabled or if spandrel/sheet metal with material
-    const hasMat = cell.hasMaterial !== undefined ? cell.hasMaterial : (!isGlass && !!cell.material);
-    const matMark = hasMat ? (cell.material || 'Оц 0,9мм') : '';
-    const matName = hasMat ? (cell.materialName || 'Лист 0,9 Оц сталь ГОСТ 14918-80') : '';
-    const tmpl = cell.processTemplate !== undefined ? cell.processTemplate : (hasMat ? 'Короб' : '');
-    const lkType = cell.linkType || (hasMat ? 'деталь' : 'комплектующие');
-    const planGrp = cell.planGroup || (hasMat ? 'Детали ЦМК' : '');
-
-    rows.push({
-      id: `bom-${cell.id}`,
-      sourceType: 'cell',
-      sourceId: cell.id,
-      mark: cell.mark || (isGlass ? 'СП-1' : 'А1187 К1080-1000'),
-      name: isGlass ? `${cell.name}${cell.formula ? ' ' + cell.formula : ''}` : cell.name,
-      materialMark: matMark,
-      materialName: matName,
-      materialQty: hasMat ? Math.round(area * 100) / 100 : undefined,
-      materialUnit: hasMat ? 'м2' : '',
-      processTemplate: tmpl,
-      linkType: lkType,
-      specQty: 1,
-      specUnit: 'шт',
-      vgbPlanGroup: planGrp,
-      vgbL: cellL,
-      vgbB: cellB,
-      vgbLB: Math.round(cellL * cellB),
-      vgbColor: isGlass ? '' : (cell.color || ''),
-      vgpLeft: '',
-      vgpRight: '',
-      vgpLeft2: '',
-      vgpRight2: '',
-      lengthMm: cellL,
-      widthMm: cellB,
-      areaM2: Math.round(area * 100) / 100,
-      color: cell.color,
-      planGroup: planGrp,
-      excelFormulaE: hasMat ? `ROUNDUP(N${currentCellExcelRow}/1000000, 2)` : undefined,
-      excelFormulaN: `ROUNDUP(L${currentCellExcelRow}*M${currentCellExcelRow}, 0)`
-    });
-
-    // Add dependencies of this cell (screws, insulation, pins, isolon)
-    for (const dep of cell.dependencies) {
-      let qty = 0;
-      let formulaI: string | undefined;
-
-      if (dep.calcType === 'fixed') {
-        qty = dep.quantity || 1;
-      } else if (dep.formula) {
-        qty = calculateFormula(dep.formula, {
-          L: cellL,
-          W: cellB,
-          H: cellL,
-          Area: area
-        });
-
-        if (dep.formula.includes('/ 90') || dep.name.includes('Винт') || dep.name.includes('3,9х16')) {
-          formulaI = `(ROUNDUP((L${currentCellExcelRow}/90+M${currentCellExcelRow}/90),0)+2)*3`;
-        } else if (dep.formula.includes('2.05') || dep.name.includes('Изолон')) {
-          formulaI = `ROUNDUP((L${currentCellExcelRow}+M${currentCellExcelRow})*2.05/1000,1)`;
-        } else if (dep.formula.includes('0.15') || dep.name.includes('Утеплитель') || dep.name.includes('RookWool')) {
-          formulaI = `ROUNDUP(E${currentCellExcelRow}*0.15,2)`;
-        } else if (dep.formula.includes('* 6') || dep.name.includes('Гвоздь')) {
-          formulaI = `ROUNDUP(E${currentCellExcelRow}*6,0)`;
-        }
-      }
-      dep.evaluatedQty = qty;
+      // Has material: true only if explicitly enabled or if spandrel/sheet metal with material
+      const hasMat = fill.hasMaterial !== undefined ? fill.hasMaterial : (!isGlass && !!fill.material);
+      const matMark = hasMat ? (fill.material || 'Оц 0,9мм') : '';
+      const matName = hasMat ? (fill.materialName || 'Лист 0,9 Оц сталь ГОСТ 14918-80') : '';
+      const tmpl = fill.processTemplate !== undefined ? fill.processTemplate : (hasMat ? 'Короб' : '');
+      const lkType = fill.linkType || (hasMat ? 'деталь' : 'комплектующие');
+      const planGrp = fill.planGroup || (hasMat ? 'Детали ЦМК' : '');
 
       rows.push({
-        id: `bom-${dep.id}`,
-        sourceType: 'accessory',
-        sourceId: dep.id,
-        parentName: cell.name,
-        mark: dep.article,
-        name: dep.name,
-        materialMark: '',
-        materialName: '',
-        materialQty: '',
-        materialUnit: '',
-        processTemplate: '',
-        linkType: 'комплектующие',
-        specQty: qty,
-        specUnit: dep.unit,
-        vgbPlanGroup: '',
-        vgbL: '',
-        vgbB: '',
-        vgbLB: '',
-        vgbColor: '',
+        id: `bom-${cell.id}-${fill.id}`,
+        sourceType: 'cell',
+        sourceId: cell.id,
+        fillId: fill.id,
+        mark: fill.mark || (isGlass ? 'СП-1' : 'А1187 К1080-1000'),
+        name: isGlass ? `${fill.name}${fill.formula ? ' ' + fill.formula : ''}` : fill.name,
+        materialMark: matMark,
+        materialName: matName,
+        materialQty: hasMat ? Math.round(area * 100) / 100 : undefined,
+        materialUnit: hasMat ? 'м2' : '',
+        processTemplate: tmpl,
+        linkType: lkType,
+        specQty: 1,
+        specUnit: 'шт',
+        vgbPlanGroup: planGrp,
+        vgbL: cellL,
+        vgbB: cellB,
+        vgbLB: Math.round(cellL * cellB),
+        vgbColor: isGlass ? '' : (fill.color || ''),
         vgpLeft: '',
         vgpRight: '',
         vgpLeft2: '',
         vgpRight2: '',
-        planGroup: 'Комплектующие',
-        excelFormulaI: formulaI
+        lengthMm: cellL,
+        widthMm: cellB,
+        areaM2: Math.round(area * 100) / 100,
+        color: fill.color,
+        planGroup: planGrp,
+        excelFormulaE: hasMat ? `ROUNDUP(N${currentCellExcelRow}/1000000, 2)` : undefined,
+        excelFormulaN: `ROUNDUP(L${currentCellExcelRow}*M${currentCellExcelRow}, 0)`
       });
+
+      // Add dependencies of this fill (screws, insulation, pins, isolon)
+      for (const dep of fill.dependencies || []) {
+        let qty = 0;
+        let formulaI: string | undefined;
+
+        if (dep.calcType === 'fixed') {
+          qty = dep.quantity || 1;
+        } else if (dep.formula) {
+          qty = calculateFormula(dep.formula, {
+            L: cellL,
+            W: cellB,
+            H: cellL,
+            Area: area
+          });
+
+          if (dep.formula.includes('/ 90') || dep.name.includes('Винт') || dep.name.includes('3,9х16')) {
+            formulaI = `(ROUNDUP((L${currentCellExcelRow}/90+M${currentCellExcelRow}/90),0)+2)*3`;
+          } else if (dep.formula.includes('2.05') || dep.name.includes('Изолон')) {
+            formulaI = `ROUNDUP((L${currentCellExcelRow}+M${currentCellExcelRow})*2.05/1000,1)`;
+          } else if (dep.formula.includes('0.15') || dep.name.includes('Утеплитель') || dep.name.includes('RookWool')) {
+            formulaI = `ROUNDUP(E${currentCellExcelRow}*0.15,2)`;
+          } else if (dep.formula.includes('* 6') || dep.name.includes('Гвоздь')) {
+            formulaI = `ROUNDUP(E${currentCellExcelRow}*6,0)`;
+          }
+        }
+        dep.evaluatedQty = qty;
+
+        rows.push({
+          id: `bom-${dep.id}`,
+          sourceType: 'accessory',
+          sourceId: dep.id,
+          fillId: fill.id,
+          parentName: `${fill.name} (${fill.mark})`,
+          mark: dep.article,
+          name: dep.name,
+          materialMark: '',
+          materialName: '',
+          materialQty: '',
+          materialUnit: '',
+          processTemplate: '',
+          linkType: 'комплектующие',
+          specQty: qty,
+          specUnit: dep.unit,
+          vgbPlanGroup: '',
+          vgbL: '',
+          vgbB: '',
+          vgbLB: '',
+          vgbColor: '',
+          vgpLeft: '',
+          vgpRight: '',
+          vgpLeft2: '',
+          vgpRight2: '',
+          lengthMm: 0,
+          color: '',
+          planGroup: '',
+          excelFormulaI: formulaI
+        });
+      }
     }
   }
 

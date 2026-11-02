@@ -244,7 +244,28 @@ export function detectCellsFromLines(lines: LineSegment[], currentCells: Cell[] 
         glassHeight: Math.max(0, height - 50),
         thickness: 32,
         color: '#e0f2fe',
-        dependencies: []
+        dependencies: [],
+        fills: [
+          {
+            id: `fill-glass-${cellIdx}`,
+            fillType: 'glass',
+            name: 'Стеклопакет СПО 32мм',
+            mark: `СП-${cellIdx}`,
+            linkType: 'комплектующие',
+            hasMaterial: false,
+            material: '',
+            materialName: '',
+            processTemplate: '',
+            planGroup: 'Комплектующие',
+            widthOffset: -50,
+            heightOffset: -50,
+            width: Math.max(0, width - 50),
+            height: Math.max(0, height - 50),
+            thickness: 32,
+            color: '#e0f2fe',
+            dependencies: []
+          }
+        ]
       });
       cellIdx++;
     }

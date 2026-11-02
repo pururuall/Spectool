@@ -103,8 +103,9 @@ export const Canvas: React.FC<CanvasProps> = ({
   const fromSvgX = (svgX: number) => (svgX - 80) / scale;
   const fromSvgY = (svgY: number) => (svgHeight - 80 - svgY) / scale;
 
-  // CAD Architectural Dimension Chains (levels & bays)
+  // CAD Architectural Dimension Chains (levels & bays) - Only when lines exist!
   const cadLevels = useMemo(() => {
+    if (!module.lines || module.lines.length === 0) return [];
     const horiz = module.lines.filter((l) => Math.abs(l.y1 - l.y2) <= 2);
     const set = new Set<number>([0, module.height]);
     horiz.forEach((l) => set.add(Math.round((l.y1 + l.y2) / 2)));
@@ -112,6 +113,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   }, [module.lines, module.height]);
 
   const cadBays = useMemo(() => {
+    if (!module.lines || module.lines.length === 0) return [];
     const vert = module.lines.filter((l) => Math.abs(l.x1 - l.x2) <= 2);
     const set = new Set<number>([0, module.width]);
     vert.forEach((l) => set.add(Math.round((l.x1 + l.x2) / 2)));
@@ -638,29 +640,38 @@ export const Canvas: React.FC<CanvasProps> = ({
                   stroke={isSelected ? '#0284c7' : isHovered ? '#38bdf8' : '#94a3b8'}
                   strokeWidth={isSelected ? 2.5 : isHovered ? 1.5 : 1}
                 />
-                <g transform={`translate(${x + w / 2}, ${y + h / 2})`} style={{ pointerEvents: 'none' }}>
-                  <rect
-                    x="-40"
-                    y="-12"
-                    width="80"
-                    height="24"
-                    rx="4"
-                    fill="white"
-                    stroke={isSelected ? '#0284c7' : '#cbd5e1'}
-                    strokeWidth={isSelected ? 2 : 1}
-                  />
-                  <text
-                    textAnchor="middle"
-                    dy="4"
-                    fill={isSelected ? '#0369a1' : '#334155'}
-                    fontSize="9"
-                    fontFamily="JetBrains Mono"
-                    fontWeight="bold"
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    {cell.mark || cell.name}
-                  </text>
-                </g>
+                {(() => {
+                  const fills = cell.fills && cell.fills.length > 0 ? cell.fills : null;
+                  const cellLabel = fills
+                    ? (fills.length > 1 ? fills.map((f) => f.mark).join(' + ') : fills[0].mark || fills[0].name)
+                    : (cell.mark || cell.name);
+                  const badgeW = Math.max(80, Math.min(260, cellLabel.length * 7.5 + 16));
+                  return (
+                    <g transform={`translate(${x + w / 2}, ${y + h / 2})`} style={{ pointerEvents: 'none' }}>
+                      <rect
+                        x={-badgeW / 2}
+                        y="-12"
+                        width={badgeW}
+                        height="24"
+                        rx="4"
+                        fill="white"
+                        stroke={isSelected ? '#0284c7' : '#cbd5e1'}
+                        strokeWidth={isSelected ? 2 : 1}
+                      />
+                      <text
+                        textAnchor="middle"
+                        dy="4"
+                        fill={isSelected ? '#0369a1' : '#334155'}
+                        fontSize="9"
+                        fontFamily="JetBrains Mono"
+                        fontWeight="bold"
+                        style={{ pointerEvents: 'none' }}
+                      >
+                        {cellLabel}
+                      </text>
+                    </g>
+                  );
+                })()}
               </g>
             );
           })}
@@ -931,8 +942,8 @@ export const Canvas: React.FC<CanvasProps> = ({
             </g>
           )}
 
-          {/* CAD Architectural Outer Dimension Chains */}
-          {dimensionDisplayMode === 'outer_chains' && (
+          {/* CAD Architectural Outer Dimension Chains - Only render when module has lines */}
+          {dimensionDisplayMode === 'outer_chains' && module.lines.length > 0 && (
             <g className="cad-dimension-chains" style={{ pointerEvents: 'none' }}>
               {/* Left Vertical Chains (Levels) */}
               {cadLevels.map((lvl, idx) => {

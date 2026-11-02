@@ -7,8 +7,9 @@ interface SpecificationTableProps {
   module: ModuleModel;
   bomRows: BOMRow[];
   selectedSourceId: string | null;
+  selectedFillId?: string | null;
   height?: number;
-  onSelectRow: (sourceType: string, sourceId: string) => void;
+  onSelectRow: (sourceType: string, sourceId: string, fillId?: string) => void;
   onUpdateBOMCell: (rowId: string, field: keyof BOMRow, value: any) => void;
   onAddStandaloneItem?: () => void;
   onEditStandaloneItem?: (item: StandaloneItem) => void;
@@ -19,6 +20,7 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
   module,
   bomRows,
   selectedSourceId,
+  selectedFillId,
   height = 260,
   onSelectRow,
   onUpdateBOMCell,
@@ -109,10 +111,10 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
             <button
               onClick={onAddStandaloneItem}
               className="px-2.5 py-1 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
-              title="Добавить отдельную деталь или сборочную единицу (кронштейн, закладную, узел)"
+              title="Добавить отдельную деталь, сборочную единицу или комплектующее (кронштейн, узел, крепеж)"
             >
               <PlusCircle className="w-3.5 h-3.5" />
-              <span>+ Деталь / СБ</span>
+              <span>+ Деталь / СБ / Компл.</span>
             </button>
           )}
 
@@ -166,7 +168,9 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
           </thead>
           <tbody className="divide-y divide-slate-200 text-slate-800">
             {filteredRows.map((row, idx) => {
-              const isSelected = selectedSourceId === row.sourceId;
+              const isSelected =
+                selectedSourceId === row.sourceId &&
+                (row.sourceType !== 'cell' || !selectedFillId || !row.fillId || row.fillId === selectedFillId);
               const isAssembly = row.linkType === 'Сборочная единица';
               const isPart = row.linkType === 'деталь';
               const isChild = !!row.parentName || row.linkType === 'комплектующие';
@@ -174,7 +178,7 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
               return (
                 <tr
                   key={row.id}
-                  onClick={() => onSelectRow(row.sourceType, row.sourceId)}
+                  onClick={() => onSelectRow(row.sourceType, row.sourceId, row.fillId)}
                   className={`cursor-pointer transition-colors ${
                     isSelected
                       ? 'bg-blue-200/90 font-bold ring-1 ring-blue-500'
@@ -237,32 +241,46 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
 
                   {/* 5. Материал кол-во */}
                   <td className="py-1 px-2 border-r border-slate-200 text-right font-mono font-semibold text-slate-900">
-                    {row.materialQty}
+                    <input
+                      type="text"
+                      value={row.materialQty}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'materialQty', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-full text-right font-mono font-semibold"
+                    />
                   </td>
 
                   {/* 6. Материал ЕИ */}
                   <td className="py-1 px-2 border-r border-slate-200 text-center text-slate-500 text-[11px]">
-                    {row.materialUnit}
+                    <input
+                      type="text"
+                      value={row.materialUnit}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'materialUnit', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-full text-center font-mono text-[11px]"
+                    />
                   </td>
 
                   {/* 7. Шаблон техпроцесса */}
                   <td className="py-1 px-2 border-r border-slate-200 text-slate-700">
-                    {row.processTemplate}
+                    <input
+                      type="text"
+                      value={row.processTemplate}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'processTemplate', e.target.value)}
+                      placeholder="—"
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-full text-slate-700"
+                    />
                   </td>
 
                   {/* 8. Тип связи */}
                   <td className="py-1 px-2 border-r border-slate-200 text-slate-700">
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                        row.linkType === 'деталь'
-                          ? 'bg-blue-100 text-blue-800'
-                          : row.linkType === 'Сборочная единица'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-slate-200 text-slate-700'
-                      }`}
+                    <select
+                      value={row.linkType}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'linkType', e.target.value as any)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 text-[10px] font-semibold cursor-pointer"
                     >
-                      {row.linkType}
-                    </span>
+                      <option value="деталь">деталь</option>
+                      <option value="Сборочная единица">Сборочная единица</option>
+                      <option value="комплектующие">комплектующие</option>
+                    </select>
                   </td>
 
                   {/* 9. Кол-во в спецификации */}
@@ -277,52 +295,103 @@ export const SpecificationTable: React.FC<SpecificationTableProps> = ({
 
                   {/* 10. ЕИ */}
                   <td className="py-1 px-2 border-r border-slate-200 text-center text-slate-500 font-mono text-[11px]">
-                    {row.specUnit}
+                    <input
+                      type="text"
+                      value={row.specUnit}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'specUnit', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-full text-center font-mono text-[11px]"
+                    />
                   </td>
 
                   {/* 11. VGB_Plan_Group */}
                   <td className="py-1 px-2 border-r border-slate-200 text-slate-600 text-[11px]">
-                    {row.vgbPlanGroup}
+                    <input
+                      type="text"
+                      value={row.vgbPlanGroup}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgbPlanGroup', e.target.value)}
+                      placeholder="—"
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-full text-slate-600 text-[11px]"
+                    />
                   </td>
 
                   {/* 12. VGB_L_MM */}
                   <td className="py-1 px-2 border-r border-slate-200 text-right font-mono text-slate-800 font-semibold">
-                    {row.vgbL}
+                    <input
+                      type="text"
+                      value={row.vgbL}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgbL', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-16 text-right font-mono font-semibold"
+                    />
                   </td>
 
                   {/* 13. VGB_B_MM */}
                   <td className="py-1 px-2 border-r border-slate-200 text-right font-mono text-slate-800">
-                    {row.vgbB}
+                    <input
+                      type="text"
+                      value={row.vgbB}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgbB', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-16 text-right font-mono"
+                    />
                   </td>
 
                   {/* 14. VGB_LB_MM */}
                   <td className="py-1 px-2 border-r border-slate-200 text-right font-mono text-slate-800">
-                    {row.vgbLB}
+                    <input
+                      type="text"
+                      value={row.vgbLB}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgbLB', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-16 text-right font-mono"
+                    />
                   </td>
 
                   {/* 15. VGB_Color */}
                   <td className="py-1 px-2 border-r border-slate-200 text-slate-700 text-[11px]">
-                    {row.vgbColor}
+                    <input
+                      type="text"
+                      value={row.vgbColor}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgbColor', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-full text-slate-700 text-[11px]"
+                    />
                   </td>
 
                   {/* 16. VGP_left */}
                   <td className="py-1 px-2 border-r border-slate-200 text-center font-mono text-slate-700 text-[11px]">
-                    {row.vgpLeft}
+                    <input
+                      type="text"
+                      value={row.vgpLeft}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgpLeft', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-10 text-center font-mono text-[11px]"
+                    />
                   </td>
 
                   {/* 17. VGP_Right */}
                   <td className="py-1 px-2 border-r border-slate-200 text-center font-mono text-slate-700 text-[11px]">
-                    {row.vgpRight}
+                    <input
+                      type="text"
+                      value={row.vgpRight}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgpRight', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-10 text-center font-mono text-[11px]"
+                    />
                   </td>
 
                   {/* 18. VGP_Left_2 */}
                   <td className="py-1 px-2 border-r border-slate-200 text-center font-mono text-slate-700 text-[11px]">
-                    {row.vgpLeft2}
+                    <input
+                      type="text"
+                      value={row.vgpLeft2}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgpLeft2', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-10 text-center font-mono text-[11px]"
+                    />
                   </td>
 
                   {/* 19. VGP_Right_2 */}
                   <td className="py-1 px-2 border-r border-slate-200 text-center font-mono text-slate-700 text-[11px]">
-                    {row.vgpRight2}
+                    <input
+                      type="text"
+                      value={row.vgpRight2}
+                      onChange={(e) => onUpdateBOMCell(row.id, 'vgpRight2', e.target.value)}
+                      className="bg-transparent hover:bg-white focus:bg-white px-1 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 w-10 text-center font-mono text-[11px]"
+                    />
                   </td>
 
                   {/* Actions for standalone items */}

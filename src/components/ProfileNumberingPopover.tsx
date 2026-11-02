@@ -100,7 +100,7 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
         {/* SECTION 1: Standard Zhukov Module Numbering Matrix (Скриншот 1) */}
         <div>
           <span className="text-[11px] font-bold text-slate-700 block mb-1.5">
-            Сводная таблица по осям (стандарт Жукова):
+            Сводная таблица по осям модуля:
           </span>
           <div className="grid grid-cols-2 gap-2 border border-slate-200 rounded-xl p-2.5 bg-slate-50/60 font-mono">
             {/* Left: Height H and Verticals (n L, n R) */}
@@ -187,19 +187,11 @@ export const ProfileNumberingPopover: React.FC<ProfileNumberingPopoverProps> = (
             <div className="flex items-center gap-1.5">
               <button
                 onClick={applySequentialNumbers}
-                className="text-[10px] text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded font-bold flex items-center gap-1 cursor-pointer transition border border-blue-200"
-                title="Присвоить порядковые номера 1, 2, 3..."
+                className="text-[10px] text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md font-bold flex items-center gap-1.5 cursor-pointer transition border border-blue-200 shadow-2xs"
+                title="Присвоить всем линиям порядковые номера: 1, 2, 3..."
               >
-                <ListOrdered className="w-2.5 h-2.5" />
-                Сбросить 1, 2, 3...
-              </button>
-              <button
-                onClick={applyStandardNumbers}
-                className="text-[10px] text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded font-medium flex items-center gap-1 cursor-pointer transition"
-                title="Присвоить заводские номера 512, 522, 500"
-              >
-                <Sparkles className="w-2.5 h-2.5 text-amber-500" />
-                Заводской (512/522/500)
+                <ListOrdered className="w-3 h-3 text-blue-600" />
+                Сбросить: по порядку (1, 2, 3...)
               </button>
             </div>
           </div>

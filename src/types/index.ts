@@ -53,27 +53,71 @@ export interface LineSegment {
 
 export type CellFillType = 'glass' | 'spandrel' | 'louver' | 'sash' | 'pylon' | 'empty' | 'custom';
 
+export interface CellFillItem {
+  id: string;
+  fillType: CellFillType;
+  name: string;
+  mark: string;
+  linkType: 'деталь' | 'комплектующие' | 'Сборочная единица';
+  hasMaterial: boolean;
+  material?: string;
+  materialName?: string;
+  processTemplate?: string;
+  planGroup?: string;
+  widthOffset: number;
+  heightOffset: number;
+  width: number;       // glassWidth / cutWidth
+  height: number;      // glassHeight / cutHeight
+  thickness?: number;
+  formula?: string;
+  color?: string;
+  comment?: string;
+  dependencies: DependencyRule[];
+}
+
 export interface Cell {
   id: string;
   x: number;      // Начало по X (мм)
   y: number;      // Начало по Y (мм)
   width: number;  // Ширина пролёта (мм)
   height: number; // Высота пролёта (мм)
-  fillType: CellFillType;
-  name: string;
-  mark: string;
+  fills?: CellFillItem[]; // Список всех заполнений/слоев проёма (стеклопакет, короб, экран и т.д.)
+  fillType?: CellFillType;
+  name?: string;
+  mark?: string;
   linkType?: 'деталь' | 'комплектующие' | 'Сборочная единица';
   hasMaterial?: boolean; // false для стеклопакетов, решеток, створок; true для коробов и деталей
   material?: string;     // Оц 0,9мм
   materialName?: string; // Лист 0,9 Оц сталь ГОСТ 14918-80
   processTemplate?: string; // Шаблон техпроцесса (напр. "Короб" или пусто)
   planGroup?: string;       // Группа планирования (напр. "Детали ЦМК", "Комплектующие", "Окна и вставки")
-  glassWidth: number;   // Реальная ширина заполнения / развертки (мм)
-  glassHeight: number;  // Реальная высота заполнения / развертки (мм)
+  glassWidth?: number;   // Реальная ширина заполнения / развертки (мм)
+  glassHeight?: number;  // Реальная высота заполнения / развертки (мм)
   thickness?: number;   // Толщина (мм)
   formula?: string;     // Формула стеклопакета или описание короба/решетки
   color?: string;
-  dependencies: DependencyRule[];
+  dependencies?: DependencyRule[];
+}
+
+export interface UserSettings {
+  defaultProjectCode: string;
+  defaultModuleName: string;
+  defaultWidth: number;
+  defaultHeight: number;
+  defaultColors: string[]; // сохраненная палитра пользователя (может быть пустой)
+  defaultPrimaryColor: string;
+  defaultOrderStart: number;
+  defaultDimensionMode: DimensionDisplayMode;
+  defaultNamingPattern: string;
+}
+
+declare global {
+  interface Window {
+    electronAPI?: {
+      isElectron: boolean;
+      onMenuAction: (callback: (action: string) => void) => () => void;
+    };
+  }
 }
 
 export interface CellTemplate {
@@ -208,6 +252,7 @@ export interface BOMRow {
   id: string;
   sourceType: 'profile' | 'cell' | 'accessory' | 'hardware' | 'standalone';
   sourceId: string;
+  fillId?: string;          // ID слоя заполнения проёма (для точной привязки метизов к конкретному коробу/стеклу)
   parentName?: string;
   // 19 exact columns from А1187 М507_Модуль Жукова.xlsx
   mark: string;             // Обозначение

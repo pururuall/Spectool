@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Package, Component, Ruler, Palette, FileText, Check } from 'lucide-react';
+import { X, Plus, Package, Component, Ruler, Palette, FileText, Check, Wrench } from 'lucide-react';
 import { StandaloneItem } from '../types';
 import { getProcessTemplates } from '../utils/processTemplatesService';
 
@@ -20,8 +20,8 @@ export const StandaloneItemModal: React.FC<StandaloneItemModalProps> = ({
   projectCode = 'А1187',
   defaultColor = 'RAL 7012'
 }) => {
-  const [itemType, setItemType] = useState<'part' | 'assembly'>(
-    initialItem?.itemType === 'assembly' ? 'assembly' : 'part'
+  const [itemType, setItemType] = useState<'part' | 'assembly' | 'accessory'>(
+    initialItem?.itemType || 'part'
   );
   const [mark, setMark] = useState(initialItem?.mark || '');
   const [name, setName] = useState(initialItem?.name || '');
@@ -52,7 +52,7 @@ export const StandaloneItemModal: React.FC<StandaloneItemModalProps> = ({
 
   useEffect(() => {
     if (initialItem) {
-      setItemType(initialItem.itemType === 'assembly' ? 'assembly' : 'part');
+      setItemType(initialItem.itemType || 'part');
       setMark(initialItem.mark || '');
       setName(initialItem.name || '');
       setPos(initialItem.pos || '');
@@ -95,23 +95,34 @@ export const StandaloneItemModal: React.FC<StandaloneItemModalProps> = ({
       return;
     }
 
+    const calculatedLinkType: 'деталь' | 'Сборочная единица' | 'комплектующие' =
+      itemType === 'assembly'
+        ? 'Сборочная единица'
+        : itemType === 'accessory'
+        ? 'комплектующие'
+        : 'деталь';
+
     const item: StandaloneItem = {
       id: initialItem?.id || `standalone-${Date.now()}`,
       itemType,
-      linkType: itemType === 'assembly' ? 'Сборочная единица' : 'деталь',
-      mark: mark.trim() || `${projectCode}-ДЕТ-01`,
+      linkType: calculatedLinkType,
+      mark: mark.trim() || (itemType === 'accessory' ? 'Комплектующие' : `${projectCode}-ДЕТ-01`),
       name: name.trim(),
       pos: pos.trim() || undefined,
-      processTemplate: processTemplate.trim() || (itemType === 'assembly' ? 'Кронштейны сварные/сборные модульные' : 'Детали ЦМК'),
+      processTemplate:
+        itemType === 'accessory'
+          ? processTemplate.trim()
+          : processTemplate.trim() || (itemType === 'assembly' ? 'Кронштейны сварные/сборные модульные' : 'Детали ЦМК'),
       quantity: Math.max(1, quantity || 1),
       unit: unit.trim() || 'шт',
-      planGroup: planGroup.trim() || (itemType === 'assembly' ? 'Сборочные единицы' : 'Детали ЦМК'),
-      material: itemType === 'part' ? material.trim() : undefined,
-      materialName: itemType === 'part' ? materialName.trim() : undefined,
-      lengthMm: lengthMm ? parseFloat(lengthMm) || undefined : undefined,
-      widthMm: widthMm ? parseFloat(widthMm) || undefined : undefined,
-      thicknessMm: thicknessMm ? parseFloat(thicknessMm) || undefined : undefined,
-      color: color.trim() || undefined,
+      // For accessories, VGB_Plan_Group MUST be empty to avoid unwanted "прочее" (Rule Note #22)
+      planGroup: itemType === 'accessory' ? '' : planGroup.trim() || (itemType === 'assembly' ? 'Сборочные единицы' : 'Детали ЦМК'),
+      material: itemType === 'part' ? material.trim() : (itemType === 'accessory' ? material.trim() : undefined),
+      materialName: itemType === 'part' ? materialName.trim() : (itemType === 'accessory' ? materialName.trim() : undefined),
+      lengthMm: itemType === 'part' && lengthMm ? parseFloat(lengthMm) || undefined : undefined,
+      widthMm: itemType === 'part' && widthMm ? parseFloat(widthMm) || undefined : undefined,
+      thicknessMm: itemType === 'part' && thicknessMm ? parseFloat(thicknessMm) || undefined : undefined,
+      color: itemType !== 'accessory' ? color.trim() || undefined : undefined,
       notes: notes.trim() || undefined
     };
 
@@ -147,12 +158,12 @@ export const StandaloneItemModal: React.FC<StandaloneItemModalProps> = ({
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-4 space-y-3.5 overflow-y-auto flex-1 text-xs font-sans">
-          {/* Type Selector: Part vs Assembly */}
+          {/* Type Selector: Part vs Assembly vs Accessory */}
           <div>
             <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block mb-1">
               Тип сущности в спецификации (Vogbit):
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => {
@@ -162,14 +173,15 @@ export const StandaloneItemModal: React.FC<StandaloneItemModalProps> = ({
                     setProcessTemplate('Детали кронштейнов из металического листа');
                   }
                 }}
-                className={`py-2 px-3 rounded-xl border flex items-center justify-center gap-2 font-semibold transition cursor-pointer ${
+                className={`py-2 px-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 font-semibold transition cursor-pointer text-center ${
                   itemType === 'part'
                     ? 'bg-blue-50 border-blue-500 text-blue-900 shadow-2xs font-bold'
                     : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 <Component className="w-4 h-4 text-blue-600" />
-                <span>Деталь (кронштейн, пластина, сухарь)</span>
+                <span className="text-[11px] leading-tight">Деталь</span>
+                <span className="text-[9px] text-slate-500 font-normal">кронштейн, пластина</span>
               </button>
 
               <button
@@ -179,14 +191,34 @@ export const StandaloneItemModal: React.FC<StandaloneItemModalProps> = ({
                   if (!planGroup || planGroup === 'Детали ЦМК') setPlanGroup('Сборочные единицы');
                   setProcessTemplate('Кронштейны сварные/сборные модульные');
                 }}
-                className={`py-2 px-3 rounded-xl border flex items-center justify-center gap-2 font-semibold transition cursor-pointer ${
+                className={`py-2 px-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 font-semibold transition cursor-pointer text-center ${
                   itemType === 'assembly'
                     ? 'bg-purple-50 border-purple-500 text-purple-900 shadow-2xs font-bold'
                     : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 <Package className="w-4 h-4 text-purple-600" />
-                <span>Сборочная единица (сварной узел)</span>
+                <span className="text-[11px] leading-tight">Сборочная ед.</span>
+                <span className="text-[9px] text-slate-500 font-normal">сварной узел</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setItemType('accessory');
+                  setPlanGroup('');
+                  setProcessTemplate('');
+                  if (mark.startsWith(projectCode)) setMark('Комплектующие');
+                }}
+                className={`py-2 px-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 font-semibold transition cursor-pointer text-center ${
+                  itemType === 'accessory'
+                    ? 'bg-emerald-50 border-emerald-500 text-emerald-900 shadow-2xs font-bold'
+                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <Wrench className="w-4 h-4 text-emerald-600" />
+                <span className="text-[11px] leading-tight">Комплектующее</span>
+                <span className="text-[9px] text-slate-500 font-normal">без привязки к осям</span>
               </button>
             </div>
           </div>
@@ -221,40 +253,68 @@ export const StandaloneItemModal: React.FC<StandaloneItemModalProps> = ({
             </div>
           </div>
 
-          {/* Process Template (From TP DB) & Plan Group */}
+          {/* Process Template (From TP DB) & Plan Group / Quantity */}
           <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">
-                Шаблон техпроцесса (ТП для Vogbit):
-              </label>
-              <select
-                value={processTemplate}
-                onChange={(e) => setProcessTemplate(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:border-blue-500"
-              >
-                <option value="">-- Выберите шаблон ТП --</option>
-                {availableTemplates.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {itemType !== 'accessory' ? (
+              <div>
+                <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">
+                  Шаблон техпроцесса (ТП для Vogbit):
+                </label>
+                <select
+                  value={processTemplate}
+                  onChange={(e) => setProcessTemplate(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:border-blue-500"
+                >
+                  <option value="">-- Выберите шаблон ТП --</option>
+                  {availableTemplates.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div>
+                <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">
+                  Материал / Состав (опционально):
+                </label>
+                <input
+                  type="text"
+                  value={material}
+                  onChange={(e) => setMaterial(e.target.value)}
+                  placeholder="EPDM / Силикон / Оцинк."
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-500"
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">
-                  Количество:
+                  Количество и ЕИ:
                 </label>
                 <div className="flex items-center gap-1">
                   <input
                     type="number"
-                    min="1"
+                    min="0.1"
+                    step="any"
                     value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 text-center font-mono font-bold text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-500"
+                    onChange={(e) => setQuantity(Math.max(0.01, parseFloat(e.target.value) || 1))}
+                    className="w-16 bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 text-center font-mono font-bold text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-500"
                   />
-                  <span className="text-[11px] text-slate-400">{unit}</span>
+                  <select
+                    value={unit}
+                    onChange={(e) => setUnit(e.target.value)}
+                    className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-1 py-1.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="шт">шт</option>
+                    <option value="м">м</option>
+                    <option value="м2">м²</option>
+                    <option value="компл">компл</option>
+                    <option value="кг">кг</option>
+                    <option value="туба">туба</option>
+                    <option value="баллон">баллон</option>
+                  </select>
                 </div>
               </div>
 

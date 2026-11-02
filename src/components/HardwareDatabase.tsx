@@ -12,6 +12,8 @@ interface HardwareDatabaseProps {
   selectedLineId: string | null;
   selectedProfileId: string | null;
   selectedCellId: string | null;
+  selectedFillId?: string | null;
+  targetDescription?: string;
   width?: number;
   onSelectHardware: (item: CatalogHardwareItem) => void;
   onOpenDatabaseManager?: () => void;
@@ -21,6 +23,8 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
   selectedLineId,
   selectedProfileId,
   selectedCellId,
+  selectedFillId,
+  targetDescription,
   width = 300,
   onSelectHardware,
   onOpenDatabaseManager
@@ -28,6 +32,7 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
   const [dbState, setDbState] = useState(() => getHardwareDB());
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
+  const [selectedSize, setSelectedSize] = useState<string>('all');
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
@@ -35,6 +40,27 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const hardwareTypes = useMemo(() => getHardwareTypes(dbState.items), [dbState.items]);
+
+  const getHardwareSize = (item: CatalogHardwareItem): string => {
+    if (item.diameter && item.length) {
+      return `${item.diameter}х${item.length}`;
+    }
+    if (item.diameter) return `Ø${item.diameter}`;
+    if (item.length) return `L${item.length}`;
+    const m = item.article.match(/(\d+(?:[.,]\d+)?\s*[xхXХ]\s*\d+(?:[.,]\d+)?)/);
+    if (m) return m[1].replace(/\s+/g, '').replace('x', 'х').replace('X', 'х');
+    return '';
+  };
+
+  const hardwareSizes = useMemo(() => {
+    const set = new Set<string>();
+    const source = selectedType === 'all' ? dbState.items : dbState.items.filter((i) => i.type === selectedType);
+    source.forEach((item) => {
+      const s = getHardwareSize(item);
+      if (s) set.add(s);
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  }, [dbState.items, selectedType]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -72,6 +98,10 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
       if (selectedType !== 'all' && item.type !== selectedType) {
         return false;
       }
+      if (selectedSize !== 'all') {
+        const s = getHardwareSize(item);
+        if (s !== selectedSize) return false;
+      }
       if (!q) return true;
       return (
         item.article.toLowerCase().includes(q) ||
@@ -83,7 +113,7 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
         item.type.toLowerCase().includes(q)
       );
     });
-  }, [allItems, selectedType, searchQuery]);
+  }, [allItems, selectedType, selectedSize, searchQuery]);
 
   const handleAdd = (item: CatalogHardwareItem) => {
     onSelectHardware(item);
@@ -182,30 +212,58 @@ export const HardwareDatabase: React.FC<HardwareDatabaseProps> = ({
           />
         </div>
 
-        {/* Dynamic Category Dropdown matching Метизы.xlsx exact column filter */}
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] font-semibold text-slate-500 shrink-0">Тип:</span>
-          <select
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-300 rounded px-1.5 py-0.5 text-[11px] font-semibold text-slate-800 focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="all">Все типы ({allItems.length})</option>
-            {hardwareTypes.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+        {/* Dynamic Category & Size Filters */}
+        <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+          <div className="flex items-center gap-1 min-w-0">
+            <span className="text-[10px] font-semibold text-slate-500 shrink-0">Тип:</span>
+            <select
+              value={selectedType}
+              onChange={(e) => {
+                setSelectedType(e.target.value);
+                setSelectedSize('all');
+              }}
+              className="w-full bg-slate-50 border border-slate-200 hover:border-slate-300 rounded px-1.5 py-0.5 text-[11px] font-semibold text-slate-800 focus:outline-none focus:border-blue-500 cursor-pointer truncate"
+            >
+              <option value="all">Все типы ({allItems.length})</option>
+              {hardwareTypes.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-1 min-w-0">
+            <span className="text-[10px] font-semibold text-slate-500 shrink-0">Размер:</span>
+            <select
+              value={selectedSize}
+              onChange={(e) => setSelectedSize(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 hover:border-slate-300 rounded px-1.5 py-0.5 text-[11px] font-semibold text-slate-800 focus:outline-none focus:border-blue-500 cursor-pointer truncate"
+            >
+              <option value="all">Все ({hardwareSizes.length})</option>
+              {hardwareSizes.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
       {/* Selection context helper */}
-      {!isTargetSelected && (
-        <div className="px-3 py-1 bg-amber-50 border-b border-amber-200 text-amber-800 text-[10px] font-medium flex items-center justify-between">
-          <span>⚠️ Выберите линию, профиль или проём для привязки</span>
+      {targetDescription ? (
+        <div className="px-3 py-1 bg-blue-50 border-b border-blue-200 text-blue-900 text-[10px] font-bold flex items-center justify-between">
+          <span className="truncate flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+            Цель привязки: {targetDescription}
+          </span>
         </div>
-      )}
+      ) : !isTargetSelected ? (
+        <div className="px-3 py-1 bg-amber-50 border-b border-amber-200 text-amber-800 text-[10px] font-medium flex items-center justify-between">
+          <span>⚠️ Выберите линию, профиль или слой проёма для привязки</span>
+        </div>
+      ) : null}
 
       {/* Items list */}
       <div className="flex-1 overflow-y-auto p-1.5 space-y-1">

@@ -34,9 +34,11 @@ interface MenuBarProps {
   onClearCanvas: () => void;
   onAddBoxContour: () => void;
   onOpenDatabaseManager: (initialTab?: 'materials' | 'hardware' | 'processes') => void;
+  onOpenUserSettings: () => void;
   onOpenColorManager: () => void;
   onOpenNamingModal: () => void;
   onOpenProcessTemplatesModal: () => void;
+  onOpenCellTemplatesModal?: () => void;
   onOpenStandaloneModal: () => void;
   onOpenNumberingPopover: () => void;
   onResetLayout: () => void;
@@ -62,9 +64,11 @@ export const MenuBar: React.FC<MenuBarProps> = ({
   onClearCanvas,
   onAddBoxContour,
   onOpenDatabaseManager,
+  onOpenUserSettings,
   onOpenColorManager,
   onOpenNamingModal,
   onOpenProcessTemplatesModal,
+  onOpenCellTemplatesModal,
   onOpenStandaloneModal,
   onOpenNumberingPopover,
   onResetLayout,
@@ -378,7 +382,20 @@ export const MenuBar: React.FC<MenuBarProps> = ({
             Настройки
           </button>
           {activeMenu === 'settings' && (
-            <div className="absolute left-0 top-full mt-0.5 w-68 bg-white border border-slate-300 rounded-md shadow-xl py-1 z-50">
+            <div className="absolute left-0 top-full mt-0.5 w-72 bg-white border border-slate-300 rounded-md shadow-xl py-1 z-50">
+              <button
+                onClick={() => {
+                  onOpenUserSettings();
+                  closeMenu();
+                }}
+                className="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer font-bold text-blue-900"
+              >
+                <Settings className="w-3.5 h-3.5 text-blue-600" />
+                <span>Пользовательские настройки по умолчанию...</span>
+              </button>
+
+              <div className="my-1 border-t border-slate-200" />
+
               <button
                 onClick={() => {
                   onOpenDatabaseManager();
@@ -387,7 +404,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                 className="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer font-medium"
               >
                 <Database className="w-3.5 h-3.5 text-blue-600" />
-                <span>Настройка Баз Данных...</span>
+                <span>Настройка Баз Данных (Материалы, Метизы, ТП)...</span>
               </button>
 
               <div className="my-1 border-t border-slate-200" />
@@ -422,6 +439,18 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                 <Sliders className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Шаблоны техпроцесса (Vogbit)...</span>
               </button>
+              {onOpenCellTemplatesModal && (
+                <button
+                  onClick={() => {
+                    onOpenCellTemplatesModal();
+                    closeMenu();
+                  }}
+                  className="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer"
+                >
+                  <Layers className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Шаблоны заполнений (проёмов)...</span>
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -474,7 +503,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                 className="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer"
               >
                 <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
-                <span>О программе Spectool v1.1.0</span>
+                <span>О программе Spectool v2.1.1</span>
               </button>
             </div>
           )}

@@ -31,6 +31,7 @@ interface MaterialsTreeProps {
   selectedCellId: string | null;
   width?: number;
   onBindProfileToSelectedLine: (profileItem: CatalogProfileItem) => void;
+  onBindAsCellMaterial?: (item: CatalogMaterialItem) => void;
   onBindAsAccessory?: (item: CatalogMaterialItem) => void;
   onOpenDatabaseManager?: () => void;
   onAddCustomProfile?: () => void;
@@ -42,6 +43,7 @@ export const MaterialsTree: React.FC<MaterialsTreeProps> = ({
   selectedCellId,
   width = 300,
   onBindProfileToSelectedLine,
+  onBindAsCellMaterial,
   onBindAsAccessory,
   onOpenDatabaseManager,
   onAddCustomProfile
@@ -117,6 +119,14 @@ export const MaterialsTree: React.FC<MaterialsTreeProps> = ({
   const handleBindAsAcc = (item: CatalogMaterialItem) => {
     if (onBindAsAccessory) {
       onBindAsAccessory(item);
+      setJustBoundArticle(item.article);
+      setTimeout(() => setJustBoundArticle(null), 1500);
+    }
+  };
+
+  const handleBindAsCell = (item: CatalogMaterialItem) => {
+    if (onBindAsCellMaterial) {
+      onBindAsCellMaterial(item);
       setJustBoundArticle(item.article);
       setTimeout(() => setJustBoundArticle(null), 1500);
     }
@@ -258,6 +268,7 @@ export const MaterialsTree: React.FC<MaterialsTreeProps> = ({
                   selectedCellId={selectedCellId}
                   isJustBound={justBoundArticle === item.article}
                   onBindAsProfile={() => handleBindAsProfile(item)}
+                  onBindAsCellMaterial={() => handleBindAsCell(item)}
                   onBindAsAccessory={() => handleBindAsAcc(item)}
                 />
               ))
@@ -276,6 +287,7 @@ export const MaterialsTree: React.FC<MaterialsTreeProps> = ({
               selectedCellId={selectedCellId}
               justBoundArticle={justBoundArticle}
               onBindAsProfile={handleBindAsProfile}
+              onBindAsCellMaterial={handleBindAsCell}
               onBindAsAccessory={handleBindAsAcc}
             />
           ))
@@ -295,6 +307,7 @@ const TreeFolderView: React.FC<{
   selectedCellId: string | null;
   justBoundArticle: string | null;
   onBindAsProfile: (item: CatalogMaterialItem) => void;
+  onBindAsCellMaterial: (item: CatalogMaterialItem) => void;
   onBindAsAccessory: (item: CatalogMaterialItem) => void;
 }> = ({
   node,
@@ -305,6 +318,7 @@ const TreeFolderView: React.FC<{
   selectedCellId,
   justBoundArticle,
   onBindAsProfile,
+  onBindAsCellMaterial,
   onBindAsAccessory
 }) => {
   const isOpen = !!openFolderIds[node.id];
@@ -355,6 +369,7 @@ const TreeFolderView: React.FC<{
                 selectedCellId={selectedCellId}
                 justBoundArticle={justBoundArticle}
                 onBindAsProfile={onBindAsProfile}
+                onBindAsCellMaterial={onBindAsCellMaterial}
                 onBindAsAccessory={onBindAsAccessory}
               />
             ))}
@@ -370,6 +385,7 @@ const TreeFolderView: React.FC<{
                 selectedCellId={selectedCellId}
                 isJustBound={justBoundArticle === item.article}
                 onBindAsProfile={() => onBindAsProfile(item)}
+                onBindAsCellMaterial={() => onBindAsCellMaterial(item)}
                 onBindAsAccessory={() => onBindAsAccessory(item)}
               />
             ))}
@@ -379,7 +395,7 @@ const TreeFolderView: React.FC<{
   );
 };
 
-// Item Card Component with Dual Binding Buttons
+// Item Card Component with Universal Binding Buttons
 const MaterialItemCard: React.FC<{
   item: CatalogMaterialItem;
   selectedLineId: string | null;
@@ -387,6 +403,7 @@ const MaterialItemCard: React.FC<{
   selectedCellId: string | null;
   isJustBound: boolean;
   onBindAsProfile: () => void;
+  onBindAsCellMaterial: () => void;
   onBindAsAccessory: () => void;
 }> = ({
   item,
@@ -395,6 +412,7 @@ const MaterialItemCard: React.FC<{
   selectedCellId,
   isJustBound,
   onBindAsProfile,
+  onBindAsCellMaterial,
   onBindAsAccessory
 }) => {
   return (
@@ -416,7 +434,7 @@ const MaterialItemCard: React.FC<{
 
         {isJustBound && (
           <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1 py-0.5 rounded border border-emerald-200 shrink-0">
-            ✓ Привязано
+            ✓ Назначено
           </span>
         )}
       </div>
@@ -428,32 +446,41 @@ const MaterialItemCard: React.FC<{
         {item.standard && <span className="truncate">● {item.standard}</span>}
       </div>
 
-      {/* Action buttons: Dual binding */}
+      {/* Action buttons: Universal Part / Accessory binding */}
       <div className="flex items-center gap-1.5 pt-1 border-t border-slate-200/60 mt-0.5">
         <button
-          onClick={onBindAsProfile}
-          disabled={!selectedLineId}
-          className={`flex-1 py-0.5 px-1.5 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
-            selectedLineId
+          onClick={() => {
+            if (selectedLineId) onBindAsProfile();
+            else if (selectedCellId) onBindAsCellMaterial();
+          }}
+          disabled={!selectedLineId && !selectedCellId}
+          className={`flex-1 py-1 px-1.5 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+            selectedLineId || selectedCellId
               ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs'
               : 'bg-slate-100 text-slate-400 cursor-not-allowed'
           }`}
-          title={selectedLineId ? 'Привязать как несущий профиль к выбранной линии' : 'Сначала выберите линию на холсте'}
+          title={
+            selectedLineId
+              ? 'Привязать как деталь/профиль к выбранной линии'
+              : selectedCellId
+              ? 'Привязать как листовой материал/деталь к выбранной ячейке'
+              : 'Сначала выберите линию или ячейку на холсте'
+          }
         >
           <Layers className="w-2.5 h-2.5" />
-          <span>Как профиль</span>
+          <span>Как деталь</span>
         </button>
 
         <button
           onClick={onBindAsAccessory}
-          disabled={!selectedProfileId && !selectedCellId}
-          className={`flex-1 py-0.5 px-1.5 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
-            selectedProfileId || selectedCellId
+          disabled={!selectedProfileId && !selectedCellId && !selectedLineId}
+          className={`flex-1 py-1 px-1.5 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+            selectedProfileId || selectedCellId || selectedLineId
               ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-2xs'
               : 'bg-slate-100 text-slate-400 cursor-not-allowed'
           }`}
           title={
-            selectedProfileId || selectedCellId
+            selectedProfileId || selectedCellId || selectedLineId
               ? 'Привязать как комплектующее (уплотнитель, термомост, резина)'
               : 'Сначала выберите профиль или ячейку'
           }

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { ModuleModel, LineSegment, DimensionDisplayMode } from '../types';
+import { ThemeDefinition } from '../utils/themeService';
 import { DimensionOverlay } from './DimensionOverlay';
 import {
   ZoomIn,
@@ -33,6 +34,7 @@ interface CanvasProps {
   dimensionDisplayMode?: DimensionDisplayMode;
   onChangeDimensionMode?: (mode: DimensionDisplayMode) => void;
   width?: number;
+  theme?: ThemeDefinition;
   onSelectLine: (id: string | null) => void;
   onSelectCell: (id: string | null) => void;
   onAddLine: (line: LineSegment) => void;
@@ -50,6 +52,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   dimensionDisplayMode = 'selection_inputs',
   onChangeDimensionMode,
   width = 490,
+  theme,
   onSelectLine,
   onSelectCell,
   onAddLine,
@@ -587,9 +590,10 @@ export const Canvas: React.FC<CanvasProps> = ({
       {/* Main CAD Viewport */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-auto flex items-center justify-center p-3 relative bg-slate-100/70"
+        className="flex-1 overflow-auto flex items-center justify-center p-3 relative transition-colors duration-200"
         style={{
-          backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)',
+          backgroundColor: theme?.baseStyles.background || '#f1f5f9',
+          backgroundImage: `radial-gradient(${theme?.cadZone.gridColor || '#cbd5e1'} 1.2px, transparent 1.2px)`,
           backgroundSize: '20px 20px'
         }}
       >
@@ -598,9 +602,13 @@ export const Canvas: React.FC<CanvasProps> = ({
             ref={svgRef}
             width={svgWidth}
             height={svgHeight}
-            className={`overflow-visible bg-white shadow-sm border border-slate-300 rounded ${
+            className={`overflow-visible shadow-sm border rounded transition-colors duration-200 ${
               tool === 'line' ? 'cursor-crosshair' : 'cursor-default'
             }`}
+            style={{
+              backgroundColor: theme?.cadZone.background || '#ffffff',
+              borderColor: theme?.baseStyles.border ? theme.baseStyles.border.replace(/^1px solid /, '') : '#cbd5e1'
+            }}
             onMouseDown={handleSvgMouseDown}
             onMouseMove={handleSvgMouseMove}
           >
@@ -812,7 +820,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                       cx={x1}
                       cy={y1}
                       r="7"
-                      fill="#2563eb"
+                      fill={theme?.cadZone.activeColor || '#2563eb'}
                       stroke="#ffffff"
                       strokeWidth="2.5"
                       style={{ cursor: 'move', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
@@ -828,7 +836,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                       cx={x2}
                       cy={y2}
                       r="7"
-                      fill="#2563eb"
+                      fill={theme?.cadZone.activeColor || '#2563eb'}
                       stroke="#ffffff"
                       strokeWidth="2.5"
                       style={{ cursor: 'move', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
@@ -853,13 +861,13 @@ export const Canvas: React.FC<CanvasProps> = ({
                 y1={toSvgY(drawingStart.y)}
                 x2={toSvgX(currentMouse.x)}
                 y2={toSvgY(currentMouse.y)}
-                stroke="#2563eb"
+                stroke={theme?.cadZone.activeColor || '#2563eb'}
                 strokeWidth="2.5"
                 strokeDasharray="6 3"
                 style={{ pointerEvents: 'none' }}
               />
-              <circle cx={toSvgX(drawingStart.x)} cy={toSvgY(drawingStart.y)} r="6" fill="#2563eb" style={{ pointerEvents: 'none' }} />
-              <circle cx={toSvgX(currentMouse.x)} cy={toSvgY(currentMouse.y)} r="6" fill="#2563eb" style={{ pointerEvents: 'none' }} />
+              <circle cx={toSvgX(drawingStart.x)} cy={toSvgY(drawingStart.y)} r="6" fill={theme?.cadZone.activeColor || '#2563eb'} style={{ pointerEvents: 'none' }} />
+              <circle cx={toSvgX(currentMouse.x)} cy={toSvgY(currentMouse.y)} r="6" fill={theme?.cadZone.activeColor || '#2563eb'} style={{ pointerEvents: 'none' }} />
 
               {/* SolidWorks style dynamic dimension readout + typed input badge */}
               <g

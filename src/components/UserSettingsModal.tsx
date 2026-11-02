@@ -7,12 +7,14 @@ interface UserSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onApplySettings?: (newSettings: UserSettings) => void;
+  onOpenCellTemplatesModal?: () => void;
 }
 
 export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
   isOpen,
   onClose,
-  onApplySettings
+  onApplySettings,
+  onOpenCellTemplatesModal
 }) => {
   const [settings, setSettings] = useState<UserSettings>(getUserSettings());
   const [newColorInput, setNewColorInput] = useState('');
@@ -267,6 +269,28 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
               Доступны теги: {'{project}'}, {'{article}'}, {'{axialLength}'}, {'{cutLength}'}, {'{order}'}
             </p>
           </div>
+
+          {/* Cell Templates Shortcut */}
+          {onOpenCellTemplatesModal && (
+            <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-200 flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-slate-800 text-xs">Шаблоны заполнений (проёмов)</h3>
+                <p className="text-[11px] text-slate-500">
+                  Включение/отключение шаблонов, настройка отступов стеклопакетов и коробов
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenCellTemplatesModal();
+                }}
+                className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded text-xs font-semibold transition cursor-pointer shadow-2xs"
+              >
+                ⚙️ Настроить шаблоны...
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Footer */}

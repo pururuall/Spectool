@@ -33,10 +33,12 @@ import { DatabaseManagerModal } from './components/DatabaseManagerModal';
 import { UserSettingsModal } from './components/UserSettingsModal';
 import { ModuleTabBar } from './components/ModuleTabBar';
 import { CellTemplatesModal } from './components/CellTemplatesModal';
+import { ThemeManagerModal } from './components/ThemeManagerModal';
 import { StandaloneItem, DimensionDisplayMode, CatalogMaterialItem, UserSettings } from './types';
 import { getUserSettings } from './utils/userSettingsService';
 import { normalizeCellFills, syncCellWithPrimaryFill } from './utils/cellTemplates';
 import { exportToExcel } from './utils/bomEngine';
+import { getActiveTheme, applyThemeToDocument, ThemeDefinition } from './utils/themeService';
 
 const createNewModuleFromSettings = (settings = getUserSettings()): ModuleModel => ({
   id: `mod-${Date.now()}`,
@@ -90,9 +92,21 @@ export const App: React.FC = () => {
   const [isNamingModalOpen, setIsNamingModalOpen] = useState(false);
   const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
   const [isCellTemplatesModalOpen, setIsCellTemplatesModalOpen] = useState(false);
+  const [isThemeManagerOpen, setIsThemeManagerOpen] = useState(false);
   const [isStandaloneModalOpen, setIsStandaloneModalOpen] = useState(false);
   const [isUserSettingsOpen, setIsUserSettingsOpen] = useState(false);
   const [editingStandaloneItem, setEditingStandaloneItem] = useState<StandaloneItem | null>(null);
+
+  const [currentTheme, setCurrentTheme] = useState<ThemeDefinition>(() => {
+    const active = getActiveTheme();
+    applyThemeToDocument(active);
+    return active;
+  });
+
+  const handleThemeChanged = (newTheme: ThemeDefinition) => {
+    setCurrentTheme(newTheme);
+    applyThemeToDocument(newTheme);
+  };
 
   // Desktop Menu & Dimension display mode
   const [dimensionDisplayMode, setDimensionDisplayMode] = useState<DimensionDisplayMode>(() => {
@@ -1050,7 +1064,13 @@ export const App: React.FC = () => {
   };
 
   const handleNewModuleTab = () => {
-    const newMod = createNewModuleFromSettings();
+    const settings = getUserSettings();
+    const tabNum = tabsState.modules.length + 1;
+    const newMod: ModuleModel = {
+      ...createNewModuleFromSettings(settings),
+      id: `mod-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      name: `Модуль ${tabNum}`
+    };
     setTabsState((prev) => ({
       modules: [...prev.modules, newMod],
       activeModuleId: newMod.id
@@ -1070,7 +1090,7 @@ export const App: React.FC = () => {
       if (!target) return prev;
       const cloned: ModuleModel = {
         ...JSON.parse(JSON.stringify(target)),
-        id: `mod-${Date.now()}`,
+        id: `mod-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         name: `${target.name || 'Модуль'} (Копия)`
       };
       return {
@@ -1141,7 +1161,20 @@ export const App: React.FC = () => {
     const cleanup = window.electronAPI.onMenuAction((action) => {
       switch (action) {
         case 'menu-new':
-          handleClearCanvas();
+        case 'menu-new-tab':
+          handleNewModuleTab();
+          break;
+        case 'menu-duplicate-tab':
+          handleDuplicateModuleTab(activeModuleId);
+          break;
+        case 'menu-close-tab':
+          handleCloseModuleTab(activeModuleId);
+          break;
+        case 'menu-open-themes':
+          setIsThemeManagerOpen(true);
+          break;
+        case 'menu-open-cell-templates':
+          setIsCellTemplatesModalOpen(true);
           break;
         case 'menu-import': {
           const inp = document.createElement('input');
@@ -1223,7 +1256,7 @@ export const App: React.FC = () => {
           handleResetLayoutSizes();
           break;
         case 'menu-about':
-          alert('Spectool v1.1.0 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций.');
+          alert('Spectool v2.1.2 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций.');
           break;
       }
     });
@@ -1277,6 +1310,8 @@ export const App: React.FC = () => {
           onOpenAboutModal={() => {
             alert('Spectool v2.1.1 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций.');
           }}
+          onOpenThemeManager={() => setIsThemeManagerOpen(true)}
+          activeThemeName={currentTheme.name}
           panelVisibility={panelVisibility}
           onTogglePanel={togglePanelVisibility}
         />
@@ -1327,6 +1362,7 @@ export const App: React.FC = () => {
           selectedCellId={selectedCellId}
           dimensionDisplayMode={dimensionDisplayMode}
           onChangeDimensionMode={handleSetDimensionMode}
+          theme={currentTheme}
           width={layoutSizes.canvasWidth}
           onSelectLine={handleSelectLine}
           onSelectCell={handleSelectCell}
@@ -1542,12 +1578,20 @@ export const App: React.FC = () => {
         isOpen={isUserSettingsOpen}
         onClose={() => setIsUserSettingsOpen(false)}
         onApplySettings={handleApplyUserSettings}
+        onOpenCellTemplatesModal={() => setIsCellTemplatesModalOpen(true)}
       />
 
       {/* Cell Fill Templates Configuration Modal */}
       <CellTemplatesModal
         isOpen={isCellTemplatesModalOpen}
         onClose={() => setIsCellTemplatesModalOpen(false)}
+      />
+
+      {/* Theme Manager and Theme Constructor Modal */}
+      <ThemeManagerModal
+        isOpen={isThemeManagerOpen}
+        onClose={() => setIsThemeManagerOpen(false)}
+        onThemeChanged={handleThemeChanged}
       />
 
       {/* Floating Agent UI Feedback & Review Tool */}

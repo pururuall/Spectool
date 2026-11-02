@@ -72,13 +72,17 @@ export const ModuleTabBar: React.FC<ModuleTabBarProps> = ({
   };
 
   return (
-    <div className="h-9 bg-slate-200/80 border-b border-slate-300 px-2 flex items-center justify-between select-none shrink-0 relative z-20">
-      {/* Scrollable Tabs Track */}
-      <div className="flex items-center gap-1 overflow-x-auto h-full pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        {modules.map((m) => {
+    <div className="h-9 bg-slate-200/90 border-b border-slate-300 px-2 flex items-center justify-between select-none shrink-0 relative z-20 overflow-hidden">
+      {/* Scrollable Tabs Track with scrollbars strictly suppressed */}
+      <div
+        className="flex items-center gap-1 overflow-x-auto overflow-y-hidden h-full pt-1 no-scrollbar"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {modules.map((m, index) => {
           const isActive = m.id === activeModuleId;
           const isEditing = editingTabId === m.id;
-          const title = `${m.project ? m.project + ' ' : ''}${m.name || 'Модуль'}`;
+          const baseName = m.name || `Модуль ${index + 1}`;
+          const title = `${m.project ? m.project + ' ' : ''}${baseName}`;
 
           return (
             <div

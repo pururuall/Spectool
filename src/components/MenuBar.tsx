@@ -43,6 +43,8 @@ interface MenuBarProps {
   onOpenNumberingPopover: () => void;
   onResetLayout: () => void;
   onOpenAboutModal: () => void;
+  onOpenThemeManager?: () => void;
+  activeThemeName?: string;
   // Panel visibility toggles
   panelVisibility: {
     params: boolean;
@@ -73,6 +75,8 @@ export const MenuBar: React.FC<MenuBarProps> = ({
   onOpenNumberingPopover,
   onResetLayout,
   onOpenAboutModal,
+  onOpenThemeManager,
+  activeThemeName,
   panelVisibility,
   onTogglePanel
 }) => {
@@ -366,6 +370,24 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                 <span>Таблица спецификации (BOM)</span>
                 {panelVisibility.table && <Check className="w-3.5 h-3.5 text-blue-600" />}
               </button>
+
+              <div className="my-1 border-t border-slate-200" />
+              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Стили и цветовые темы
+              </div>
+              <button
+                onClick={() => {
+                  onOpenThemeManager?.();
+                  closeMenu();
+                }}
+                className="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 hover:text-blue-700 flex items-center justify-between cursor-pointer font-medium text-slate-800"
+              >
+                <div className="flex items-center gap-2">
+                  <Palette className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Темы оформления (Конструктор)...</span>
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono">F7</span>
+              </button>
             </div>
           )}
         </div>
@@ -536,6 +558,18 @@ export const MenuBar: React.FC<MenuBarProps> = ({
             {dimensionMode === 'hidden' && 'Скрыты'}
           </strong>
         </button>
+
+        {onOpenThemeManager && (
+          <button
+            onClick={() => onOpenThemeManager()}
+            className="px-2 py-0.5 text-[11px] bg-white hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-300 hover:border-indigo-300 rounded flex items-center gap-1 cursor-pointer transition shadow-2xs"
+            title="Сменить тему оформления или открыть конструктор тем"
+          >
+            <Palette className="w-3 h-3 text-indigo-600" />
+            <span>Тема: </span>
+            <strong className="text-indigo-700">{activeThemeName || 'Classic'}</strong>
+          </button>
+        )}
 
         <button
           onClick={() => onOpenDatabaseManager()}

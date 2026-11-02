@@ -691,9 +691,21 @@ export const ParametersBox: React.FC<ParametersBoxProps> = ({
                   <Box className="w-3.5 h-3.5 text-blue-600" />
                   Область ({selectedCell.width} × {selectedCell.height} мм)
                 </span>
-                <span className="text-[10px] font-mono text-blue-600">
-                  X={selectedCell.x}, Y={selectedCell.y}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-blue-600">
+                    X={selectedCell.x}, Y={selectedCell.y}
+                  </span>
+                  {onOpenCellTemplatesModal && (
+                    <button
+                      type="button"
+                      onClick={onOpenCellTemplatesModal}
+                      className="text-[10px] text-slate-600 hover:text-blue-700 bg-white hover:bg-blue-50 border border-slate-300 rounded px-1.5 py-0.5 font-medium transition cursor-pointer shadow-2xs"
+                      title="Настройки шаблонов заполнений (проёмов)"
+                    >
+                      ⚙️ Шаблоны
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 

@@ -21,7 +21,10 @@ function createApplicationMenu(mainWindow) {
     {
       label: 'Файл',
       submenu: [
-        { label: 'Новый модуль (С нуля)', accelerator: 'CmdOrCtrl+N', click: () => send('menu-new') },
+        { label: 'Новый модуль (в новой вкладке)', accelerator: 'CmdOrCtrl+N', click: () => send('menu-new-tab') },
+        { label: 'Дублировать текущий модуль', accelerator: 'CmdOrCtrl+D', click: () => send('menu-duplicate-tab') },
+        { label: 'Закрыть текущую вкладку', accelerator: 'CmdOrCtrl+W', click: () => send('menu-close-tab') },
+        { type: 'separator' },
         { label: 'Открыть / Импорт...', accelerator: 'CmdOrCtrl+O', click: () => send('menu-import') },
         { label: 'Сохранить проект...', accelerator: 'CmdOrCtrl+S', click: () => send('menu-save') },
         { type: 'separator' },
@@ -44,6 +47,8 @@ function createApplicationMenu(mainWindow) {
     {
       label: 'Вид',
       submenu: [
+        { label: 'Темы оформления (Конструктор)...', accelerator: 'F7', click: () => send('menu-open-themes') },
+        { type: 'separator' },
         { label: 'Размеры: Интерактивные поля при выборе', click: () => send('menu-dim-inputs') },
         { label: 'Размеры: Внешние цепочки CAD', click: () => send('menu-dim-chains') },
         { label: 'Размеры: На всех линиях', click: () => send('menu-dim-all') },
@@ -63,6 +68,7 @@ function createApplicationMenu(mainWindow) {
       label: 'Настройки',
       submenu: [
         { label: 'Пользовательские настройки по умолчанию...', click: () => send('menu-open-user-settings') },
+        { label: 'Шаблоны заполнений (проёмов)...', click: () => send('menu-open-cell-templates') },
         { type: 'separator' },
         { label: 'Управление Базами Данных (Материалы, Метизы, ТП)...', click: () => send('menu-open-db') },
         { label: 'Цвета проекта (мульти-RAL)...', click: () => send('menu-open-colors') },

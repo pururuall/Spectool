@@ -1264,7 +1264,13 @@ export const App: React.FC = () => {
   }, [module, bomRows]);
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-100 font-sans text-slate-800 overflow-hidden">
+    <div
+      className="h-screen w-screen flex flex-col font-sans overflow-hidden transition-colors duration-200"
+      style={{
+        background: 'var(--app-bg, #f8fafc)',
+        color: 'var(--text-main, #0f172a)'
+      }}
+    >
       {/* 1. Desktop Application Menu Bar (rendered when in web mode; Electron uses native top menu bar) */}
       {!window.electronAPI?.isElectron && (
         <MenuBar
@@ -1308,7 +1314,7 @@ export const App: React.FC = () => {
           }}
           onResetLayout={handleResetLayoutSizes}
           onOpenAboutModal={() => {
-            alert('Spectool v2.1.1 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций.');
+            alert('Spectool v2.1.4 — Инженерный CAD/BIM-конструктор фасадных модулей и BOM-спецификаций.');
           }}
           onOpenThemeManager={() => setIsThemeManagerOpen(true)}
           activeThemeName={currentTheme.name}
@@ -1354,7 +1360,10 @@ export const App: React.FC = () => {
       />
 
       {/* Main Upper Workspace with 5 organized panels and interactive column splitters */}
-      <div className="flex-1 flex overflow-x-auto p-2.5 gap-1 min-h-0 bg-slate-100/60">
+      <div
+        className="flex-1 flex overflow-x-auto p-2.5 gap-1 min-h-0"
+        style={{ background: 'transparent' }}
+      >
         {/* Column 1: Interactive Canvas for Drawing Lines with mouse */}
         <Canvas
           module={module}

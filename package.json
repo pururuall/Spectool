@@ -1,7 +1,7 @@
 {
   "name": "spectool-facade-builder",
   "private": true,
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "CAD Конструктор модульных фасадов и спецификаций",
   "author": "Spectool",
   "main": "electron/main.cjs",

@@ -494,7 +494,8 @@ export const ThemeManagerModal: React.FC<ThemeManagerModalProps> = ({
           </div>
 
           {/* 4. THEME BUILDER (Конструктор тем) */}
-          <div id="theme-builder-section" className="pt-4 border-t-2 border-slate-200">
+          {isBuilderOpen && (
+            <div id="theme-builder-section" className="pt-4 border-t-2 border-slate-200 animate-in fade-in duration-200">
             <div className="bg-white border border-slate-300 rounded-2xl p-5 shadow-sm">
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
                 <div className="flex items-center gap-2">
@@ -1092,6 +1093,7 @@ export const ThemeManagerModal: React.FC<ThemeManagerModalProps> = ({
               </div>
             </div>
           </div>
+          )}
         </div>
 
         {/* 5. Footer */}

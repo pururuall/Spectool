@@ -282,7 +282,7 @@ export const ThemeManagerModal: React.FC<ThemeManagerModalProps> = ({
                       <div
                         className="w-full h-24 rounded-lg border p-1.5 mb-3 flex gap-1.5 overflow-hidden shadow-inner select-none"
                         style={{
-                          backgroundColor: t.baseStyles.background,
+                          background: t.baseStyles.background,
                           borderColor: t.baseStyles.border
                         }}
                       >
@@ -323,8 +323,9 @@ export const ThemeManagerModal: React.FC<ThemeManagerModalProps> = ({
                           <div
                             className="h-3.5 rounded px-1.5 flex items-center justify-between border"
                             style={{
-                              backgroundColor: t.baseStyles.panelBackground,
-                              borderColor: t.baseStyles.border
+                              background: t.baseStyles.panelBackground,
+                              borderColor: t.baseStyles.border,
+                              backdropFilter: t.baseStyles.backdropFilter
                             }}
                           >
                             <span
@@ -348,9 +349,10 @@ export const ThemeManagerModal: React.FC<ThemeManagerModalProps> = ({
                             <div
                               className="flex-1 rounded p-1 border flex flex-col justify-between"
                               style={{
-                                backgroundColor: t.baseStyles.panelBackground,
+                                background: t.baseStyles.panelBackground,
                                 borderColor: t.baseStyles.border,
-                                borderRadius: t.baseStyles.borderRadius
+                                borderRadius: t.baseStyles.borderRadius,
+                                backdropFilter: t.baseStyles.backdropFilter
                               }}
                             >
                               <div
@@ -369,9 +371,10 @@ export const ThemeManagerModal: React.FC<ThemeManagerModalProps> = ({
                             <div
                               className="w-1/3 rounded p-1 border flex flex-col justify-between"
                               style={{
-                                backgroundColor: t.baseStyles.panelBackground,
+                                background: t.baseStyles.panelBackground,
                                 borderColor: t.baseStyles.border,
-                                borderRadius: t.baseStyles.borderRadius
+                                borderRadius: t.baseStyles.borderRadius,
+                                backdropFilter: t.baseStyles.backdropFilter
                               }}
                             >
                               <div
@@ -947,7 +950,7 @@ export const ThemeManagerModal: React.FC<ThemeManagerModalProps> = ({
                   <div
                     className="w-full h-80 rounded-xl border p-2 flex flex-col gap-2 shadow-inner select-none transition-all"
                     style={{
-                      backgroundColor: builderTheme.baseStyles.background,
+                      background: builderTheme.baseStyles.background,
                       borderColor: builderTheme.baseStyles.border,
                       fontFamily: builderTheme.baseStyles.fontFamily,
                       color: builderTheme.colors.textMain

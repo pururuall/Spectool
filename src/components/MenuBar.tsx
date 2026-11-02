@@ -525,7 +525,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                 className="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer"
               >
                 <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
-                <span>О программе Spectool v2.1.1</span>
+                <span>О программе Spectool v2.1.3</span>
               </button>
             </div>
           )}

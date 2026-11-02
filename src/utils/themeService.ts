@@ -320,6 +320,156 @@ export const builtInThemes: Record<string, ThemeDefinition> = {
       activeColor: '#1A56A6'
     },
     directives: 'Легкий скандинавский дизайн с эффектом стеклянных панелей (Glassmorphism). Снежные, ледяные и арктические голубые оттенки.'
+  },
+
+  // === ВАРИАНТ 12: Космическая Аврора (Cosmic Aurora Glass) ===
+  variant_12_cosmic_aurora: {
+    id: 'variant_12_cosmic_aurora',
+    name: 'Cosmic Aurora Glass',
+    brightness: 'dark',
+    baseStyles: {
+      background: 'radial-gradient(ellipse at 50% 15%, rgba(16, 185, 129, 0.45) 0%, rgba(6, 182, 212, 0.25) 35%, rgba(10, 10, 26, 0.98) 75%), #0A0A1A',
+      panelBackground: 'rgba(13, 27, 42, 0.55)',
+      backdropFilter: 'blur(20px) saturate(120%)',
+      border: '1px solid rgba(52, 211, 153, 0.25)',
+      borderRadius: '12px',
+      boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 12px rgba(52, 211, 153, 0.1)',
+      fontFamily: "Inter, 'Fira Code', sans-serif"
+    },
+    colors: {
+      primary: '#10B981',
+      secondary: '#06B6D4',
+      success: '#34D399',
+      accent: '#8B5CF6',
+      textMain: '#ECFDF5',
+      textMuted: '#94A3B8'
+    },
+    cadZone: {
+      background: 'rgba(10, 15, 30, 0.85)',
+      gridColor: 'rgba(52, 211, 153, 0.12)',
+      activeColor: '#10B981'
+    },
+    directives: "Интерфейс на базе космического сияния (Аврора). Полупрозрачное, сильно размытое стекло (20px blur) с деликатными светящимися границами зеленого, бирюзового и фиолетового цветов. Плавные переходы и яркие 'неоновые' акцентные кнопки."
+  },
+
+  // === ВАРИАНТ 13: Кибер-Закат (Synthwave Sunset) ===
+  variant_13_synthwave_sunset: {
+    id: 'variant_13_synthwave_sunset',
+    name: 'Synthwave Sunset',
+    brightness: 'dark',
+    baseStyles: {
+      background: 'radial-gradient(circle at 50% 45%, rgba(236, 72, 153, 0.45) 0%, rgba(245, 158, 11, 0.3) 25%, rgba(24, 18, 36, 0.98) 70%), #140A1E',
+      panelBackground: 'rgba(28, 18, 36, 0.65)',
+      backdropFilter: 'blur(16px) saturate(140%)',
+      border: '1px solid rgba(236, 72, 153, 0.35)',
+      borderRadius: '14px',
+      boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.5), 0 0 15px rgba(236, 72, 153, 0.15)',
+      fontFamily: "Outfit, 'Comfortaa', sans-serif"
+    },
+    colors: {
+      primary: '#EC4899',
+      secondary: '#F59E0B',
+      success: '#10B981',
+      accent: '#A855F7',
+      textMain: '#FDF2F8',
+      textMuted: '#C084FC'
+    },
+    cadZone: {
+      background: 'rgba(18, 10, 25, 0.9)',
+      gridColor: 'rgba(236, 72, 153, 0.12)',
+      activeColor: '#EC4899'
+    },
+    directives: 'Романтический кибер-закат (Synthwave/Outrun). Малиновые, фиолетовые и золотые градиенты. Все панели имеют выраженный эффект тонированного матового стекла с розовым свечением на краях. Шрифты и графика — округлые, сочные.'
+  },
+
+  // === ВАРИАНТ 14: Туманные Горы и Сумерки (Mystic Twilight) ===
+  variant_14_mystic_twilight: {
+    id: 'variant_14_mystic_twilight',
+    name: 'Mystic Twilight & Mist',
+    brightness: 'dark',
+    baseStyles: {
+      background: 'radial-gradient(ellipse at 50% 30%, rgba(129, 140, 248, 0.3) 0%, rgba(99, 102, 241, 0.2) 35%, rgba(13, 15, 30, 0.98) 80%), #0D0F20',
+      panelBackground: 'rgba(18, 22, 36, 0.6)',
+      backdropFilter: 'blur(18px)',
+      border: '1px solid rgba(129, 140, 248, 0.22)',
+      borderRadius: '10px',
+      boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
+      fontFamily: "Inter, 'system-ui', sans-serif"
+    },
+    colors: {
+      primary: '#818CF8',
+      secondary: '#6366F1',
+      success: '#34D399',
+      accent: '#38BDF8',
+      textMain: '#EEF2F6',
+      textMuted: '#94A3B8'
+    },
+    cadZone: {
+      background: 'rgba(12, 14, 24, 0.9)',
+      gridColor: 'rgba(129, 140, 248, 0.08)',
+      activeColor: '#818CF8'
+    },
+    directives: 'Загадочный и приглушенный сумеречный интерфейс (Mystic Twilight). Использовать глубокие, почти невидимые границы, мягкие тени и приглушенные лавандовые акценты. Полностью исключить едкие цвета, сделать свечение мягким и рассеянным (как туман).'
+  },
+
+  // === ВАРИАНТ 15: Океанический Неон (Abyssal Bio-Glow) ===
+  variant_15_abyssal_bioglow: {
+    id: 'variant_15_abyssal_bioglow',
+    name: 'Abyssal Bio-Glow',
+    brightness: 'dark',
+    baseStyles: {
+      background: 'radial-gradient(circle at 30% 70%, rgba(6, 182, 212, 0.35) 0%, rgba(59, 130, 246, 0.2) 40%, rgba(4, 10, 24, 0.98) 85%), #040816',
+      panelBackground: 'rgba(10, 20, 36, 0.55)',
+      backdropFilter: 'blur(22px) saturate(110%)',
+      border: '1px solid rgba(6, 182, 212, 0.3)',
+      borderRadius: '12px',
+      boxShadow: '0 8px 32px 0 rgba(4, 18, 38, 0.5), inset 0 0 10px rgba(6, 182, 212, 0.1)',
+      fontFamily: 'Plus Jakarta Sans, sans-serif'
+    },
+    colors: {
+      primary: '#06B6D4',
+      secondary: '#3B82F6',
+      success: '#10B981',
+      accent: '#EC4899',
+      textMain: '#E0F2FE',
+      textMuted: '#7DD3FC'
+    },
+    cadZone: {
+      background: 'rgba(4, 10, 20, 0.92)',
+      gridColor: 'rgba(6, 182, 212, 0.1)',
+      activeColor: '#06B6D4'
+    },
+    directives: "Морская биолюминесцентная эстетика. Тёмно-синий фон и сапфировые панели, эффект 'мокрого' стекла. Ключевые интерактивные элементы, переключатели и линии должны ярко светиться аквамариновым, голубым и неоново-розовым."
+  },
+
+  // === ВАРИАНТ 16: Цифровая Матрица и HUD (Cyber-Matrix) ===
+  variant_16_cyber_matrix: {
+    id: 'variant_16_cyber_matrix',
+    name: 'Cyber-Matrix & HUD',
+    brightness: 'dark',
+    baseStyles: {
+      background: 'radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.18) 0%, rgba(10, 14, 26, 0.98) 75%), #060812',
+      panelBackground: 'rgba(13, 17, 30, 0.8)',
+      backdropFilter: 'blur(10px)',
+      border: '2px double #00FFCC',
+      borderRadius: '6px',
+      boxShadow: '0 0 12px rgba(0, 255, 204, 0.25), inset 0 0 6px rgba(0, 255, 204, 0.15)',
+      fontFamily: 'Orbitron, Fira Code, monospace'
+    },
+    colors: {
+      primary: '#00FFCC',
+      secondary: '#FF00FF',
+      success: '#39FF14',
+      accent: '#FFFF00',
+      textMain: '#D1FFF6',
+      textMuted: '#00AA90'
+    },
+    cadZone: {
+      background: 'rgba(6, 8, 16, 0.95)',
+      gridColor: 'rgba(0, 255, 204, 0.15)',
+      activeColor: '#00FFCC'
+    },
+    directives: 'Супер-технологичный, игровой HUD. Двойные светящиеся рамки, обилие угловых декоративных скобок, мелких графиков, цифр и пиксельных текстур. Текст и UI-элементы в цветах киберпанк-неона (бирюза, маджента, зеленый). Моноширинный шрифт.'
   }
 };
 
@@ -397,6 +547,7 @@ export const applyThemeToDocument = (theme: ThemeDefinition): void => {
   root.style.setProperty('--panel-border', theme.baseStyles.border);
   root.style.setProperty('--panel-radius', theme.baseStyles.borderRadius);
   root.style.setProperty('--panel-shadow', theme.baseStyles.boxShadow);
+  root.style.setProperty('--panel-backdrop', theme.baseStyles.backdropFilter || 'none');
   root.style.setProperty('--app-font', theme.baseStyles.fontFamily);
 
   root.style.setProperty('--color-primary', theme.colors.primary);
@@ -410,7 +561,7 @@ export const applyThemeToDocument = (theme: ThemeDefinition): void => {
   root.style.setProperty('--cad-grid', theme.cadZone.gridColor);
   root.style.setProperty('--cad-active', theme.cadZone.activeColor);
 
-  document.body.style.backgroundColor = theme.baseStyles.background;
+  document.body.style.background = theme.baseStyles.background;
   document.body.style.color = theme.colors.textMain;
   document.body.style.fontFamily = theme.baseStyles.fontFamily;
 };

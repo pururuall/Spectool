@@ -26,7 +26,12 @@ Thumbs.db
 # Temp test files
 test_*.cjs
 
-# Local reference and notes
+# Local reference and personal notes
 Файлы с работы/
 Заметки сделанные на работе/
+IMG_*
+*.HEIC
+Точечный рисунок*
+Установить.txt
+release-notes*
 
